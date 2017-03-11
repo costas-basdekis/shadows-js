@@ -3,11 +3,10 @@
 class Demo {
     constructor(canvas) {
         this.canvas = canvas;
-        this.lines = new CartesianLines();
-
-        this.createRoom();
 
         paper.setup(this.canvas);
+
+        this.createRoom();
 
         this.centerTool = this.createCenterTool();
         this.paint();
@@ -43,7 +42,10 @@ class Demo {
     }
 
     createRoom() {
+        this.lines = new CartesianLines();
         this.createBoundary();
+        this.lines.updatePath();
+        this.lines.path.strokeColor = 'blue';
     }
 
     createBoundary() {
@@ -67,6 +69,6 @@ class Demo {
     }
 
     paint() {
-        this.lines.paint();
+        paper.view.draw();
     }
 }
