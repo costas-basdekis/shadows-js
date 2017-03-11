@@ -4,18 +4,24 @@ class CartesianLines {
     constructor(canvas) {
         this.canvas = canvas;
         this.lines = [];
-        this.path = null;
+        this.path = new paper.CompoundPath();
+    }
+
+    clear() {
+        this.lines = [];
     }
 
     updatePath() {
-        if (this.path) {
-            this.path.remove();
-        }
-
-        this.path = CartesianLines.linesToPath(this.lines);
+        CartesianLines.toPath(this.lines, this.path);
     }
 
-    static linesToPath(lines) {
+    static toPath(lines, compoundPath=null) {
+        if (!compoundPath) {
+            compoundPath = new paper.CompoundPath();
+        } else {
+            compoundPath.children = [];
+        }
+
         const paths = [];
 
         for (const line of lines) {
@@ -41,7 +47,6 @@ class CartesianLines {
             }
         }
 
-        const compoundPath = new paper.CompoundPath();
         compoundPath.children.push(...paperPaths);
 
         return compoundPath;
