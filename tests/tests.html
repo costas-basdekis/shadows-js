@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Shadows2.js Tests</title>
+    <link rel="stylesheet" media="all" href="css/lib/mocha-v3.2.0.css">
+</head>
+<body>
+    <div id="mocha"><p><a href=".">Index</a></p></div>
+    <div id="messages"></div>
+    <div id="fixtures"></div>
+
+    <script src="js/lib/mocha-v3.2.0.js"></script>
+    <script src="js/lib/chai-v3.5.0.js"></script>
+
+    <script type="text/javascript" src="../js/CartesianPoint.js"></script>
+    <script type="text/javascript" src="../js/CartesianLine.js"></script>
+    <script type="text/javascript" src="../js/CartesianLines.js"></script>
+    <script type="text/javascript" src="../js/PolarPoint.js"></script>
+
+    <script>
+        mocha.setup('bdd');
+    </script>
+
+    <script src="js/tests.js"></script>
+
+    <script>
+        mocha.run();
+    </script>
+</body>
+</html>
