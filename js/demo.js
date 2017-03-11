@@ -4,9 +4,8 @@ class Demo {
     constructor(canvas) {
         this.canvas = canvas;
         this.lines = new CartesianLines();
-        this.lines.addBox(
-            new CartesianPoint(10, 10),
-            new CartesianPoint(522, 522));
+
+        this.createRoom();
 
         paper.setup(this.canvas);
 
@@ -41,6 +40,30 @@ class Demo {
 
     onMouseDrag(toolEvent) {
         //
+    }
+
+    createRoom() {
+        this.createBoundary();
+    }
+
+    createBoundary() {
+        this.lines.addBox(
+            new CartesianPoint(10, 10),
+            new CartesianPoint(522, 522));
+
+        this.lines.addLine(new CartesianLine(
+            new CartesianPoint(100, 100), new CartesianPoint(100, 450)));
+
+        this.lines.addLine(new CartesianLine(
+            new CartesianPoint(450, 100), new CartesianPoint(200, 100)));
+        this.lines.addLine(new CartesianLine(
+            new CartesianPoint(200, 100), new CartesianPoint(200, 350)));
+
+        this.lines.addLine(new CartesianLine(
+            new CartesianPoint(425, 125), new CartesianPoint(225, 325)));
+
+        this.lines.addLine(new CartesianLine(
+            new CartesianPoint(350, 250), new CartesianPoint(350, 450)));
     }
 
     paint() {
