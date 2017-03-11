@@ -1,7 +1,8 @@
 "use strict";
 
 class PolarLine {
-    constructor(point1, point2) {
+    constructor(point1, point2, colour=null) {
+        this.colour = colour;
         const deltaAngle = Math.abs(point1.angle - point2.angle);
         if (deltaAngle <= Math.PI) {
             if (point1.angle <= point2.angle) {
@@ -23,9 +24,15 @@ class PolarLine {
     }
 
     static fromCartesianLine(center, cartesianLine) {
+        const hash = hashCode(`
+            ${cartesianLine.start.x},${cartesianLine.start.y},
+            ${cartesianLine.end.x},${cartesianLine.end.y}
+        `);
+        const colour = (Math.abs(hash) & 0xFFFFFF).toString(16);
         return new PolarLine(
             PolarPoint.fromCartesianPoint(cartesianLine.start.minus(center)),
-            PolarPoint.fromCartesianPoint(cartesianLine.end.minus(center))
+            PolarPoint.fromCartesianPoint(cartesianLine.end.minus(center)),
+            colour
         );
     }
 
@@ -39,6 +46,10 @@ class PolarLine {
         path.lineTo(start);
         path.lineTo(end);
         path.lineTo(center);
+
+        if (this.colour) {
+            path.fillColor = `#${this.colour}`;
+        }
 
         return path;
     }

@@ -19,6 +19,9 @@ class PolarLines {
         if (!compoundPath) {
             compoundPath = new paper.CompoundPath();
         } else {
+            for (const child of compoundPath.children) {
+                child.remove();
+            }
             compoundPath.children = [];
         }
         const paths = lines.map(line => line.toPath(center));
