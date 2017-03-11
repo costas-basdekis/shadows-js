@@ -21,4 +21,25 @@ class PolarLine {
             }
         }
     }
+
+    static fromCartesianLine(center, cartesianLine) {
+        return new PolarLine(
+            PolarPoint.fromCartesianPoint(cartesianLine.start.minus(center)),
+            PolarPoint.fromCartesianPoint(cartesianLine.end.minus(center))
+        );
+    }
+
+    toPath(center) {
+        const path = new paper.Path();
+
+        const start = this.start.toPath(center);
+        const end = this.end.toPath(center);
+
+        path.moveTo(center);
+        path.lineTo(start);
+        path.lineTo(end);
+        path.lineTo(center);
+
+        return path;
+    }
 }

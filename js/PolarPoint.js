@@ -14,4 +14,14 @@ class PolarPoint {
     static fromCartesianPoint(point) {
         return new this(point.angle(), point.length());
     }
+
+    toCartesianPoint() {
+        return new CartesianPoint(
+            Math.cos(this.angle) * this.length,
+            Math.sin(this.angle) * this.length);
+    }
+
+    toPath(center) {
+        return this.toCartesianPoint().plus(center).toPaper();
+    }
 }

@@ -3,68 +3,85 @@
 class Demo {
     constructor(canvas) {
         this.canvas = canvas;
-
         paper.setup(this.canvas);
 
-        this.createRoom();
+        this.rays = new PolarLines();
+        this.walls = new CartesianLines();
 
-        this.centerTool = this.createCenterTool();
+        this.center = {x: 50, y: 50};
+
+        this.createRoom();
+        this.updateRays();
+        this.centerTool = this.createCenterTool(this.center);
+
         this.paint();
     }
 
-    createCenterTool() {
+    createCenterTool(center) {
         const tool = new paper.Tool();
 
         tool.init = Demo.initCenterTool;
         tool.onMouseDown = tool.onMouseDrag = Demo.onMouseDragCenterTool;
         tool.demo = this;
-        tool.init();
+        tool.init(center);
 
         return tool;
     }
 
-    static initCenterTool() {
-        this.centerPath = new paper.Path.Circle({x: 50, y: 50}, 15);
+    static initCenterTool(center) {
+        this.centerPath = new paper.Path.Circle(center, 15);
         this.centerPath.strokeColor = 'red';
         this.centerPath.fillColor = 'yellow';
     }
 
     static onMouseDragCenterTool(toolEvent) {
-        this.centerPath.position = {
+        const center = {
             x: toolEvent.event.layerX,
             y: toolEvent.event.layerY,
         };
+        this.centerPath.position = center;
         this.demo.onMouseDrag(toolEvent);
     }
 
     onMouseDrag(toolEvent) {
-        //
+        this.center = {
+            x: toolEvent.event.layerX,
+            y: toolEvent.event.layerY,
+        };
+        this.updateRays();
+    }
+
+    updateRays() {
+        this.rays.fromCartesianLines(this.center, this.walls);
+        this.rays.updatePath(this.center);
+        this.rays.path.strokeColor = 'yellow';
+        this.rays.path.fillColor = 'red';
     }
 
     createRoom() {
-        this.lines = new CartesianLines();
+        this.walls.clear();
         this.createBoundary();
-        this.lines.updatePath();
-        this.lines.path.strokeColor = 'blue';
+        this.walls.updatePath();
+        this.walls.path.strokeColor = 'blue';
     }
 
     createBoundary() {
-        this.lines.addBox(
+        this.walls.addBox(
             new CartesianPoint(10, 10),
             new CartesianPoint(522, 522));
 
-        this.lines.addLine(new CartesianLine(
+        this.walls.addLine(new CartesianLine(
             new CartesianPoint(100, 100), new CartesianPoint(100, 450)));
 
-        this.lines.addLine(new CartesianLine(
+        this.walls.addLine(new CartesianLine(
             new CartesianPoint(450, 100), new CartesianPoint(200, 100)));
-        this.lines.addLine(new CartesianLine(
+        this.walls.addLine(new CartesianLine(
             new CartesianPoint(200, 100), new CartesianPoint(200, 350)));
 
-        this.lines.addLine(new CartesianLine(
+        this.walls.addLine(new CartesianLine(
             new CartesianPoint(425, 125), new CartesianPoint(225, 325)));
 
-        this.lines.addLine(new CartesianLine(
+        this.walls.addLine(new CartesianLine(
             new CartesianPoint(350, 250), new CartesianPoint(350, 450)));
     }
 
