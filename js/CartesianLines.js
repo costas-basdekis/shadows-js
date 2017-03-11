@@ -7,21 +7,15 @@ class CartesianLines {
         this.path = null;
     }
 
-    paint() {
+    updatePath() {
         if (this.path) {
             this.path.remove();
         }
 
-        this.path = new paper.CompoundPath();
-        this.path.strokeColor = 'blue';
-
-        const linesPaths = CartesianLines.linesToPaths(this.lines);
-        this.path.children.push(...linesPaths);
-
-        paper.view.draw();
+        this.path = CartesianLines.linesToPath(this.lines);
     }
 
-    static linesToPaths(lines) {
+    static linesToPath(lines) {
         const paths = [];
 
         for (const line of lines) {
@@ -47,7 +41,10 @@ class CartesianLines {
             }
         }
 
-        return paperPaths;
+        const compoundPath = new paper.CompoundPath();
+        compoundPath.children.push(...paperPaths);
+
+        return compoundPath;
     }
 
     addLine(line) {
