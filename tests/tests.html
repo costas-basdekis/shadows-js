@@ -12,7 +12,9 @@
 
     <script src="js/lib/mocha-v3.2.0.js"></script>
     <script src="js/lib/chai-v3.5.0.js"></script>
+    <script src="js/lib/chai-shallow-deep-almost-equal-v1.3.0.js"></script>
 
+    <script type="text/javascript" src="../js/utils.js"></script>
     <script type="text/javascript" src="../js/CartesianPoint.js"></script>
     <script type="text/javascript" src="../js/CartesianLine.js"></script>
     <script type="text/javascript" src="../js/CartesianLines.js"></script>
@@ -20,9 +22,13 @@
 
     <script>
         mocha.setup('bdd');
+        const expect = chai.expect;
     </script>
 
-    <script src="js/tests.js"></script>
+    <script src="js/CartesianPoint.js"></script>
+    <script src="js/CartesianLine.js"></script>
+    <script src="js/PolarPoint.js"></script>
+    <script src="js/utils.js"></script>
 
     <script>
         mocha.run();
