@@ -62,7 +62,7 @@ class CartesianLines {
     addLines(lines) {
         this.lines.push(...lines);
 
-        return lines;
+        return this;
     }
 
     static box(first, third) {

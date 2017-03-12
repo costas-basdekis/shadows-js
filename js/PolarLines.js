@@ -13,6 +13,8 @@ class PolarLines {
     fromCartesianLines(center, cartesianLines) {
         this.lines = cartesianLines.lines.map(
             line => PolarLine.fromCartesianLine(center, line));
+
+        return this;
     }
 
     static toPath(lines, center, compoundPath=null) {
