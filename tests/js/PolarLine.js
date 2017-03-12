@@ -64,34 +64,48 @@ describe("PolarLine", function () {
     describe("On [PI, -PI : -PI / 12] - PI / 1.9", function () {
         const width = -Math.PI / 1.9;
         const startLength = 5, endLength = 6;
-        const startAngles = range(Math.PI, -Math.PI / 2, -Math.PI / 12);
+        const startAngles = range(Math.PI, -Math.PI, -Math.PI / 12);
         const anglesAndLines = makeAnglesAndLines(startAngles, width, startLength, endLength);
 
-        describe("#unnormalisedStartAngle", function () {
+        describe("#denormalisedStartAngle", function () {
             it("Should normalise to angle", function () {
                 for (const [angles, line] of anglesAndLines) {
                     const backAndForth =
-                        PolarPoint.normaliseAngle(line.unnormalisedStartAnlge());
+                        PolarPoint.normaliseAngle(line.denormalisedStartAngle());
                     expect(backAndForth).to.shallowDeepAlmostEqual(line.start.angle);
                 }
             });
-        });
 
-        describe("#unnormalisedEndAngle", function () {
-            it("Should normalise to angle", function () {
+            it("Should be less than end angle", function () {
                 for (const [angles, line] of anglesAndLines) {
-                    const backAndForth =
-                        PolarPoint.normaliseAngle(line.unnormalisedEndAnlge());
-                    expect(backAndForth).to.shallowDeepAlmostEqual(line.end.angle);
+                    const denormalised = line.denormalisedStartAngle();
+                    expect(denormalised).to.be.at.most(line.end.angle);
                 }
             });
         });
 
-        describe("#unnormalisedStartAngle/#unnormalisedEndAngle", function () {
+        describe("#denormalisedEndAngle", function () {
+            it("Should normalise to angle", function () {
+                for (const [angles, line] of anglesAndLines) {
+                    const backAndForth =
+                        PolarPoint.normaliseAngle(line.denormalisedEndAngle());
+                    expect(backAndForth).to.shallowDeepAlmostEqual(line.end.angle);
+                }
+            });
+
+            it("Should be more than start angle", function () {
+                for (const [angles, line] of anglesAndLines) {
+                    const denormalised = line.denormalisedEndAngle();
+                    expect(denormalised).to.be.at.least(line.start.angle);
+                }
+            });
+        });
+
+        describe("#denormalisedStartAngle/#denormalisedEndAngle", function () {
             it("Should be less than", function () {
                 for (const [angles, line] of anglesAndLines) {
-                    const startAngle = line.unnormalisedStartAnlge();
-                    const endAngle = line.unnormalisedEndAnlge();
+                    const startAngle = line.denormalisedStartAngle();
+                    const endAngle = line.denormalisedEndAngle();
                     expect(startAngle).to.be.at.most(endAngle);
                 }
             });

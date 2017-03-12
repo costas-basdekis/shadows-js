@@ -53,7 +53,7 @@ class PolarLine {
         );
     }
 
-    unnormalisedStartAnlge() {
+    denormalisedStartAngle() {
         if (this.goesOverPI) {
             return this.start.angle - 2 * Math.PI;
         } else {
@@ -61,9 +61,9 @@ class PolarLine {
         }
     }
 
-    unnormalisedEndAnlge() {
+    denormalisedEndAngle() {
         if (this.goesOverPI) {
-            return this.end.angle - 2 * Math.PI;
+            return this.end.angle + 2 * Math.PI;
         } else {
             return this.end.angle;
         }
