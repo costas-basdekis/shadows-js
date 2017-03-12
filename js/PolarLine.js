@@ -155,6 +155,10 @@ class PolarLine {
         return coefs[x1][y1] * coefs[x2][y2] - coefs[x1][y2] * coefs[x2][y1];
     }
 
+    deltaAngle() {
+        return this.denormalisedEndAngle() - this.start.angle;
+    }
+
     toPath(center) {
         const path = new paper.Path();
 

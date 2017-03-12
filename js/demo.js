@@ -53,6 +53,8 @@ class Demo {
 
     updateRays() {
         this.rays.fromCartesianLines(this.center, this.walls);
+        this.rays.simplify();
+
         this.rays.updatePath(this.center);
         this.rays.path.strokeColor = 'yellow';
         this.rays.path.fillColor = 'red';

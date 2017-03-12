@@ -110,6 +110,46 @@ describe("PolarLine", function () {
                 }
             });
         });
+
+        describe("#deltaAngle", function () {
+            it("Should be positive", function () {
+                for (const [angles, line] of anglesAndLines) {
+                    expect(line.deltaAngle()).to.be.at.least(0);
+                }
+            });
+
+            it("Should be the same as the difference", function () {
+                for (const [angles, line] of anglesAndLines) {
+                    if (line.goesOverPI) {
+                        const expected = (Math.PI - line.start.angle) + (line.end.angle - (-Math.PI));
+                        expect(line.deltaAngle()).to.equal(expected);
+                    } else {
+                        const expected = line.end.angle - line.start.angle;
+                        expect(line.deltaAngle()).to.equal(expected);
+                    }
+                }
+            });
+
+            it("Should move start angle to end angle", function () {
+                for (const [angles, line] of anglesAndLines) {
+                    if (line.goesOverPI) {
+                        expect(line.start.angle + line.deltaAngle()).to.equal(line.denormalisedEndAngle());
+                    } else {
+                        expect(line.start.angle + line.deltaAngle()).to.equal(line.end.angle);
+                    }
+                }
+            });
+
+            it("Should move end angle to start angle", function () {
+                for (const [angles, line] of anglesAndLines) {
+                    if (line.goesOverPI) {
+                        expect(line.end.angle - line.deltaAngle()).to.equal(line.denormalisedStartAngle());
+                    } else {
+                        expect(line.end.angle - line.deltaAngle()).to.equal(line.start.angle);
+                    }
+                }
+            });
+        });
     });
 
     describe("On [-PI, PI : PI / 6.5] + PI / 6", function () {

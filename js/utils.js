@@ -88,6 +88,14 @@ function compareTuples(lhs, rhs) {
     }
 }
 
+function sortCompareFunc(lhs, rhs) {
+    return lhs.sortCompare(rhs);
+}
+
+function sortWithCompareFunc(array) {
+    return array.sort(sortCompareFunc);
+}
+
 function unique(array) {
     return array
         .filter((item, index) => (index === 0) || item !== array[index - 1]);
