@@ -2,7 +2,7 @@
 
 function range(min, max, step=1) {
     const size = max - min;
-    const stepsCount = Math.floor(size / step);
+    const stepsCount = Math.ceil(size / step);
     if (stepsCount <= 0) {
         return [];
     }

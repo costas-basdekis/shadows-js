@@ -1,6 +1,6 @@
 "use strict";
 
-describe("utils", function () {
+describe("range", function () {
     it("Should create range 1..10", function () {
         const _range = range(1, 10);
 
@@ -42,6 +42,13 @@ describe("utils", function () {
 
         expect(_range).to.deep.equal([10, 9, 8, 7, 6, 5, 4, 3, 2]);
     });
+
+    it("Should create range -50..850:200", function () {
+        const _range = range(-50, 650, 200);
+
+        expect(_range).to.deep.equal([-50, 150, 350, 550]);
+    });
+});
 });
 
 describe("compareTuples", function () {

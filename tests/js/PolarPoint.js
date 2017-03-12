@@ -9,14 +9,18 @@ describe("PolarPoint", function () {
     });
 
     describe("Angle", function () {
-        it("Angle is almost the same as taken from cos/sin", function () {
-            const step = Math.PI / 6;
-            const length = 5;
+        const step = Math.PI / 6;
+        const length = 5;
 
-            const zeroAngles = range(-Math.PI, Math.PI, step);
-            const halfStepAngles = range(-Math.PI + step / 2, Math.PI, step);
-            const angles = zeroAngles.concat(halfStepAngles);
-            expect(angles.length).to.equal(12 + 11);
+        const zeroAngles = range(-Math.PI, Math.PI, step);
+        const halfStepAngles = range(-Math.PI + step / 2, Math.PI, step);
+        const angles = zeroAngles.concat(halfStepAngles);
+
+        it("Has 24 angles to test with", function () {
+            expect(angles.length).to.equal(12 + 12);
+        });
+
+        it("Angle is almost the same as taken from cos/sin", function () {
             for(const angle of angles) {
                 const cartesianPoint = new CartesianPoint(
                     Math.cos(angle) * length, Math.sin(angle) * length);
@@ -50,14 +54,18 @@ describe("PolarPoint", function () {
     });
 
     describe("Length", function () {
-        it("Length is almost the same as taken from cos/sin", function () {
-            const step = Math.PI / 6;
-            const length = 5;
+        const step = Math.PI / 6;
+        const length = 5;
 
-            const zeroAngles = range(-Math.PI, Math.PI, step);
-            const halfStepAngles = range(-Math.PI + step / 2, Math.PI, step);
-            const angles = zeroAngles.concat(halfStepAngles);
-            expect(angles.length).to.equal(12 + 11);
+        const zeroAngles = range(-Math.PI, Math.PI, step);
+        const halfStepAngles = range(-Math.PI + step / 2, Math.PI, step);
+        const angles = zeroAngles.concat(halfStepAngles);
+
+        it("Has 24 angles to test with", function () {
+            expect(angles.length).to.equal(12 + 12);
+        });
+
+        it("Length is almost the same as taken from cos/sin", function () {
             for(const angle of angles) {
                 const cartesianPoint = new CartesianPoint(
                     Math.cos(angle) * length, Math.sin(angle) * length);
