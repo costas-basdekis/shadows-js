@@ -90,27 +90,12 @@ class PolarLines {
     }
 
     static removeHiddenLines(lines) {
-        const keys = {};
-
-        for (const line of lines) {
-            const key = `${line.start.angle},${line.end.angle}`;
-            if (!(key in keys)) {
-                keys[key] = [];
-            }
-            keys[key].push(line);
-        }
-
-        const nonOverlapping = [];
-        for (const key in keys) {
-            const overlapping = keys[key];
-            if (overlapping.length === 1) {
-                nonOverlapping.push(overlapping[0]);
-                continue;
-            }
-
-            const sorted = sortWithCompareFunc(overlapping);
-            nonOverlapping.push(sorted[0]);
-        }
+        const byKey = groupBy(lines,
+            line => `${line.start.angle},${line.end.angle}`);
+        const groups = Object.keys(byKey).map(key => byKey[key]);
+        const nonOverlapping = groups
+            .map(sortWithCompareFunc)
+            .map(group => group[0]);
 
         return nonOverlapping;
     }

@@ -100,3 +100,17 @@ function unique(array) {
     return array
         .filter((item, index) => (index === 0) || item !== array[index - 1]);
 }
+
+function groupBy(array, keyFunc=x => x) {
+    const byKey = {};
+
+    for (const item of array) {
+        const key = keyFunc(item);
+        if (!(key in byKey)) {
+            byKey[key] = [];
+        }
+        byKey[key].push(item);
+    }
+
+    return byKey;
+}
