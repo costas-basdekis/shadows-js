@@ -17,6 +17,20 @@ class PolarPoint {
         return angle
     }
 
+    toString() {
+        return `{P:${this.angle}@${this.length}}`;
+    }
+
+    sortKey() {
+        return [
+            this.angle, this.length
+        ];
+    }
+
+    sortCompare(rhs) {
+        return compareTuples(this.sortKey(), rhs.sortKey());
+    }
+
     static fromCartesianPoints(center, point) {
         const delta = point.minus(center);
         return this.fromCartesianPoint(delta);

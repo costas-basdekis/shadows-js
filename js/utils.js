@@ -39,3 +39,23 @@ function zip(...arrays) {
 
     return aMinLengthArray.map((_, index) => arrays.map(array => array[index]));
 }
+
+function compareTuples(lhs, rhs) {
+    const pairs = zip(lhs, rhs);
+
+    for (const [lItem, rItem] of pairs) {
+        if (lItem < rItem) {
+            return -1;
+        } else if (lItem > rItem) {
+            return 1;
+        }
+    }
+
+    if (lhs.length < rhs.length) {
+        return -1;
+    } else if (lhs.length > rhs.length) {
+        return 1;
+    }
+
+    return 0;
+}

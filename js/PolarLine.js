@@ -23,6 +23,21 @@ class PolarLine {
         }
     }
 
+    toString() {
+        return `[${this.start} - ${this.end}]`;
+    }
+
+    sortKey() {
+        return [
+            this.start.angle, this.end.angle,
+            this.start.length, this.end.length
+        ];
+    }
+
+    sortCompare(rhs) {
+        return compareTuples(this.sortKey(), rhs.sortKey());
+    }
+
     static fromCartesianLine(center, cartesianLine) {
         const hash = hashCode(`
             ${cartesianLine.start.x},${cartesianLine.start.y},

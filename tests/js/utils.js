@@ -44,6 +44,57 @@ describe("utils", function () {
     });
 });
 
+describe("compareTuples", function () {
+    it("Should know that [] == []", function () {
+        const lhs = [], rhs = [];
+        const result = 0;
+        expect(compareTuples(lhs, rhs)).to.equal(result);
+        expect(compareTuples(rhs, lhs)).to.equal(-result);
+    });
+
+    it("Should know that [] < [1]", function () {
+        const lhs = [], rhs = [1];
+        const result = -1;
+        expect(compareTuples(lhs, rhs)).to.equal(result);
+        expect(compareTuples(rhs, lhs)).to.equal(-result);
+    });
+
+    it("Should know that [1] == [1]", function () {
+        const lhs = [1], rhs = [1];
+        const result = 0;
+        expect(compareTuples(lhs, rhs)).to.equal(result);
+        expect(compareTuples(rhs, lhs)).to.equal(-result);
+    });
+
+    it("Should know that [1, 2] < [1, 3]", function () {
+        const lhs = [1, 2], rhs = [1, 3];
+        const result = -1;
+        expect(compareTuples(lhs, rhs)).to.equal(result);
+        expect(compareTuples(rhs, lhs)).to.equal(-result);
+    });
+
+    it("Should know that [1, 2, 3, 4, 5] == [1, 2, 3, 4, 5]", function () {
+        const lhs = [1, 2, 3, 4, 5], rhs = [1, 2, 3, 4, 5];
+        const result = 0;
+        expect(compareTuples(lhs, rhs)).to.equal(result);
+        expect(compareTuples(rhs, lhs)).to.equal(-result);
+    });
+
+    it("Should know that [1, 2, 3, 4, 5] < [1, 2, 3, 4, 6]", function () {
+        const lhs = [1, 2, 3, 4, 5], rhs = [1, 2, 3, 4, 6];
+        const result = -1;
+        expect(compareTuples(lhs, rhs)).to.equal(result);
+        expect(compareTuples(rhs, lhs)).to.equal(-result);
+    });
+
+    it("Should know that [1, 2, 3, 4, 5] < [1, 2, 3, 4, 5, 6]", function () {
+        const lhs = [1, 2, 3, 4, 5], rhs = [1, 2, 3, 4, 5, 6];
+        const result = -1;
+        expect(compareTuples(lhs, rhs)).to.equal(result);
+        expect(compareTuples(rhs, lhs)).to.equal(-result);
+    });
+});
+
 describe("zip", function () {
     it("Should return empty with no arrays", function () {
         expect(zip()).to.deep.equal([]);
