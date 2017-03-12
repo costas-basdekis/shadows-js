@@ -57,6 +57,10 @@ class Rooms {
             ),
             CartesianLines.linear(
                 [300, 350],
+                [375, 425]
+            ),
+            CartesianLines.linear(
+                [375, 425],
                 [450, 500]
             ),
             CartesianLines.linear(

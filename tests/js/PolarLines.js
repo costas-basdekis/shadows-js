@@ -17,9 +17,32 @@ describe("PolarLines", function () {
         .map(room => room.create());
     const cartesianRoomsLines = cartesianRooms.map(lines => new CartesianLines().addLines(lines));
     const centersAndRooms = cartesian(centers, cartesianRoomsLines).concat([
+        // Because the two lines intersect on a point, on some angles, the
+        // longer triangle is slightly smaller on the common point:
+        // [
+        //     "[{P:2.115253490184268@127.42448744256343} - {P:2.2420264583991414@124.55454851411712}]",
+        //     // This wins --------------------------vv, this is ignored --------v
+        //     "[{P:2.115253490184268@127.4244874425634} -  {P:2.2420264583991414@266.9026039588224}]"
+        // ]
         [{x: 441, y: 316}, new CartesianLines().addLines([].concat(
             CartesianLines.linear(
                 [300, 350],
+                [450, 500]
+            ),
+            CartesianLines.linear(
+                [375, 425],
+                [275, 525]
+            )
+        ))],
+        // The solution is to not have lines intersect
+        [{x: 441, y: 316}, new CartesianLines().addLines([].concat(
+            // So break the line at the intersection point
+            CartesianLines.linear(
+                [300, 350],
+                [375, 425]
+            ),
+            CartesianLines.linear(
+                [375, 425],
                 [450, 500]
             ),
             CartesianLines.linear(
