@@ -5,6 +5,7 @@ class PolarLine {
         this.colour = colour;
         const deltaAngle = Math.abs(point1.angle - point2.angle);
         if (deltaAngle <= Math.PI) {
+            this.goesOverPI = false;
             if (point1.angle <= point2.angle) {
                 this.start = point1;
                 this.end = point2;
@@ -13,6 +14,7 @@ class PolarLine {
                 this.end = point1;
             }
         } else {
+            this.goesOverPI = true;
             if (point1.angle <= point2.angle) {
                 this.start = point2;
                 this.end = point1;
@@ -51,6 +53,39 @@ class PolarLine {
         );
     }
 
+    unnormalisedStartAnlge() {
+        if (this.goesOverPI) {
+            return this.start.angle - 2 * Math.PI;
+        } else {
+            return this.start.angle;
+        }
+    }
+
+    unnormalisedEndAnlge() {
+        if (this.goesOverPI) {
+            return this.end.angle - 2 * Math.PI;
+        } else {
+            return this.end.angle;
+        }
+    }
+
+    containsAngle(angle) {
+        angle = PolarPoint.normaliseAngle(angle);
+        if (this.goesOverPI) {
+            return this.start.angle <= angle !== angle <= this.end.angle;
+        } else {
+            return this.start.angle <= angle && angle <= this.end.angle;
+        }
+    }
+
+    strictlyContainsAngle(angle) {
+        angle = PolarPoint.normaliseAngle(angle);
+        if (this.goesOverPI) {
+            return this.start.angle < angle !== angle < this.end.angle;
+        } else {
+            return this.start.angle < angle && angle < this.end.angle;
+        }
+    }
     toPath(center) {
         const path = new paper.Path();
 
