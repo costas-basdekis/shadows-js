@@ -186,6 +186,23 @@ describe("PolarLine", function () {
                     expect(lineAtan2).to.shallowDeepAlmostEqual(middleToEndAtan2);
                 }
             });
+
+            it("Should throw if line has no range", function () {
+                const line = new PolarLine(
+                    new PolarPoint(1, 5),
+                    new PolarPoint(1, 6)
+                );
+                expect(() => line.lengthAtAngle(1)).to.throw(Error);
+            });
+
+            it("Should throw if angle is out of range", function () {
+                const line = new PolarLine(
+                    new PolarPoint(1, 5),
+                    new PolarPoint(2, 6)
+                );
+                expect(() => line.lengthAtAngle(0)).to.throw(Error);
+                expect(() => line.lengthAtAngle(3)).to.throw(Error);
+            });
         });
     });
 });

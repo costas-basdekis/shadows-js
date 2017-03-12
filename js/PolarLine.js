@@ -97,6 +97,10 @@ class PolarLine {
     lengthAtAngle(angle) {
         angle = PolarPoint.normaliseAngle(angle);
 
+        if (this.start.angle === this.end.angle) {
+            throw new Error("Line has no range");
+        }
+
         if (angle === this.start.angle) {
             return this.start.length;
         } else if (angle === this.end.angle) {
