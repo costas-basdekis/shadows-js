@@ -20,14 +20,22 @@
     <script type="text/javascript" src="js/demo.js"></script>
 </head>
 <body>
-    <a href="tests/tests.html">Tests page</a>
+    <div>
+        <a href="tests/tests.html">Tests page</a>
+        <label>
+            Room
+            <select id="rooms"></select>
+        </label>
+    </div>
 
     <canvas id="myCanvas" resize width="1024" height="1024"></canvas>
 
     <script type="text/javascript">
         "use strict";
 
-        const demo = new Demo(document.getElementById("myCanvas"));
+        const demo = new Demo(
+            document.getElementById("myCanvas"),
+            document.getElementById("rooms"));
     </script>
 </body>
 </html>

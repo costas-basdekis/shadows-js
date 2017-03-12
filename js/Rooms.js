@@ -1,6 +1,15 @@
 "use strict";
 
 class Rooms {
+    static populateComboBox(element) {
+        for (const room of this.rooms) {
+            const optionHTML = `<option value="${room.name}">${room.label}</option>`;
+            const optionElement = document.createElement('option');
+            element.appendChild(optionElement);
+            optionElement.outerHTML = optionHTML;
+        }
+    }
+
     static createBoundary() {
         return CartesianLines.box(
             new CartesianPoint(10, 10),
@@ -100,4 +109,37 @@ class Rooms {
                         : CartesianLines.star(center, 15, 25, count % 4 + 8))
         );
     }
+}
+
+Rooms.rooms = [
+    {
+        create: Rooms.createMaze.bind(Rooms),
+        name: "createMaze",
+        label: "Maze",
+    },
+    {
+        create: Rooms.createMaze2.bind(Rooms),
+        name: "createMaze2",
+        label: "Maze 2",
+    },
+    {
+        create: Rooms.createShapes.bind(Rooms),
+        name: "createShapes",
+        label: "Polygons and Stars",
+    },
+    {
+        create: Rooms.createShapes2.bind(Rooms),
+        name: "createShapes2",
+        label: "More Polygons and Stars",
+    },
+    {
+        create: Rooms.createShapes3.bind(Rooms),
+        name: "createShapes3",
+        label: "Even More Polygons and Stars",
+    },
+];
+
+Rooms.roomsByName = {};
+for (const room of Rooms.rooms) {
+    Rooms.roomsByName[room.name] = room;
 }

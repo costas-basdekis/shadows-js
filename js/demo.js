@@ -1,7 +1,7 @@
 "use strict";
 
 class Demo {
-    constructor(canvas) {
+    constructor(canvas, roomsElement) {
         this.canvas = canvas;
         paper.setup(this.canvas);
 
@@ -10,11 +10,21 @@ class Demo {
 
         this.center = {x: 50, y: 50};
 
-        this.createRoom();
+        this.createRoom(Rooms.roomsByName['createMaze']);
         this.updateRays();
         this.centerTool = this.createCenterTool(this.center);
 
         this.paint();
+
+        Rooms.populateComboBox(roomsElement);
+        roomsElement.onchange = this.roomsOnChange.bind(this);
+    }
+
+    roomsOnChange(e) {
+        const selected = e.target;
+        const room = Rooms.roomsByName[selected.value];
+        this.createRoom(room);
+        this.updateRays();
     }
 
     createCenterTool(center) {
@@ -60,15 +70,11 @@ class Demo {
         this.rays.path.fillColor = 'green';
     }
 
-    createRoom() {
+    createRoom(room) {
         this.walls.clear();
-        this.addMaze();
+        this.walls.addLines(room.create());
         this.walls.updatePath();
         this.walls.path.strokeColor = 'blue';
-    }
-
-    addMaze() {
-        this.walls.addLines(Rooms.createMaze());
     }
 
     paint() {
