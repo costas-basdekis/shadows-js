@@ -40,6 +40,29 @@ function zip(...arrays) {
     return aMinLengthArray.map((_, index) => arrays.map(array => array[index]));
 }
 
+function cartesian(...arrays) {
+    if (!arrays.length) {
+        return [];
+    }
+
+    for (const array of arrays) {
+        if (!array.length) {
+            return [];
+        }
+    }
+
+    let result = arrays[0].map(x => [x]);
+    for (const array of arrays.slice(1)) {
+        const newResult = [];
+        for (const items of result) {
+            newResult.push(...array.map(item => items.concat([item])));
+        }
+        result = newResult;
+    }
+
+    return result;
+}
+
 function compare(lhs, rhs) {
     if (lhs < rhs) {
         return -1;

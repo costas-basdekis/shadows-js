@@ -198,3 +198,47 @@ describe("zip", function () {
             [[1, "a", "i"], [2, "b", "ii"], [3, "c", "iii"]]);
     });
 });
+
+describe("cartesian", function () {
+    it("Should return [] for nothing", function () {
+        const toCheck = [];
+        const expected = [];
+        expect(cartesian(...toCheck)).to.deep.equal(expected);
+    });
+
+    it("Should return [] for []", function () {
+        const toCheck = [[]];
+        const expected = [];
+        expect(cartesian(...toCheck)).to.deep.equal(expected);
+    });
+
+    it("Should return [] for []x[]", function () {
+        const toCheck = [[], []];
+        const expected = [];
+        expect(cartesian(...toCheck)).to.deep.equal(expected);
+    });
+
+    it("Should return [] for []x[]x[1, 2, 3]", function () {
+        const toCheck = [[], [], [1, 2, 3]];
+        const expected = [];
+        expect(cartesian(...toCheck)).to.deep.equal(expected);
+    });
+
+    it("Should return [[1], [2], [3]] for [1, 2, 3]", function () {
+        const toCheck = [[1, 2, 3]];
+        const expected = [[1], [2], [3]];
+        expect(cartesian(...toCheck)).to.deep.equal(expected);
+    });
+
+    it("Should return [[1, 'a'], [1, 'b'], [2, 'a'], [2, 'b']] for [1, 2]x['a', 'b']", function () {
+        const toCheck = [[1, 2], ["a", "b"]];
+        const expected = [[1, "a"], [1, "b"], [2, "a"], [2, "b"]];
+        expect(cartesian(...toCheck)).to.deep.equal(expected);
+    });
+
+    it("Should return [[1, 'a', 'i'], [1, 'a', 'ii'], [1, 'b', 'i'], [1, 'b', 'ii'], [2, 'a', 'i'], [2, 'a', 'ii'], [2, 'b', 'i'], [2, 'b', 'ii']] for [1, 2]x['a', 'b']x['i', 'ii']", function () {
+        const toCheck = [[1, 2], ["a", "b"], ["i", "ii"]];
+        const expected = [[1, "a", "i"], [1, "a", "ii"], [1, "b", "i"], [1, "b", "ii"], [2, "a", "i"], [2, "a", "ii"], [2, "b", "i"], [2, "b", "ii"],];
+        expect(cartesian(...toCheck)).to.deep.equal(expected);
+    });
+});
