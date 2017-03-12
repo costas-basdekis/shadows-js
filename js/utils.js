@@ -83,3 +83,8 @@ function compareTuples(lhs, rhs) {
         return compare(lhs.length, rhs.length);
     }
 }
+
+function unique(array) {
+    return array
+        .filter((item, index) => (index === 0) || item !== array[index - 1]);
+}

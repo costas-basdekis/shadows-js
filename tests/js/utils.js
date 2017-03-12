@@ -242,3 +242,48 @@ describe("cartesian", function () {
         expect(cartesian(...toCheck)).to.deep.equal(expected);
     });
 });
+
+describe("unique", function () {
+    it("Should reduce [] to []", function () {
+        const toCheck = [];
+        const expected = [];
+        expect(unique(toCheck)).to.deep.equal(expected);
+    });
+
+    it("Should reduce [1] to [1]", function () {
+        const toCheck = [1];
+        const expected = [1];
+        expect(unique(toCheck)).to.deep.equal(expected);
+    });
+
+    it("Should reduce [1, 2] to [1, 2]", function () {
+        const toCheck = [1, 2];
+        const expected = [1, 2];
+        expect(unique(toCheck)).to.deep.equal(expected);
+    });
+
+    it("Should reduce [1, 1, 2, 2] to [1, 2]", function () {
+        const toCheck = [1, 1, 2, 2];
+        const expected = [1, 2];
+        expect(unique(toCheck)).to.deep.equal(expected);
+    });
+
+    it("Should reduce [1, 2, 1, 2] to [1, 2, 1, 2]", function () {
+        const toCheck = [1, 2, 1, 2];
+        const expected = [1, 2, 1, 2];
+        expect(unique(toCheck)).to.deep.equal(expected);
+    });
+
+    it("Should reduce [1, 1, 2, 2, 1, 1, 2, 2] to [1, 2, 1, 2]", function () {
+        const toCheck = [1, 1, 2, 2, 1, 1, 2, 2];
+        const expected = [1, 2, 1, 2];
+        expect(unique(toCheck)).to.deep.equal(expected);
+    });
+
+    it("Should reduce [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2] to [1, 2, 1, 2]", function () {
+        const toCheck = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2];
+        const expected = [1, 2, 1, 2];
+        expect(unique(toCheck)).to.deep.equal(expected);
+    });
+
+});
