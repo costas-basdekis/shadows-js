@@ -4,7 +4,7 @@ class Rooms {
     static createBoundary() {
         return CartesianLines.box(
             new CartesianPoint(10, 10),
-            new CartesianPoint(522, 522)
+            new CartesianPoint(650, 650)
         );
     }
 
@@ -28,6 +28,76 @@ class Rooms {
                 [350, 250],
                 [350, 450]
             )
+        );
+    }
+
+    static createMaze2() {
+        return [].concat(
+            this.createBoundary(),
+            CartesianLines.linear(
+                [200, 200],
+                [200, 300]
+            ),
+            CartesianLines.linear(
+                [150, 150],
+                [350, 150]
+            ),
+            CartesianLines.linear(
+                [450, 150],
+                [150, 450]
+            ),
+            CartesianLines.linear(
+                [300, 350],
+                [450, 500]
+            ),
+            CartesianLines.linear(
+                [350, 300],
+                [500, 450]
+            ),
+            CartesianLines.linear(
+                [375, 425],
+                [275, 525]
+            )
+        );
+    }
+
+    static createShapes() {
+        return [].concat(
+            this.createBoundary(),
+            CartesianLines.regularPolygon({x: 400, y: 400}, 50, 3),
+            CartesianLines.regularPolygon({x: 200, y: 300}, 50, 6),
+            CartesianLines.regularPolygon({x: 400, y: 200}, 50, 5),
+            CartesianLines.star({x: 200, y: 500}, 35, 65, 7)
+        );
+    }
+
+    static createShapes2() {
+        return [].concat(
+            this.createBoundary(),
+            ...cartesian(range(0, 3), range(0, 3))
+                .map(([i, j]) => [
+                    i * 3 + j,
+                    {x: 10 + 640 / 3 * (j + 0.5), y: 10 + 640 / 3 * (i + 0.5)}
+                ])
+                .map(([count, center]) =>
+                    count % 2 ?
+                        CartesianLines.regularPolygon(center, 25, count % 4 + 8)
+                        : CartesianLines.star(center, 15, 25, count % 4 + 8))
+        );
+    }
+
+    static createShapes3() {
+        return [].concat(
+            this.createBoundary(),
+            ...cartesian(range(0, 6), range(0, 6))
+                .map(([i, j]) => [
+                    i * 3 + j,
+                    {x: 10 + 640 / 6 * (j + 0.5), y: 10 + 640 / 6 * (i + 0.5)}
+                ])
+                .map(([count, center]) =>
+                    count % 2 ?
+                        CartesianLines.regularPolygon(center, 25, count % 4 + 8)
+                        : CartesianLines.star(center, 15, 25, count % 4 + 8))
         );
     }
 }

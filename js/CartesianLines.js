@@ -97,4 +97,37 @@ class CartesianLines {
         const lines = CartesianLines.linear(...pairs);
         return this.addLines(lines);
     }
+
+    static regularPolygon(center, radius, count) {
+        const angles = range(0, count + 1)
+            .map(i => i * Math.PI * 2 / count);
+        const points = angles.map(angle => [
+            Math.cos(angle) * radius + center.x,
+            Math.sin(angle) * radius + center.y
+        ]);
+        return this.linear(...points);
+    }
+
+    addRegularPolygon(center, radius, count) {
+        const lines = CartesianLines.regularPolygon(center, radius, count);
+        return this.addLines(lines);
+    }
+
+    static star(center, smallRadius, bigRadius, count) {
+        const angles = range(0, (count + 1) * 2)
+            .map(i => i * Math.PI * 2 / (count * 2));
+        const radiuses = range(0, (count + 1) * 2)
+            .map(i => (i % 2) ? smallRadius : bigRadius);
+        const points = zip(angles, radiuses)
+            .map(([angle, radius]) => [
+                Math.cos(angle) * radius + center.x,
+                Math.sin(angle) * radius + center.y
+            ]);
+        return this.linear(...points);
+    }
+
+    addStar(center, smallRadius, bigRadius, count) {
+        const lines = CartesianLines.star(center, smallRadius, bigRadius, count);
+        return this.addLines(...lines);
+    }
 }
