@@ -339,3 +339,36 @@ describe("unique", function () {
     });
 
 });
+
+describe("groupBy", function () {
+    it("Should group [] to {}", function () {
+        const toCheck = [];
+        const expected = {};
+        expect(groupBy(toCheck)).to.deep.equal(expected);
+    });
+
+    it("Should group [1] to {'1': [1]}", function () {
+        const toCheck = [1];
+        const expected = {"1": [1]};
+        expect(groupBy(toCheck)).to.deep.equal(expected);
+    });
+
+    it("Should group [1, 1, 1] to {'1': [1, 1, 1]}", function () {
+        const toCheck = [1, 1, 1];
+        const expected = {"1": [1, 1, 1]};
+        expect(groupBy(toCheck)).to.deep.equal(expected);
+    });
+
+    it("Should group [1, 2, 1, 2, 1] to {'1': [1, 1, 1], '2': [2, 2]}", function () {
+        const toCheck = [1, 2, 1, 2, 1];
+        const expected = {"1": [1, 1, 1], "2": [2, 2]};
+        expect(groupBy(toCheck)).to.deep.equal(expected);
+    });
+
+    it("Should group ['a', 'b', 'ab', 'bc', 'def', 'efg'] by length to {'1': ['a', 'b'], '2': ['ab', 'bc'], '3': ['def', 'efg']}", function () {
+        const toCheck = ["a", "b", "ab", "bc", "def", "efg"];
+        const expected = {"1": ["a", "b"], "2": ["ab", "bc"], "3": ["def", "efg"]};
+        const keyFunc = x => x.length;
+        expect(groupBy(toCheck, keyFunc)).to.deep.equal(expected);
+    });
+});

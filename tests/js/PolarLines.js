@@ -188,4 +188,74 @@ describe("PolarLines", function () {
             }
         });
     });
+
+    describe("removeHiddenLines", function () {
+        it("Hidden lines should be a subset of all lines", function () {
+            for (const center of centers) {
+                const mazeRoom = new PolarLines()
+                    .fromCartesianLines(center, mazeRoomCartesianLines);
+                const angles = PolarLines.linesAngles(mazeRoom.lines);
+                const anglesInLines =
+                    PolarLines.anglesInLines(mazeRoom.lines, angles);
+                const splitLines = PolarLines.splitLines(mazeRoom.lines, anglesInLines);
+                const visibleLines = PolarLines.removeHiddenLines(splitLines);
+                const hiddenLines = splitLines
+                    .filter(line => visibleLines.indexOf(line) === -1);
+                expect(hiddenLines.length).to.be.at.least(1);
+                expect(visibleLines.length).to.be.at.least(1);
+                for (const line of splitLines) {
+                    expect((hiddenLines.indexOf(line) !== -1)
+                        !== (visibleLines.indexOf(line) !== -1));
+                }
+            }
+        });
+
+        it("Hidden lines should have a line with higher start/end length", function () {
+            for (const center of centers) {
+                const mazeRoom = new PolarLines()
+                    .fromCartesianLines(center, mazeRoomCartesianLines);
+                const angles = PolarLines.linesAngles(mazeRoom.lines);
+                const anglesInLines =
+                    PolarLines.anglesInLines(mazeRoom.lines, angles);
+                const splitLines = PolarLines.splitLines(mazeRoom.lines, anglesInLines);
+                const visibleLines = PolarLines.removeHiddenLines(splitLines);
+                const hiddenLines = splitLines
+                    .filter(line => visibleLines.indexOf(line) === -1);
+                expect(hiddenLines.length).to.be.at.least(1);
+                expect(visibleLines.length).to.be.at.least(1);
+                for (const hiddenLine of hiddenLines) {
+                    for (const visibleLine of visibleLines) {
+                        if (hiddenLine.start.angle !== visibleLine.start.angle
+                                || hiddenLine.end.angle !== visibleLine.end.angle) {
+                            continue;
+                        }
+                        expect(hiddenLine.start.length).to.be.at.least(visibleLine.start.length);
+                        expect(hiddenLine.end.length).to.be.at.least(visibleLine.end.length);
+                    }
+                }
+            }
+        });
+
+        it("Visible lines shouldn't have a line with higher start/end length", function () {
+            for (const center of centers) {
+                const mazeRoom = new PolarLines()
+                    .fromCartesianLines(center, mazeRoomCartesianLines);
+                const angles = PolarLines.linesAngles(mazeRoom.lines);
+                const anglesInLines =
+                    PolarLines.anglesInLines(mazeRoom.lines, angles);
+                const splitLines = PolarLines.splitLines(mazeRoom.lines, anglesInLines);
+                const visibleLines = PolarLines.removeHiddenLines(splitLines);
+                for (const visibleLine1 of visibleLines) {
+                    for (const visibleLine2 of visibleLines) {
+                        if (visibleLine1.start.angle !== visibleLine2.start.angle
+                            || visibleLine1.end.angle !== visibleLine2.end.angle) {
+                            continue;
+                        }
+                        expect(visibleLine1.start.length).to.be.at.least(visibleLine2.start.length);
+                        expect(visibleLine1.end.length).to.be.at.least(visibleLine2.end.length);
+                    }
+                }
+            }
+        });
+    });
 });
