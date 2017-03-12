@@ -143,4 +143,49 @@ describe("PolarLine", function () {
                 }
             });
         });
+
+        describe("#lengthAtAngle", function () {
+            it("Should return start length for start angle", function () {
+                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
+                    expect(line.lengthAtAngle(startAngle)).to.equal(line.start.length);
+                }
+            });
+
+            it("Should return end length for end angle", function () {
+                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
+                    expect(line.lengthAtAngle(endAngle)).to.equal(line.end.length);
+                }
+            });
+
+            it("Should return end length for middle angle", function () {
+                const middleLength = 5.2686863252131;
+                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
+                    expect(line.lengthAtAngle(middleAngle)).to.shallowDeepAlmostEqual(middleLength);
+                }
+            });
+
+            it("Point for middle angle should be co-linear", function () {
+                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
+                    const middleLength = line.lengthAtAngle(middleAngle);
+                    const startPoint = line.start.toCartesianPoint();
+                    const endPoint = line.end.toCartesianPoint();
+                    const middlePoint =
+                        new PolarPoint(middleAngle, middleLength)
+                            .toCartesianPoint();
+                    const lineAtan2 = Math.atan2(
+                        startPoint.y - endPoint.y,
+                        startPoint.x - endPoint.x);
+                    const startToMiddleAtan2 = Math.atan2(
+                        startPoint.y - middlePoint.y,
+                        startPoint.x - middlePoint.x);
+                    const middleToEndAtan2 = Math.atan2(
+                        middlePoint.y - endPoint.y,
+                        middlePoint.x - endPoint.x);
+
+                    expect(lineAtan2).to.shallowDeepAlmostEqual(startToMiddleAtan2);
+                    expect(lineAtan2).to.shallowDeepAlmostEqual(middleToEndAtan2);
+                }
+            });
+        });
+    });
 });

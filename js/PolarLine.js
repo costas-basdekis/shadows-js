@@ -86,6 +86,71 @@ class PolarLine {
             return this.start.angle < angle && angle < this.end.angle;
         }
     }
+
+    atAngles(startAngle, endAngle) {
+        return new PolarLine(
+            new PolarPoint(startAngle, this.lengthAtAngle(startAngle)),
+            new PolarPoint(endAngle, this.lengthAtAngle(endAngle))
+        );
+    }
+
+    lengthAtAngle(angle) {
+        angle = PolarPoint.normaliseAngle(angle);
+
+        if (angle === this.start.angle) {
+            return this.start.length;
+        } else if (angle === this.end.angle) {
+            return this.end.length;
+        }
+
+        // TODO: This isn't strictly necessary, as we can extrapolate as well
+        if (!this.strictlyContainsAngle(angle)) {
+            throw new Error(`Angle out of range: ${angle} not in ${this}`);
+        }
+
+        return PolarLine.polarInterpolation(
+            this.start.angle, this.end.angle,
+            this.start.length, this.end.length,
+            angle);
+    }
+
+    static polarInterpolation(startAngle, endAngle, startLength, endLength, angle) {
+        const coefs = this.getCoefs(startAngle, endAngle, startLength, endLength);
+        const {x: coCos, y: coSin} = this.solve2x2(coefs);
+
+        return 1 / (coCos * Math.cos(angle) + coSin * Math.sin(angle));
+    }
+
+    static getCoefs(startAngle, endAngle, startLength, endLength) {
+        return [
+            [
+                Math.cos(startAngle),
+                Math.sin(startAngle),
+                1 / startLength,
+            ],
+            [
+                Math.cos(endAngle),
+                Math.sin(endAngle),
+                1 / endLength,
+            ]
+        ];
+    }
+
+    static solve2x2(coefs) {
+        const d = this.discriminate(coefs, 0, 0, 1, 1);
+        const dx = this.discriminate(coefs, 0, 2, 1, 1);
+        const dy = this.discriminate(coefs, 0, 0, 1, 2);
+
+        return {
+            x: dx / d,
+            y: dy / d,
+        };
+    }
+
+    static discriminate(coefs, x1, y1, x2, y2) {
+        return coefs[x1][y1] * coefs[x2][y2] - coefs[x1][y2] * coefs[x2][y1];
+    }
+
     toPath(center) {
         const path = new paper.Path();
 
