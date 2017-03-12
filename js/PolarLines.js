@@ -22,8 +22,9 @@ class PolarLines {
         const anglesInLines = PolarLines.anglesInLines(this.lines, angles);
         const splitLines = PolarLines.splitLines(this.lines, anglesInLines);
         const lines = PolarLines.removeHiddenLines(splitLines);
+        const joinedLines = PolarLines.joinLines(lines);
 
-        this.lines = lines;
+        this.lines = joinedLines;
     }
 
     static linesAngles(lines) {
@@ -111,6 +112,40 @@ class PolarLines {
         }
 
         return nonOverlapping;
+    }
+
+    static joinLines(lines) {
+        const sorted = sortWithCompareFunc(lines);
+        const joined = [];
+
+        for (const line of sorted) {
+            const previousLine = joined.slice(-1)[0];
+            if (!previousLine) {
+                joined.push(line);
+                continue;
+            }
+
+            if (previousLine.source
+                    && previousLine.source === line.source
+                    && previousLine.end.equals(line.start)) {
+                previousLine.end = line.end;
+            } else {
+                joined.push(line)
+            }
+        }
+
+        const firstLine = joined[0];
+        const lastLine = joined.slice(-1)[0];
+        if (firstLine
+                && firstLine !== lastLine
+                && firstLine.source
+                && firstLine.source === lastLine.source
+                && lastLine.end.equals(firstLine.start)) {
+            firstLine.start = lastLine.start;
+            joined.pop();
+        }
+
+        return joined;
     }
 
     static toPath(lines, center, compoundPath=null) {

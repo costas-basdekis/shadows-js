@@ -31,6 +31,10 @@ class PolarPoint {
         return compareTuples(this.sortKey(), rhs.sortKey());
     }
 
+    equals(other) {
+        return compareTuples(this.sortKey(), other.sortKey()) === 0;
+    }
+
     static fromCartesianPoints(center, point) {
         const delta = point.minus(center);
         return this.fromCartesianPoint(delta);

@@ -88,10 +88,13 @@ class PolarLine {
     }
 
     atAngles(startAngle, endAngle) {
-        return new PolarLine(
+        const line = new PolarLine(
             new PolarPoint(startAngle, this.lengthAtAngle(startAngle)),
             new PolarPoint(endAngle, this.lengthAtAngle(endAngle))
         );
+        line.source = this;
+
+        return line;
     }
 
     lengthAtAngle(angle) {
