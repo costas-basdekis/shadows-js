@@ -77,4 +77,21 @@ class CartesianLines {
         const lines = CartesianLines.box(first, third);
         return this.addLines(lines);
     }
+
+    static linear(...pairs) {
+        const starts = pairs.slice(0, -1);
+        const ends = pairs.slice(1);
+        const lines = zip(starts, ends).map(
+            ([[startX, startY], [endX, endY]]) => new CartesianLine(
+                new CartesianPoint(startX, startY),
+                new CartesianPoint(endX, endY)
+            ));
+
+        return lines
+    }
+
+    addLinear(...pairs) {
+        const lines = CartesianLines.linear(...pairs);
+        return this.addLines(lines);
+    }
 }

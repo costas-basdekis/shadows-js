@@ -60,29 +60,13 @@ class Demo {
 
     createRoom() {
         this.walls.clear();
-        this.createBoundary();
+        this.addMaze();
         this.walls.updatePath();
         this.walls.path.strokeColor = 'blue';
     }
 
-    createBoundary() {
-        this.walls.addBox(
-            new CartesianPoint(10, 10),
-            new CartesianPoint(522, 522));
-
-        this.walls.addLine(new CartesianLine(
-            new CartesianPoint(100, 100), new CartesianPoint(100, 450)));
-
-        this.walls.addLine(new CartesianLine(
-            new CartesianPoint(450, 100), new CartesianPoint(200, 100)));
-        this.walls.addLine(new CartesianLine(
-            new CartesianPoint(200, 100), new CartesianPoint(200, 350)));
-
-        this.walls.addLine(new CartesianLine(
-            new CartesianPoint(425, 125), new CartesianPoint(225, 325)));
-
-        this.walls.addLine(new CartesianLine(
-            new CartesianPoint(350, 250), new CartesianPoint(350, 450)));
+    addMaze() {
+        this.walls.addLines(Rooms.createMaze());
     }
 
     paint() {
