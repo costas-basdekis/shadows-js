@@ -49,6 +49,43 @@ describe("range", function () {
         expect(_range).to.deep.equal([-50, 150, 350, 550]);
     });
 });
+
+describe("compare", function () {
+    it("Should know that 1 == 1", function () {
+        const lhs = 1, rhs = 1;
+        const result = 0;
+        expect(compare(lhs, rhs)).to.equal(result);
+        expect(compare(rhs, lhs)).to.equal(-result);
+    });
+
+    it("Should know that -1 < 1", function () {
+        const lhs = -1, rhs = 1;
+        const result = -1;
+        expect(compare(lhs, rhs)).to.equal(result);
+        expect(compare(rhs, lhs)).to.equal(-result);
+    });
+
+    it("Should know that 'a' == 'a'", function () {
+        const lhs = "a", rhs = "a";
+        const result = 0;
+        expect(compare(lhs, rhs)).to.equal(result);
+        expect(compare(rhs, lhs)).to.equal(-result);
+    });
+
+    it("Should know that 'a' < 'b'", function () {
+        const lhs = "a", rhs = "b";
+        const result = -1;
+        expect(compare(lhs, rhs)).to.equal(result);
+        expect(compare(rhs, lhs)).to.equal(-result);
+    });
+
+    it("Should know that null == null", function () {
+        const lhs = null, rhs = null;
+        const result = 0;
+        expect(compare(lhs, rhs)).to.equal(result);
+        expect(compare(rhs, lhs)).to.equal(-result);
+    });
+
 });
 
 describe("compareTuples", function () {

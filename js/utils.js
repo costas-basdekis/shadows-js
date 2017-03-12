@@ -40,22 +40,23 @@ function zip(...arrays) {
     return aMinLengthArray.map((_, index) => arrays.map(array => array[index]));
 }
 
-function compareTuples(lhs, rhs) {
-    const pairs = zip(lhs, rhs);
-
-    for (const [lItem, rItem] of pairs) {
-        if (lItem < rItem) {
-            return -1;
-        } else if (lItem > rItem) {
-            return 1;
-        }
-    }
-
-    if (lhs.length < rhs.length) {
+function compare(lhs, rhs) {
+    if (lhs < rhs) {
         return -1;
-    } else if (lhs.length > rhs.length) {
+    } else if (lhs > rhs) {
         return 1;
+    } else {
+        return 0;
     }
+}
 
-    return 0;
+function compareTuples(lhs, rhs) {
+    const compared = zip(lhs, rhs)
+        .map(([lItem, rItem]) => compare(lItem, rItem))
+        .filter(c => c !== 0);
+    if (compared.length) {
+        return compared[0];
+    } else {
+        return compare(lhs.length, rhs.length);
+    }
 }
