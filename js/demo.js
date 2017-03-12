@@ -57,7 +57,7 @@ class Demo {
 
         this.rays.updatePath(this.center);
         this.rays.path.strokeColor = 'yellow';
-        this.rays.path.fillColor = 'red';
+        this.rays.path.fillColor = 'green';
     }
 
     createRoom() {
