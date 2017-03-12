@@ -2,8 +2,19 @@
 
 class PolarPoint {
     constructor(angle, length) {
-        this.angle = angle;
+        this.angle = PolarPoint.normaliseAngle(angle);
         this.length = length;
+    }
+
+    static normaliseAngle(angle) {
+        while (angle > Math.PI) {
+            angle -= 2 * Math.PI;
+        }
+        while (angle <= -Math.PI) {
+            angle += 2 * Math.PI;
+        }
+
+        return angle
     }
 
     static fromCartesianPoints(center, point) {

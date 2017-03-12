@@ -21,7 +21,30 @@ describe("PolarPoint", function () {
                 const cartesianPoint = new CartesianPoint(
                     Math.cos(angle) * length, Math.sin(angle) * length);
                 const polarPoint = PolarPoint.fromCartesianPoint(cartesianPoint);
-                expect(polarPoint.angle).to.shallowDeepAlmostEqual(angle);
+                expect(polarPoint.angle).to.shallowDeepAlmostEqual(
+                    PolarPoint.normaliseAngle(angle));
+            }
+        });
+    });
+
+    describe("#normaliseAngle", function () {
+        it("Is normalised in (-PI, PI]", function () {
+            const angles = range(-5 * Math.PI, 5 * Math.PI, Math.PI / 6);
+            for (const angle of angles) {
+                const normalised = PolarPoint.normaliseAngle(angle);
+                expect(normalised).to.be.at.most(Math.PI);
+                expect(normalised).to.be.above(-Math.PI);
+            }
+        });
+
+        it("Difference is multiple of 2 * PI", function () {
+            const angles = range(-5 * Math.PI, 5 * Math.PI, Math.PI / 6);
+            for (const angle of angles) {
+                const normalised = PolarPoint.normaliseAngle(angle);
+                const diff = normalised - angle;
+                const diffPIs = diff / (2 * Math.PI);
+                const roundedDiffPis = Math.round(diffPIs);
+                expect(roundedDiffPis).to.shallowDeepAlmostEqual(diffPIs);
             }
         });
     });
