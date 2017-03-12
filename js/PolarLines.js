@@ -21,8 +21,8 @@ class PolarLines {
         const angles = PolarLines.linesAngles(this.lines);
         const anglesInLines = PolarLines.anglesInLines(this.lines, angles);
         const splitLines = PolarLines.splitLines(this.lines, anglesInLines);
-        const lines = PolarLines.removeHiddenLines(splitLines);
-        const joinedLines = PolarLines.joinLines(lines);
+        const visibleLines = PolarLines.removeHiddenLines(splitLines);
+        const joinedLines = PolarLines.joinLines(visibleLines);
 
         this.lines = joinedLines;
     }
