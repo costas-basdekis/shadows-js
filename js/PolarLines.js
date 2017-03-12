@@ -67,7 +67,8 @@ class PolarLines {
 
     static splitLines(lines, anglesInLines) {
         const splitLines = [].concat(...zip(lines, anglesInLines)
-            .map(([line, anglesInLine]) => this.splitLine(line, anglesInLine)));
+            .map(([line, anglesInLine]) => this.splitLine(line, anglesInLine)))
+            .filter(line => line.start.angle !== line.end.angle);
         // console.log("Split lines:", sortedSplitLines.map(line => `${line.sortKey()[0]},${line.sortKey()[1]}`));
 
         return splitLines;
