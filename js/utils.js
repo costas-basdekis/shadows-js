@@ -73,6 +73,10 @@ function compare(lhs, rhs) {
     }
 }
 
+function sortWithCompare(array) {
+    return array.sort(compare);
+}
+
 function compareTuples(lhs, rhs) {
     const compared = zip(lhs, rhs)
         .map(([lItem, rItem]) => compare(lItem, rItem))

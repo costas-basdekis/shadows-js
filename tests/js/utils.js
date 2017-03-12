@@ -88,6 +88,58 @@ describe("compare", function () {
 
 });
 
+describe("sortWithCompare", function () {
+    it("Should know to compare [] to []", function () {
+        const array = [];
+        const sorted = [];
+        expect(sortWithCompare(array)).to.deep.equal(sorted);
+        for (const index of range(1, array.length)) {
+            const shifted = array.slice(index).concat(array.slice(0, index));
+            expect(sortWithCompare(shifted)).to.deep.equal(sorted);
+        }
+    });
+
+    it("Should know to compare [1] to [1]", function () {
+        const array = [1];
+        const sorted = [1];
+        expect(sortWithCompare(array)).to.deep.equal(sorted);
+        for (const index of range(1, array.length)) {
+            const shifted = array.slice(index).concat(array.slice(0, index));
+            expect(sortWithCompare(shifted)).to.deep.equal(sorted);
+        }
+    });
+
+    it("Should know to compare [1, 2, 3] to [1, 2, 3]", function () {
+        const array = [1, 2, 3];
+        const sorted = [1, 2, 3];
+        expect(sortWithCompare(array)).to.deep.equal(sorted);
+        for (const index of range(1, array.length)) {
+            const shifted = array.slice(index).concat(array.slice(0, index));
+            expect(sortWithCompare(shifted)).to.deep.equal(sorted);
+        }
+    });
+
+    it("Should know to compare ['a'] to ['a']", function () {
+        const array = ["a"];
+        const sorted = ["a"];
+        expect(sortWithCompare(array)).to.deep.equal(sorted);
+        for (const index of range(1, array.length)) {
+            const shifted = array.slice(index).concat(array.slice(0, index));
+            expect(sortWithCompare(shifted)).to.deep.equal(sorted);
+        }
+    });
+
+    it("Should know to compare ['a', 'b', 'c'] to ['a', 'b', 'c']", function () {
+        const array = ["a", "b", "c"];
+        const sorted = ["a", "b", "c"];
+        expect(sortWithCompare(array)).to.deep.equal(sorted);
+        for (const index of range(1, array.length)) {
+            const shifted = array.slice(index).concat(array.slice(0, index));
+            expect(sortWithCompare(shifted)).to.deep.equal(sorted);
+        }
+    });
+});
+
 describe("compareTuples", function () {
     it("Should know that [] == []", function () {
         const lhs = [], rhs = [];
