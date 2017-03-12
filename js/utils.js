@@ -26,3 +26,16 @@ function hashCode(str) {
 
     return hash;
 }
+
+function zip(...arrays) {
+    if (!arrays.length) {
+        return [];
+    }
+
+    const lengths = arrays.map(array => array.length);
+    const minLength = Math.min(...lengths);
+    const minLengthArrays = arrays.filter(array => array.length === minLength);
+    const aMinLengthArray = minLengthArrays[0];
+
+    return aMinLengthArray.map((_, index) => arrays.map(array => array[index]));
+}

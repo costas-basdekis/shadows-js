@@ -43,3 +43,63 @@ describe("utils", function () {
         expect(_range).to.deep.equal([10, 9, 8, 7, 6, 5, 4, 3, 2]);
     });
 });
+
+describe("zip", function () {
+    it("Should return empty with no arrays", function () {
+        expect(zip()).to.deep.equal([]);
+    });
+
+    it("Should return empty with one empty array", function () {
+        expect(zip([1, 2, 3], [], ["a", "b", "c"])).to.deep.equal([]);
+    });
+
+    it("Should return pairs with same size arrays", function () {
+        expect(zip([1, 2, 3], ["a", "b", "c"])).to.deep.equal(
+            [[1, "a"], [2, "b"], [3, "c"]]);
+    });
+
+    it("Should return limited pairs with first array bigger", function () {
+        expect(zip([1, 2, 3, 4, 5], ["a", "b", "c"])).to.deep.equal(
+            [[1, "a"], [2, "b"], [3, "c"]]);
+    });
+
+    it("Should return limited pairs with second array bigger", function () {
+        expect(zip([1, 2, 3], ["a", "b", "c", "d", "e"])).to.deep.equal(
+            [[1, "a"], [2, "b"], [3, "c"]]);
+    });
+
+    it("Should return triplets with same size arrays", function () {
+        expect(zip([1, 2, 3], ["a", "b", "c"], ["i", "ii", "iii"])).to.deep.equal(
+            [[1, "a", "i"], [2, "b", "ii"], [3, "c", "iii"]]);
+    });
+
+    it("Should return limited triplets with first array bigger", function () {
+        expect(zip([1, 2, 3, 4, 5], ["a", "b", "c"], ["i", "ii", "iii"])).to.deep.equal(
+            [[1, "a", "i"], [2, "b", "ii"], [3, "c", "iii"]]);
+    });
+
+    it("Should return limited triplets with second array bigger", function () {
+        expect(zip([1, 2, 3], ["a", "b", "c", "d", "e"], ["i", "ii", "iii"])).to.deep.equal(
+            [[1, "a", "i"], [2, "b", "ii"], [3, "c", "iii"]]);
+    });
+
+    it("Should return limited triplets with third array bigger", function () {
+        expect(zip([1, 2, 3], ["a", "b", "c"], ["i", "ii", "iii", "iv", "v"])).to.deep.equal(
+            [[1, "a", "i"], [2, "b", "ii"], [3, "c", "iii"]]);
+    });
+
+    it("Should return limited triplets with first array smaller", function () {
+        expect(zip([1, 2, 3], ["a", "b", "c", "d", "e"], ["i", "ii", "iii", "iv", "v"])).to.deep.equal(
+            [[1, "a", "i"], [2, "b", "ii"], [3, "c", "iii"]]);
+    });
+
+    it("Should return limited triplets with second array smaller", function () {
+        expect(zip([1, 2, 3, 4, 5], ["a", "b", "c"], ["i", "ii", "iii", "iv", "v"])).to.deep.equal(
+            [[1, "a", "i"], [2, "b", "ii"], [3, "c", "iii"]]);
+    });
+
+    it("Should return limited triplets with third array smaller", function () {
+        expect(zip([1, 2, 3, 4, 5], ["a", "b", "c", "d", "e"], ["i", "ii", "iii"])).to.deep.equal(
+            [[1, "a", "i"], [2, "b", "ii"], [3, "c", "iii"]]);
+    });
+});
