@@ -4,7 +4,7 @@ class CartesianLines {
     constructor(canvas) {
         this.canvas = canvas;
         this.lines = [];
-        this.path = new paper.CompoundPath();
+        this.path = null;
     }
 
     clear() {
@@ -12,6 +12,9 @@ class CartesianLines {
     }
 
     updatePath() {
+        if (!this.path) {
+            this.path = new paper.CompoundPath();
+        }
         CartesianLines.toPath(this.lines, this.path);
     }
 

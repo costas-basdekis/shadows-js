@@ -3,7 +3,7 @@
 class PolarLines {
     constructor() {
         this.lines = [];
-        this.path = new paper.CompoundPath();
+        this.path = null;
     }
 
     clear() {
@@ -31,6 +31,9 @@ class PolarLines {
     }
 
     updatePath(center) {
+        if (!this.path) {
+            this.path = new paper.CompoundPath();
+        }
         PolarLines.toPath(this.lines, center, this.path);
     }
 }
