@@ -136,6 +136,7 @@ Rooms.rooms = [
         create: Rooms.createShapes3.bind(Rooms),
         name: "createShapes3",
         label: "Even More Polygons and Stars",
+        isSlow: true,
     },
 ];
 

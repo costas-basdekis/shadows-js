@@ -12,35 +12,49 @@ describe("PolarLines", function () {
     it("Should have 16 different centers", function () {
         expect(centers.length).to.equal(16);
     });
-    const mazeRoomCartesian = Rooms.createMaze();
-    const mazeRoomCartesianLines = new CartesianLines().addLines(mazeRoomCartesian);
+    const cartesianRooms = Rooms.rooms
+        .filter(room => !room.isSlow)
+        .map(room => room.create());
+    const cartesianRoomsLines = cartesianRooms.map(lines => new CartesianLines().addLines(lines));
+    const centersAndRooms = cartesian(centers, cartesianRoomsLines).concat([
+        [{x: 441, y: 316}, new CartesianLines().addLines([].concat(
+            CartesianLines.linear(
+                [300, 350],
+                [450, 500]
+            ),
+            CartesianLines.linear(
+                [375, 425],
+                [275, 525]
+            )
+        ))]
+    ]);
 
     describe("#fromCartesianLines", function () {
         it("Should be able to crate maze room", function () {
-            for (const center of centers) {
-                const mazeRoom = new PolarLines()
-                    .fromCartesianLines(center, mazeRoomCartesianLines);
+            for (const [center, cartesianRoomLines] of centersAndRooms) {
+                const room = new PolarLines()
+                    .fromCartesianLines(center, cartesianRoomLines);
             }
         });
     });
 
     describe("#simplify", function () {
         it("Should work", function () {
-            for (const center of centers) {
-                const mazeRoom = new PolarLines()
-                    .fromCartesianLines(center, mazeRoomCartesianLines);
-                mazeRoom.simplify();
+            for (const [center, cartesianRoomLines] of centersAndRooms) {
+                const room = new PolarLines()
+                    .fromCartesianLines(center, cartesianRoomLines);
+                room.simplify();
             }
         });
     });
 
     describe("#linesAngles", function () {
         it("Should return all angles in lines", function () {
-            for (const center of centers) {
-                const mazeRoom = new PolarLines()
-                    .fromCartesianLines(center, mazeRoomCartesianLines);
-                const angles = PolarLines.linesAngles(mazeRoom.lines);
-                for (const line of mazeRoom.lines) {
+            for (const [center, cartesianRoomLines] of centersAndRooms) {
+                const room = new PolarLines()
+                    .fromCartesianLines(center, cartesianRoomLines);
+                const angles = PolarLines.linesAngles(room.lines);
+                for (const line of room.lines) {
                     expect(angles).to.contain(line.start.angle);
                     expect(angles).to.contain(line.end.angle);
                 }
@@ -48,10 +62,10 @@ describe("PolarLines", function () {
         });
 
         it("Should be unique", function () {
-            for (const center of centers) {
-                const mazeRoom = new PolarLines()
-                    .fromCartesianLines(center, mazeRoomCartesianLines);
-                const angles = PolarLines.linesAngles(mazeRoom.lines);
+            for (const [center, cartesianRoomLines] of centersAndRooms) {
+                const room = new PolarLines()
+                    .fromCartesianLines(center, cartesianRoomLines);
+                const angles = PolarLines.linesAngles(room.lines);
                 const uniqueAngles = unique(angles);
                 expect(uniqueAngles).to.deep.equal(angles);
             }
@@ -60,14 +74,14 @@ describe("PolarLines", function () {
 
     describe("#anglesInLines", function () {
         it("Should contain the correct subsets", function () {
-            for (const center of centers) {
-                const mazeRoom = new PolarLines()
-                    .fromCartesianLines(center, mazeRoomCartesianLines);
+            for (const [center, cartesianRoomLines] of centersAndRooms) {
+                const room = new PolarLines()
+                    .fromCartesianLines(center, cartesianRoomLines);
                 const angles =
-                    PolarLines.linesAngles(mazeRoom.lines);
+                    PolarLines.linesAngles(room.lines);
                 const anglesInLines =
-                    PolarLines.anglesInLines(mazeRoom.lines, angles);
-                for (const [line, anglesInLine] of zip(mazeRoom.lines, anglesInLines)) {
+                    PolarLines.anglesInLines(room.lines, angles);
+                for (const [line, anglesInLine] of zip(room.lines, anglesInLines)) {
                     for (const angle of angles) {
                         if (anglesInLine.indexOf(angle) >= 0) {
                             expect(line.strictlyContainsAngle(angle)).to.be.true;
@@ -80,28 +94,28 @@ describe("PolarLines", function () {
         });
 
         it("Should be unique for each line", function () {
-            for (const center of centers) {
-                const mazeRoom = new PolarLines()
-                    .fromCartesianLines(center, mazeRoomCartesianLines);
+            for (const [center, cartesianRoomLines] of centersAndRooms) {
+                const room = new PolarLines()
+                    .fromCartesianLines(center, cartesianRoomLines);
                 const angles =
-                    PolarLines.linesAngles(mazeRoom.lines);
+                    PolarLines.linesAngles(room.lines);
                 const anglesInLines =
-                    PolarLines.anglesInLines(mazeRoom.lines, angles);
-                for (const [line, anglesInLine] of zip(mazeRoom.lines, anglesInLines)) {
+                    PolarLines.anglesInLines(room.lines, angles);
+                for (const [line, anglesInLine] of zip(room.lines, anglesInLines)) {
                     expect(unique(anglesInLine)).to.deep.equal(anglesInLine);
                 }
             }
         });
 
         it("Should be ordered", function () {
-            for (const center of centers) {
-                const mazeRoom = new PolarLines()
-                    .fromCartesianLines(center, mazeRoomCartesianLines);
+            for (const [center, cartesianRoomLines] of centersAndRooms) {
+                const room = new PolarLines()
+                    .fromCartesianLines(center, cartesianRoomLines);
                 const angles =
-                    PolarLines.linesAngles(mazeRoom.lines);
+                    PolarLines.linesAngles(room.lines);
                 const anglesInLines =
-                    PolarLines.anglesInLines(mazeRoom.lines, angles);
-                for (const [line, anglesInLine] of zip(mazeRoom.lines, anglesInLines)) {
+                    PolarLines.anglesInLines(room.lines, angles);
+                for (const [line, anglesInLine] of zip(room.lines, anglesInLines)) {
                     if (!line.goesOverPI) {
                         expect(sortWithCompare(anglesInLine)).to.deep.equal(anglesInLine);
                     } else {
@@ -118,13 +132,13 @@ describe("PolarLines", function () {
 
     describe("#splitLines", function () {
         it("Should create a line for each angle", function () {
-            for (const center of centers) {
-                const mazeRoom = new PolarLines()
-                    .fromCartesianLines(center, mazeRoomCartesianLines);
-                const angles = PolarLines.linesAngles(mazeRoom.lines);
+            for (const [center, cartesianRoomLines] of centersAndRooms) {
+                const room = new PolarLines()
+                    .fromCartesianLines(center, cartesianRoomLines);
+                const angles = PolarLines.linesAngles(room.lines);
                 const anglesInLines =
-                    PolarLines.anglesInLines(mazeRoom.lines, angles);
-                for (const [line, anglesInLine] of zip(mazeRoom.lines, anglesInLines)) {
+                    PolarLines.anglesInLines(room.lines, angles);
+                for (const [line, anglesInLine] of zip(room.lines, anglesInLines)) {
                     const splitLines = PolarLines.splitLine(line, anglesInLine);
                     expect(anglesInLine.length).to.equal(splitLines.length - 1);
                     for (const [angle, splitLine] of zip(anglesInLine, splitLines.slice(1))) {
@@ -135,13 +149,13 @@ describe("PolarLines", function () {
         });
 
         it("Should create consecutive splits", function () {
-            for (const center of centers) {
-                const mazeRoom = new PolarLines()
-                    .fromCartesianLines(center, mazeRoomCartesianLines);
-                const angles = PolarLines.linesAngles(mazeRoom.lines);
+            for (const [center, cartesianRoomLines] of centersAndRooms) {
+                const room = new PolarLines()
+                    .fromCartesianLines(center, cartesianRoomLines);
+                const angles = PolarLines.linesAngles(room.lines);
                 const anglesInLines =
-                    PolarLines.anglesInLines(mazeRoom.lines, angles);
-                for (const [line, anglesInLine] of zip(mazeRoom.lines, anglesInLines)) {
+                    PolarLines.anglesInLines(room.lines, angles);
+                for (const [line, anglesInLine] of zip(room.lines, anglesInLines)) {
                     const splitLines = PolarLines.splitLine(line, anglesInLine);
                     const firstLine = splitLines[0].start;
                     const lastLine = splitLines.slice(-1)[0].end;
@@ -158,13 +172,13 @@ describe("PolarLines", function () {
         });
 
         it("Should create angles that are positive", function () {
-            for (const center of centers) {
-                const mazeRoom = new PolarLines()
-                    .fromCartesianLines(center, mazeRoomCartesianLines);
-                const angles = PolarLines.linesAngles(mazeRoom.lines);
+            for (const [center, cartesianRoomLines] of centersAndRooms) {
+                const room = new PolarLines()
+                    .fromCartesianLines(center, cartesianRoomLines);
+                const angles = PolarLines.linesAngles(room.lines);
                 const anglesInLines =
-                    PolarLines.anglesInLines(mazeRoom.lines, angles);
-                for (const [line, anglesInLine] of zip(mazeRoom.lines, anglesInLines)) {
+                    PolarLines.anglesInLines(room.lines, angles);
+                for (const [line, anglesInLine] of zip(room.lines, anglesInLines)) {
                     const splitLines = PolarLines.splitLine(line, anglesInLine);
                     const deltaAngles = splitLines.map(line => line.deltaAngle());
                     expect(deltaAngles.filter(angle => angle < 0)).to.be.empty;
@@ -173,13 +187,13 @@ describe("PolarLines", function () {
         });
 
         it("Should create angles that sum to the line's angle", function () {
-            for (const center of centers) {
-                const mazeRoom = new PolarLines()
-                    .fromCartesianLines(center, mazeRoomCartesianLines);
-                const angles = PolarLines.linesAngles(mazeRoom.lines);
+            for (const [center, cartesianRoomLines] of centersAndRooms) {
+                const room = new PolarLines()
+                    .fromCartesianLines(center, cartesianRoomLines);
+                const angles = PolarLines.linesAngles(room.lines);
                 const anglesInLines =
-                    PolarLines.anglesInLines(mazeRoom.lines, angles);
-                for (const [line, anglesInLine] of zip(mazeRoom.lines, anglesInLines)) {
+                    PolarLines.anglesInLines(room.lines, angles);
+                for (const [line, anglesInLine] of zip(room.lines, anglesInLines)) {
                     const splitLines = PolarLines.splitLine(line, anglesInLine);
                     const deltaAngles = splitLines.map(line => line.deltaAngle());
                     const anglesSum = deltaAngles.reduce((total, angle) => total + angle, 0);
@@ -191,13 +205,13 @@ describe("PolarLines", function () {
 
     describe("removeHiddenLines", function () {
         it("Hidden lines should be a subset of all lines", function () {
-            for (const center of centers) {
-                const mazeRoom = new PolarLines()
-                    .fromCartesianLines(center, mazeRoomCartesianLines);
-                const angles = PolarLines.linesAngles(mazeRoom.lines);
+            for (const [center, cartesianRoomLines] of centersAndRooms) {
+                const room = new PolarLines()
+                    .fromCartesianLines(center, cartesianRoomLines);
+                const angles = PolarLines.linesAngles(room.lines);
                 const anglesInLines =
-                    PolarLines.anglesInLines(mazeRoom.lines, angles);
-                const splitLines = PolarLines.splitLines(mazeRoom.lines, anglesInLines);
+                    PolarLines.anglesInLines(room.lines, angles);
+                const splitLines = PolarLines.splitLines(room.lines, anglesInLines);
                 const visibleLines = PolarLines.removeHiddenLines(splitLines);
                 const hiddenLines = splitLines
                     .filter(line => visibleLines.indexOf(line) === -1);
@@ -211,13 +225,13 @@ describe("PolarLines", function () {
         });
 
         it("Hidden lines should have a line with higher start/end length", function () {
-            for (const center of centers) {
-                const mazeRoom = new PolarLines()
-                    .fromCartesianLines(center, mazeRoomCartesianLines);
-                const angles = PolarLines.linesAngles(mazeRoom.lines);
+            for (const [center, cartesianRoomLines] of centersAndRooms) {
+                const room = new PolarLines()
+                    .fromCartesianLines(center, cartesianRoomLines);
+                const angles = PolarLines.linesAngles(room.lines);
                 const anglesInLines =
-                    PolarLines.anglesInLines(mazeRoom.lines, angles);
-                const splitLines = PolarLines.splitLines(mazeRoom.lines, anglesInLines);
+                    PolarLines.anglesInLines(room.lines, angles);
+                const splitLines = PolarLines.splitLines(room.lines, anglesInLines);
                 const visibleLines = PolarLines.removeHiddenLines(splitLines);
                 const hiddenLines = splitLines
                     .filter(line => visibleLines.indexOf(line) === -1);
@@ -237,13 +251,13 @@ describe("PolarLines", function () {
         });
 
         it("Visible lines shouldn't have a line with higher start/end length", function () {
-            for (const center of centers) {
-                const mazeRoom = new PolarLines()
-                    .fromCartesianLines(center, mazeRoomCartesianLines);
-                const angles = PolarLines.linesAngles(mazeRoom.lines);
+            for (const [center, cartesianRoomLines] of centersAndRooms) {
+                const room = new PolarLines()
+                    .fromCartesianLines(center, cartesianRoomLines);
+                const angles = PolarLines.linesAngles(room.lines);
                 const anglesInLines =
-                    PolarLines.anglesInLines(mazeRoom.lines, angles);
-                const splitLines = PolarLines.splitLines(mazeRoom.lines, anglesInLines);
+                    PolarLines.anglesInLines(room.lines, angles);
+                const splitLines = PolarLines.splitLines(room.lines, anglesInLines);
                 const visibleLines = PolarLines.removeHiddenLines(splitLines);
                 for (const visibleLine1 of visibleLines) {
                     for (const visibleLine2 of visibleLines) {
