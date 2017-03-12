@@ -1,8 +1,12 @@
 "use strict";
 
 class Demo {
-    constructor(canvas, roomsElement) {
+    constructor(canvas, roomsElement, xElement, yElement) {
         this.canvas = canvas;
+        this.roomsElement = roomsElement;
+        this.xElement = xElement;
+        this.yElement = yElement;
+
         paper.setup(this.canvas);
 
         this.rays = new PolarLines();
@@ -16,8 +20,10 @@ class Demo {
 
         this.paint();
 
+        this.onMouseDrag({event: {layerX: this.center.x, layerY: this.center.y}});
+
         Rooms.populateComboBox(roomsElement);
-        roomsElement.onchange = this.roomsOnChange.bind(this);
+        this.roomsElement.onchange = this.roomsOnChange.bind(this);
     }
 
     roomsOnChange(e) {
@@ -59,6 +65,7 @@ class Demo {
             y: toolEvent.event.layerY,
         };
         this.updateRays();
+        this.updateCoordsDisplay();
     }
 
     updateRays() {
@@ -79,5 +86,10 @@ class Demo {
 
     paint() {
         paper.view.draw();
+    }
+
+    updateCoordsDisplay() {
+        this.xElement.textContent = this.center.x;
+        this.yElement.textContent = this.center.y;
     }
 }

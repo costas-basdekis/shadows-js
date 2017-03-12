@@ -26,6 +26,10 @@
             Room
             <select id="rooms"></select>
         </label>
+        <label>
+            X: <span id="x"></span>
+            Y: <span id="y"></span>
+        </label>
     </div>
 
     <canvas id="myCanvas" resize width="1024" height="1024"></canvas>
@@ -35,7 +39,9 @@
 
         const demo = new Demo(
             document.getElementById("myCanvas"),
-            document.getElementById("rooms"));
+            document.getElementById("rooms"),
+            document.getElementById("x"),
+            document.getElementById("y"));
     </script>
 </body>
 </html>
