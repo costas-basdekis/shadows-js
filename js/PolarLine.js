@@ -1,7 +1,18 @@
 "use strict";
 
 class PolarLine {
+    // static maxId = 1;
+
+    static nextId() {
+        const nextId = this.maxId;
+        this.maxId += 1;
+
+        return nextId;
+    }
+
     constructor(point1, point2, colour=null) {
+        this.id = PolarLine.nextId();
+
         this.colour = colour;
         const deltaAngle = Math.abs(point1.angle - point2.angle);
         if (deltaAngle <= Math.PI) {
@@ -92,7 +103,7 @@ class PolarLine {
             new PolarPoint(startAngle, this.lengthAtAngle(startAngle)),
             new PolarPoint(endAngle, this.lengthAtAngle(endAngle))
         );
-        line.source = this;
+        line.sourceId = this.id;
 
         return line;
     }
@@ -180,3 +191,5 @@ class PolarLine {
         return path;
     }
 }
+
+PolarLine.maxId = 1;

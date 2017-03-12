@@ -125,8 +125,8 @@ class PolarLines {
                 continue;
             }
 
-            if (previousLine.source
-                    && previousLine.source === line.source
+            if (previousLine.sourceId
+                    && previousLine.sourceId === line.sourceId
                     && previousLine.end.equals(line.start)) {
                 previousLine.end = line.end;
             } else {
@@ -138,8 +138,8 @@ class PolarLines {
         const lastLine = joined.slice(-1)[0];
         if (firstLine
                 && firstLine !== lastLine
-                && firstLine.source
-                && firstLine.source === lastLine.source
+                && firstLine.sourceId
+                && firstLine.sourceId === lastLine.sourceId
                 && lastLine.end.equals(firstLine.start)) {
             firstLine.start = lastLine.start;
             joined.pop();
