@@ -266,8 +266,16 @@ describe("PolarLines", function () {
                                 || hiddenLine.end.angle !== visibleLine.end.angle) {
                             continue;
                         }
-                        expect(hiddenLine.start.length).to.be.at.least(visibleLine.start.length);
-                        expect(hiddenLine.end.length).to.be.at.least(visibleLine.end.length);
+                        if (hiddenLine.start.length < visibleLine.start.length) {
+                            expect(hiddenLine.start.length).to.shallowDeepAlmostEqual(visibleLine.start.length);
+                        } else {
+                            expect(hiddenLine.start.length).to.be.at.least(visibleLine.start.length);
+                        }
+                        if (hiddenLine.end.length < visibleLine.end.length) {
+                            expect(hiddenLine.end.length).to.shallowDeepAlmostEqual(visibleLine.end.length);
+                        } else {
+                            expect(hiddenLine.end.length).to.be.at.least(visibleLine.end.length);
+                        }
                     }
                 }
             }

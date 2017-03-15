@@ -94,11 +94,50 @@ class PolarLines {
         const byKey = groupBy(lines,
             line => `${line.start.angle},${line.end.angle}`);
         const groups = Object.keys(byKey).map(key => byKey[key]);
-        const nonOverlapping = groups
-            .map(sortWithCompareFunc)
+
+        const nonOverlapping = this.sortGroupsByLeastDeviation(groups)
             .map(group => group[0]);
 
         return nonOverlapping;
+    }
+
+    static sortGroupsByLeastLengths(groups) {
+        const sorted = groups
+            .map(sortWithCompareFunc);
+
+        return sorted
+    }
+
+    static sortGroupsByLeastDeviation(groups) {
+        // Instead of sorting by least lengths, we sort by least deviation from
+        // shortest lengths, to account for a line's end intersecting another
+        // line
+        const shortestStartLengths = groups
+            .map(lines => lines.map(line => line.start.length))
+            .map(sortWithCompare)
+            .map(lengths => lengths[0]);
+        const shortestEndLengths = groups
+            .map(lines => lines.map(line => line.end.length))
+            .map(sortWithCompare)
+            .map(lengths => lengths[0]);
+        function deviationCompareFuncFor(shortestStartLength, shortestEndLength) {
+            function deviationSortKey(line) {
+                return Math.abs(line.start.length - shortestStartLength)
+                    + Math.abs(line.end.length - shortestEndLength);
+            }
+
+            function deviationCompareFunc(lhs, rhs) {
+                return compare(deviationSortKey(lhs), deviationSortKey((rhs)));
+            }
+
+            return deviationCompareFunc;
+        }
+        const sorted =
+            zip(shortestStartLengths, shortestEndLengths, groups)
+                .map(([shortestStartLength, shortestEndLength, lines]) => lines.sort(
+                    deviationCompareFuncFor(shortestStartLength, shortestEndLength)));
+
+        return sorted
     }
 
     static joinLines(lines) {
