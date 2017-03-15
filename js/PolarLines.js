@@ -112,32 +112,35 @@ class PolarLines {
         // Instead of sorting by least lengths, we sort by least deviation from
         // shortest lengths, to account for a line's end intersecting another
         // line
-        const shortestStartLengths = groups
-            .map(lines => lines.map(line => line.start.length))
-            .map(sortWithCompare)
-            .map(lengths => lengths[0]);
-        const shortestEndLengths = groups
-            .map(lines => lines.map(line => line.end.length))
-            .map(sortWithCompare)
-            .map(lengths => lengths[0]);
-        function deviationCompareFuncFor(shortestStartLength, shortestEndLength) {
-            function deviationSortKey(line) {
-                return Math.abs(line.start.length - shortestStartLength)
-                    + Math.abs(line.end.length - shortestEndLength);
-            }
-
-            function deviationCompareFunc(lhs, rhs) {
-                return compare(deviationSortKey(lhs), deviationSortKey((rhs)));
-            }
-
-            return deviationCompareFunc;
-        }
-        const sorted =
-            zip(shortestStartLengths, shortestEndLengths, groups)
-                .map(([shortestStartLength, shortestEndLength, lines]) => lines.sort(
-                    deviationCompareFuncFor(shortestStartLength, shortestEndLength)));
+        const sorted = groups
+            .map(this.sortLinesByLeastDeviation);
 
         return sorted
+    }
+
+    static sortLinesByLeastDeviation(lines) {
+        const shortestStartLength = lines
+            .map(line => line.start.length)
+            .sort(compare)
+            [0];
+        const shortestEndLength = lines
+            .map(line => line.end.length)
+            .sort(compare)
+            [0];
+
+        function deviationSortKey(line) {
+            return Math.abs(line.start.length - shortestStartLength)
+                + Math.abs(line.end.length - shortestEndLength);
+        }
+
+        function deviationCompareFunc(lhs, rhs) {
+            return compare(deviationSortKey(lhs), deviationSortKey((rhs)));
+        }
+
+        const sortedLines = lines
+            .sort(deviationCompareFunc);
+
+        return sortedLines;
     }
 
     static joinLines(lines) {
