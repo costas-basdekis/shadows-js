@@ -40,6 +40,36 @@ function zip(...arrays) {
     return aMinLengthArray.map((_, index) => arrays.map(array => array[index]));
 }
 
+function unzip(zipped) {
+    if (!zipped.length) {
+        return [];
+    }
+
+    const arrays = [];
+    for (const index of range(0, zipped.length)) {
+        const item = zipped[index];
+        // Push arrays with `undefined`s if the item is longer than previous
+        // ones
+        let paddedItem = item;
+        if (item.length > arrays.length) {
+            // Fill with arrays with `undefined`s
+            arrays.push(...Array.from({
+                length: item.length - arrays.length,
+            }, _ => Array.from({length: index})));
+        } else if (item.length < arrays.length) {
+            // Pad item with `undefined`s
+            paddedItem = paddedItem.concat(Array.from({
+                length: arrays.length - paddedItem.length,
+            }));
+        }
+        for (const [value, array] of zip(paddedItem, arrays)) {
+            array.push(value);
+        }
+    }
+
+    return arrays;
+}
+
 function cartesian(...arrays) {
     if (!arrays.length) {
         return [];

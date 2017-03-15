@@ -251,6 +251,52 @@ describe("zip", function () {
     });
 });
 
+describe("unzip", function () {
+    it("Should return empty with no empty array", function () {
+        expect(unzip([])).to.deep.equal([]);
+    });
+
+    it("Should return two arrays from units and tuple", function () {
+        expect(unzip([[], [], [3, "c"]])).to.deep.equal(
+            [[undefined, undefined, 3], [undefined, undefined, "c"]]);
+    });
+
+    it("Should return two arrays from tuple and units", function () {
+        expect(unzip([[1, "a"], [], []])).to.deep.equal(
+            [[1, undefined, undefined], ["a", undefined, undefined]]);
+    });
+
+    it("Should return pairs with same size arrays", function () {
+        expect(unzip([[1, "a"], [2, "b"], [3, "c"]])).to.deep.equal(
+            [[1, 2, 3], ["a", "b", "c"]]);
+    });
+
+    it("Should return two arrays from tuples", function () {
+        expect(unzip([[1, "a"], [2, "b"], [3, "c"]])).to.deep.equal(
+            [[1, 2, 3], ["a", "b", "c"]]);
+    });
+
+    it("Should return three arrays from triples", function () {
+        expect(unzip([[1, "a", "i"], [2, "b", "ii"], [3, "c", "iii"]])).to.deep.equal(
+            [[1, 2, 3], ["a", "b", "c"], ["i", "ii", "iii"]]);
+    });
+
+    it("Should return three arrays from tuples and triples", function () {
+        expect(unzip([[1, "a"], [2, "b"], [3, "c", "iii"], [4, "d", "iv"]])).to.deep.equal(
+            [[1, 2, 3, 4], ["a", "b", "c", "d"], [undefined, undefined, "iii", "iv"]]);
+    });
+
+    it("Should return three arrays from triples and tuples", function () {
+        expect(unzip([[1, "a", "i"], [2, "b", "ii"], [3, "c"], [4, "d"]])).to.deep.equal(
+            [[1, 2, 3, 4], ["a", "b", "c", "d"], ["i", "ii", undefined, undefined]]);
+    });
+
+    it("Should return three arrays from triple and tuple and triple and tuple", function () {
+        expect(unzip([[1, "a", "i"], [2, "b"], [3, "c", "iii"], [4, "d"]])).to.deep.equal(
+            [[1, 2, 3, 4], ["a", "b", "c", "d"], ["i", undefined, "iii", undefined]]);
+    });
+});
+
 describe("cartesian", function () {
     it("Should return [] for nothing", function () {
         const toCheck = [];
