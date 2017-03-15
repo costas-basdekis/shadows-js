@@ -95,30 +95,25 @@ class PolarLines {
             line => `${line.start.angle},${line.end.angle}`);
         const groups = Object.keys(byKey).map(key => byKey[key]);
 
-        const nonOverlapping = this.sortGroupsByLeastDeviation(groups)
+        // Instead of sorting by least lengths, we sort by least deviation from
+        // shortest lengths, to account for a line's end intersecting another
+        // line
+        const sortFunc = this.sortLinesByLeastDeviation;
+        // const = sortWithCompareFunc;
+
+        const nonOverlapping = groups
+            .map(sortFunc)
             .map(group => group[0]);
 
         return nonOverlapping;
     }
 
-    static sortGroupsByLeastLengths(groups) {
-        const sorted = groups
-            .map(sortWithCompareFunc);
-
-        return sorted
-    }
-
-    static sortGroupsByLeastDeviation(groups) {
-        // Instead of sorting by least lengths, we sort by least deviation from
-        // shortest lengths, to account for a line's end intersecting another
-        // line
-        const sorted = groups
-            .map(this.sortLinesByLeastDeviation);
-
-        return sorted
-    }
-
     static sortLinesByLeastDeviation(lines) {
+        // Sort the lines by least deviation from the shortest lengths. This
+        // means we can avoid the issue were a line's end intersects another
+        // line, and the first line has a slightly smaller length than the the
+        // point on the second line, thus tolerating the shortest line to be
+        // slightly more lengthy than another one, on one end.
         const shortestStartLength = lines
             .map(line => line.start.length)
             .sort(compare)
