@@ -24,6 +24,14 @@ class CartesianPoint {
         return this.plus(other, -multiplier);
     }
 
+    dot(other) {
+        return this.x * other.x + this.y * other.y;
+    }
+
+    projectOn(other) {
+        return other.dot(this) / other.length();
+    }
+
     length() {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }

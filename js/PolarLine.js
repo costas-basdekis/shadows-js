@@ -57,11 +57,18 @@ class PolarLine {
             ${cartesianLine.end.x},${cartesianLine.end.y}
         `);
         const colour = (Math.abs(hash) & 0xFFFFFF).toString(16);
-        return new PolarLine(
+        const polarLine = new PolarLine(
             PolarPoint.fromCartesianPoint(cartesianLine.start.minus(center)),
             PolarPoint.fromCartesianPoint(cartesianLine.end.minus(center)),
             colour
         );
+
+        const closestPoint = cartesianLine.closestPoint();
+        polarLine.minDistanceAngle = closestPoint.angle();
+        polarLine.minDistance = closestPoint.length();
+        polarLine.maxDistance = cartesianLine.maxDistance();
+
+        return polarLine;
     }
 
     denormalisedStartAngle() {
