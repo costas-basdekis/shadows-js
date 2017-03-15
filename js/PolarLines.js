@@ -11,8 +11,9 @@ class PolarLines {
     }
 
     fromCartesianLines(center, cartesianLines) {
-        this.lines = cartesianLines.lines.map(
-            line => PolarLine.fromCartesianLine(center, line));
+        this.lines = cartesianLines.lines
+            .map(line => PolarLine.fromCartesianLine(center, line))
+            .filter(line => line.start.length > 0 && line.end.length > 0);
 
         return this;
     }
