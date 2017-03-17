@@ -10,6 +10,13 @@ class CartesianLine {
         return `[${this.start} - ${this.end}]`;
     }
 
+    plus(point, multiplier=1) {
+        return new CartesianLine(
+            this.start.plus(point, multiplier),
+            this.end.plus(point, multiplier)
+        );
+    }
+
     closestPoint(point) {
         // The projectOn of point point onto a line is the point on the line
         // closest to point. (And a perpendicular to the line at the projectOn
