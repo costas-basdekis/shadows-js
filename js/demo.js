@@ -51,8 +51,8 @@ class Demo {
 
     static onMouseDragCenterTool(toolEvent) {
         const center = {
-            x: toolEvent.event.layerX,
-            y: toolEvent.event.layerY,
+            x: toolEvent.point.x,
+            y: toolEvent.point.y,
         };
         this.centerPath.position = center;
         this.demo.onMouseDrag(toolEvent);
