@@ -258,5 +258,23 @@ describe("PolarLine", function () {
                 expect(() => line.lengthAtAngle(3)).to.throw(Error);
             });
         });
+
+        describe("#maxDistance", function () {
+            it("Should be the max of the lines distances", function () {
+                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
+                    const backAndForth = PolarLine.fromCartesianLine({x: 0, y: 0}, line.toCartesianLine());
+                    expect(backAndForth.maxDistance).to.equal(Math.max(backAndForth.start.length, backAndForth.end.length));
+                }
+            });
+        });
+
+        describe("#minDistance < #maxDistance", function () {
+            it("minDistance should be less than maxDistance", function () {
+                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
+                    const backAndForth = PolarLine.fromCartesianLine({x: 0, y: 0}, line.toCartesianLine());
+                    expect(backAndForth.minDistance).be.lessThan(backAndForth.maxDistance);
+                }
+            });
+        });
     });
 });
