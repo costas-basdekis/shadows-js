@@ -72,6 +72,12 @@ class PolarLine {
         return polarLine;
     }
 
+    toCartesianLine() {
+        return new CartesianLine(
+            this.start.toCartesianPoint(),
+            this.end.toCartesianPoint());
+    }
+
     denormalisedStartAngle() {
         if (this.goesOverPI) {
             return this.start.angle - 2 * Math.PI;
