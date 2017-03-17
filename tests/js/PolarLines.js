@@ -14,7 +14,7 @@ describe("PolarLines", function () {
     });
     const cartesianRooms = Rooms.rooms
         .filter(room => !room.isSlow)
-        .map(room => room.create());
+        .map(room => new room().create());
     const cartesianRoomsLines = cartesianRooms.map(lines => new CartesianLines().addLines(lines));
     const centersAndRooms = cartesian(centers, cartesianRoomsLines).concat([
         // Because the two lines intersect on a point, on some angles, the

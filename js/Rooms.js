@@ -10,14 +10,35 @@ class Rooms {
         }
     }
 
-    static createBoundary() {
+    static register(room) {
+        if (!this.rooms) {
+            this.rooms = [];
+            this.roomsByName = {};
+        }
+
+        this.rooms.push(room);
+        this.roomsByName[room.name] = room;
+    }
+}
+
+class Room {
+    createBoundary() {
         return CartesianLines.box(
             new CartesianPoint(10, 10),
             new CartesianPoint(650, 650)
         );
     }
 
-    static createMaze() {
+    create() {
+        throw new Error("Abstract method `Room.create` must be overridden");
+    }
+}
+
+Room.label = null;
+Room.isSlow = false;
+
+class MazeRoom extends Room {
+    create() {
         return [].concat(
             this.createBoundary(),
             CartesianLines.linear(
@@ -39,8 +60,13 @@ class Rooms {
             )
         );
     }
+}
 
-    static createMaze2() {
+Rooms.register(MazeRoom);
+MazeRoom.label = "Maze";
+
+class Maze2Room extends Room {
+    create() {
         return [].concat(
             this.createBoundary(),
             CartesianLines.linear(
@@ -73,8 +99,13 @@ class Rooms {
             )
         );
     }
+}
 
-    static createShapes() {
+Rooms.register(Maze2Room);
+Maze2Room.label = "Maze 2";
+
+class ShapesRoom extends Room {
+    create() {
         return [].concat(
             this.createBoundary(),
             CartesianLines.regularPolygon({x: 400, y: 400}, 50, 3),
@@ -83,8 +114,13 @@ class Rooms {
             CartesianLines.star({x: 200, y: 500}, 35, 65, 7)
         );
     }
+}
 
-    static createShapes2() {
+Rooms.register(ShapesRoom);
+ShapesRoom.label = "Polygons and Stars";
+
+class Shapes2Room extends Room {
+    create() {
         return [].concat(
             this.createBoundary(),
             ...cartesian(range(0, 3), range(0, 3))
@@ -98,8 +134,13 @@ class Rooms {
                         : CartesianLines.star(center, 15, 25, count % 4 + 8))
         );
     }
+}
 
-    static createShapes3() {
+Rooms.register(Shapes2Room);
+Shapes2Room.label = "More Polygons and Stars";
+
+class Shapes3Room extends Room {
+    create() {
         return [].concat(
             this.createBoundary(),
             ...cartesian(range(0, 6), range(0, 6))
@@ -115,36 +156,6 @@ class Rooms {
     }
 }
 
-Rooms.rooms = [
-    {
-        create: Rooms.createMaze.bind(Rooms),
-        name: "createMaze",
-        label: "Maze",
-    },
-    {
-        create: Rooms.createMaze2.bind(Rooms),
-        name: "createMaze2",
-        label: "Maze 2",
-    },
-    {
-        create: Rooms.createShapes.bind(Rooms),
-        name: "createShapes",
-        label: "Polygons and Stars",
-    },
-    {
-        create: Rooms.createShapes2.bind(Rooms),
-        name: "createShapes2",
-        label: "More Polygons and Stars",
-    },
-    {
-        create: Rooms.createShapes3.bind(Rooms),
-        name: "createShapes3",
-        label: "Even More Polygons and Stars",
-        isSlow: true,
-    },
-];
-
-Rooms.roomsByName = {};
-for (const room of Rooms.rooms) {
-    Rooms.roomsByName[room.name] = room;
-}
+Rooms.register(Shapes3Room);
+Shapes3Room.label = "Even More Polygons and Stars";
+Shapes3Room.isSlow = true;

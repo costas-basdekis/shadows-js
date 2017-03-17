@@ -14,7 +14,7 @@ class Demo {
 
         this.center = {x: 50, y: 50};
 
-        this.createRoom(Rooms.roomsByName['createMaze']);
+        this.createRoom(MazeRoom);
         this.updateRays();
         this.centerTool = this.createCenterTool(this.center);
 
@@ -79,7 +79,7 @@ class Demo {
 
     createRoom(room) {
         this.walls.clear();
-        this.walls.addLines(room.create());
+        this.walls.addLines(new room().create());
         this.walls.updatePath();
         this.walls.path.strokeColor = 'blue';
     }
