@@ -103,6 +103,16 @@ function compare(lhs, rhs) {
     }
 }
 
+function compareWithKey(keyFunc) {
+    function keyCompare(lhs, rhs) {
+        const lKey = keyFunc(lhs);
+        const rKey = keyFunc(rhs);
+        return compare(lKey, rKey);
+    }
+
+    return keyCompare;
+}
+
 function sortWithCompare(array) {
     return array.sort(compare);
 }
