@@ -223,7 +223,6 @@ describe("PolarLines", function () {
                 const visibleLines = PolarLines.removeHiddenLines(splitLines);
                 const hiddenLines = splitLines
                     .filter(line => visibleLines.indexOf(line) === -1);
-                expect(hiddenLines.length).to.be.at.least(1);
                 expect(visibleLines.length).to.be.at.least(1);
                 for (const line of splitLines) {
                     expect((hiddenLines.indexOf(line) !== -1)
@@ -241,7 +240,6 @@ describe("PolarLines", function () {
                 const visibleLines = PolarLines.removeHiddenLines(splitLines);
                 const hiddenLines = splitLines
                     .filter(line => visibleLines.indexOf(line) === -1);
-                expect(hiddenLines.length).to.be.at.least(1);
                 expect(visibleLines.length).to.be.at.least(1);
                 for (const hiddenLine of hiddenLines) {
                     for (const visibleLine of visibleLines) {
