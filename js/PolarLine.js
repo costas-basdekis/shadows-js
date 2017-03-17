@@ -63,10 +63,11 @@ class PolarLine {
             colour
         );
 
-        const closestPoint = cartesianLine.closestPoint();
+        const closestPoint = cartesianLine.closestPoint(center);
+        polarLine.closestPoint = closestPoint;
         polarLine.minDistanceAngle = closestPoint.angle();
         polarLine.minDistance = closestPoint.length();
-        polarLine.maxDistance = cartesianLine.maxDistance();
+        polarLine.maxDistance = cartesianLine.maxDistance(center);
 
         return polarLine;
     }
