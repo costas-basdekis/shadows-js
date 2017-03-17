@@ -1,9 +1,10 @@
 "use strict";
 
 class PolarLines {
-    constructor() {
+    constructor(name=null) {
         this.lines = [];
         this.path = null;
+        this.name = name;
     }
 
     clear() {
@@ -14,6 +15,7 @@ class PolarLines {
         this.lines = cartesianLines.lines
             .map(line => PolarLine.fromCartesianLine(center, line))
             .filter(line => line.start.length > 0 && line.end.length > 0);
+        this.name = cartesianLines.name;
 
         return this;
     }

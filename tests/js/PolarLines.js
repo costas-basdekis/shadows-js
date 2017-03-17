@@ -8,14 +8,13 @@ describe("PolarLines", function () {
     });
 
     const centers = cartesian(range(-50, 650, 200), range(-50, 650, 200))
-        .map(([x ,y]) => ({x: x, y: y}));
+        .map(([x ,y]) => (new CartesianPoint(x, y)));
     it("Should have 16 different centers", function () {
         expect(centers.length).to.equal(16);
     });
-    const cartesianRooms = Rooms.rooms
+    const cartesianRoomsLines = Rooms.rooms
         .filter(room => !room.isSlow)
-        .map(room => new room().create());
-    const cartesianRoomsLines = cartesianRooms.map(lines => new CartesianLines().addLines(lines));
+        .map(room => new room().createLines());
     const centersAndRooms = cartesian(centers, cartesianRoomsLines).concat([
         // Because the two lines intersect on a point, on some angles, the
         // longer triangle is slightly smaller on the common point:
@@ -24,7 +23,7 @@ describe("PolarLines", function () {
         //     // This wins --------------------------vv, this is ignored --------v
         //     "[{P:2.115253490184268@127.4244874425634} -  {P:2.2420264583991414@266.9026039588224}]"
         // ]
-        [{x: 441, y: 316}, new CartesianLines().addLines([].concat(
+        [new CartesianPoint(441, 316), new CartesianLines(null, "Intersecting lines").addLines([].concat(
             CartesianLines.linear(
                 [300, 350],
                 [450, 500]
@@ -35,7 +34,7 @@ describe("PolarLines", function () {
             )
         ))],
         // The solution is to not have lines intersect
-        [{x: 441, y: 316}, new CartesianLines().addLines([].concat(
+        [new CartesianPoint(441, 316), new CartesianLines(null, "Intersecting lines bug buster").addLines([].concat(
             // So break the line at the intersection point
             CartesianLines.linear(
                 [300, 350],
@@ -52,54 +51,54 @@ describe("PolarLines", function () {
         ))]
     ]);
 
-    describe("#fromCartesianLines", function () {
-        it("Should be able to crate maze room", function () {
-            for (const [center, cartesianRoomLines] of centersAndRooms) {
+    function createCasesForCentersAndRooms(func) {
+        for (const [center, cartesianRoomLines] of centersAndRooms) {
+            it(`For room ${cartesianRoomLines.name}, center ${center}`, function () {
                 const room = new PolarLines()
                     .fromCartesianLines(center, cartesianRoomLines);
-            }
+                func(center, cartesianRoomLines, room);
+            });
+        }
+    }
+
+    describe("#fromCartesianLines", function () {
+        describe("Should be able to crate maze room", function () {
+            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
+            });
         });
     });
 
     describe("#simplify", function () {
-        it("Should work", function () {
-            for (const [center, cartesianRoomLines] of centersAndRooms) {
-                const room = new PolarLines()
-                    .fromCartesianLines(center, cartesianRoomLines);
+        describe("Should work", function () {
+            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
                 room.simplify();
-            }
+            });
         });
     });
 
     describe("#linesAngles", function () {
-        it("Should return all angles in lines", function () {
-            for (const [center, cartesianRoomLines] of centersAndRooms) {
-                const room = new PolarLines()
-                    .fromCartesianLines(center, cartesianRoomLines);
+        describe("Should return all angles in lines", function () {
+            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
                 const angles = PolarLines.linesAngles(room.lines);
                 for (const line of room.lines) {
                     expect(angles).to.contain(line.start.angle);
                     expect(angles).to.contain(line.end.angle);
                 }
-            }
+            });
         });
 
-        it("Should be unique", function () {
-            for (const [center, cartesianRoomLines] of centersAndRooms) {
-                const room = new PolarLines()
-                    .fromCartesianLines(center, cartesianRoomLines);
+        describe("Should be unique", function () {
+            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
                 const angles = PolarLines.linesAngles(room.lines);
                 const uniqueAngles = unique(angles);
                 expect(uniqueAngles).to.deep.equal(angles);
-            }
+            });
         });
     });
 
     describe("#anglesInLines", function () {
-        it("Should contain the correct subsets", function () {
-            for (const [center, cartesianRoomLines] of centersAndRooms) {
-                const room = new PolarLines()
-                    .fromCartesianLines(center, cartesianRoomLines);
+        describe("Should contain the correct subsets", function () {
+            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
                 const angles =
                     PolarLines.linesAngles(room.lines);
                 const anglesInLines =
@@ -113,13 +112,11 @@ describe("PolarLines", function () {
                         }
                     }
                 }
-            }
+            });
         });
 
-        it("Should be unique for each line", function () {
-            for (const [center, cartesianRoomLines] of centersAndRooms) {
-                const room = new PolarLines()
-                    .fromCartesianLines(center, cartesianRoomLines);
+        describe("Should be unique for each line", function () {
+            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
                 const angles =
                     PolarLines.linesAngles(room.lines);
                 const anglesInLines =
@@ -127,13 +124,11 @@ describe("PolarLines", function () {
                 for (const [line, anglesInLine] of zip(room.lines, anglesInLines)) {
                     expect(unique(anglesInLine)).to.deep.equal(anglesInLine);
                 }
-            }
+            });
         });
 
-        it("Should be ordered", function () {
-            for (const [center, cartesianRoomLines] of centersAndRooms) {
-                const room = new PolarLines()
-                    .fromCartesianLines(center, cartesianRoomLines);
+        describe("Should be ordered", function () {
+            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
                 const angles =
                     PolarLines.linesAngles(room.lines);
                 const anglesInLines =
@@ -149,15 +144,13 @@ describe("PolarLines", function () {
                         expect(sorted).to.deep.equal(anglesInLine);
                     }
                 }
-            }
+            });
         });
     });
 
     describe("#splitLines", function () {
-        it("Should create a line for each angle", function () {
-            for (const [center, cartesianRoomLines] of centersAndRooms) {
-                const room = new PolarLines()
-                    .fromCartesianLines(center, cartesianRoomLines);
+        describe("Should create a line for each angle", function () {
+            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
                 const angles = PolarLines.linesAngles(room.lines);
                 const anglesInLines =
                     PolarLines.anglesInLines(room.lines, angles);
@@ -168,13 +161,11 @@ describe("PolarLines", function () {
                         expect(splitLine.start.angle).to.equal(angle);
                     }
                 }
-            }
+            });
         });
 
-        it("Should create consecutive splits", function () {
-            for (const [center, cartesianRoomLines] of centersAndRooms) {
-                const room = new PolarLines()
-                    .fromCartesianLines(center, cartesianRoomLines);
+        describe("Should create consecutive splits", function () {
+            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
                 const angles = PolarLines.linesAngles(room.lines);
                 const anglesInLines =
                     PolarLines.anglesInLines(room.lines, angles);
@@ -191,13 +182,11 @@ describe("PolarLines", function () {
                         expect(previousPoint.length).to.shallowDeepAlmostEqual(nextPoint.length);
                     }
                 }
-            }
+            });
         });
 
-        it("Should create angles that are positive", function () {
-            for (const [center, cartesianRoomLines] of centersAndRooms) {
-                const room = new PolarLines()
-                    .fromCartesianLines(center, cartesianRoomLines);
+        describe("Should create angles that are positive", function () {
+            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
                 const angles = PolarLines.linesAngles(room.lines);
                 const anglesInLines =
                     PolarLines.anglesInLines(room.lines, angles);
@@ -206,13 +195,11 @@ describe("PolarLines", function () {
                     const deltaAngles = splitLines.map(line => line.deltaAngle());
                     expect(deltaAngles.filter(angle => angle < 0)).to.be.empty;
                 }
-            }
+            });
         });
 
-        it("Should create angles that sum to the line's angle", function () {
-            for (const [center, cartesianRoomLines] of centersAndRooms) {
-                const room = new PolarLines()
-                    .fromCartesianLines(center, cartesianRoomLines);
+        describe("Should create angles that sum to the line's angle", function () {
+            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
                 const angles = PolarLines.linesAngles(room.lines);
                 const anglesInLines =
                     PolarLines.anglesInLines(room.lines, angles);
@@ -222,15 +209,13 @@ describe("PolarLines", function () {
                     const anglesSum = deltaAngles.reduce((total, angle) => total + angle, 0);
                     expect(anglesSum).to.shallowDeepAlmostEqual(line.deltaAngle());
                 }
-            }
+            });
         });
     });
 
     describe("removeHiddenLines", function () {
-        it("Hidden lines should be a subset of all lines", function () {
-            for (const [center, cartesianRoomLines] of centersAndRooms) {
-                const room = new PolarLines()
-                    .fromCartesianLines(center, cartesianRoomLines);
+        describe("Hidden lines should be a subset of all lines", function () {
+            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
                 const angles = PolarLines.linesAngles(room.lines);
                 const anglesInLines =
                     PolarLines.anglesInLines(room.lines, angles);
@@ -244,13 +229,11 @@ describe("PolarLines", function () {
                     expect((hiddenLines.indexOf(line) !== -1)
                         !== (visibleLines.indexOf(line) !== -1));
                 }
-            }
+            });
         });
 
-        it("Hidden lines should have a line with higher start/end length", function () {
-            for (const [center, cartesianRoomLines] of centersAndRooms) {
-                const room = new PolarLines()
-                    .fromCartesianLines(center, cartesianRoomLines);
+        describe("Hidden lines should have a line with higher start/end length", function () {
+            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
                 const angles = PolarLines.linesAngles(room.lines);
                 const anglesInLines =
                     PolarLines.anglesInLines(room.lines, angles);
@@ -278,13 +261,11 @@ describe("PolarLines", function () {
                         }
                     }
                 }
-            }
+            });
         });
 
-        it("Visible lines shouldn't have a line with higher start/end length", function () {
-            for (const [center, cartesianRoomLines] of centersAndRooms) {
-                const room = new PolarLines()
-                    .fromCartesianLines(center, cartesianRoomLines);
+        describe("Visible lines shouldn't have a line with higher start/end length", function () {
+            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
                 const angles = PolarLines.linesAngles(room.lines);
                 const anglesInLines =
                     PolarLines.anglesInLines(room.lines, angles);
@@ -300,7 +281,7 @@ describe("PolarLines", function () {
                         expect(visibleLine1.end.length).to.be.at.least(visibleLine2.end.length);
                     }
                 }
-            }
+            });
         });
     });
 });

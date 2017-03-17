@@ -6,6 +6,10 @@ class CartesianPoint {
         this.y = y;
     }
 
+    toString() {
+        return `{C:${this.x},${this.y}}`;
+    }
+
     equals(other) {
         if (!other) {
             return false;

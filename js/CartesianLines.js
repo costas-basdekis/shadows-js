@@ -1,10 +1,11 @@
 "use strict";
 
 class CartesianLines {
-    constructor(canvas) {
+    constructor(canvas, name=null) {
         this.canvas = canvas;
         this.lines = [];
         this.path = null;
+        this.name = name;
     }
 
     clear() {

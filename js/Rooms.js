@@ -22,15 +22,31 @@ class Rooms {
 }
 
 class Room {
+    constructor(width=660, height=660, marginX=10, marginY=10, name=null) {
+        this.width = width;
+        this.height = height;
+        this.marginX = marginX;
+        this.marginY = marginY;
+        this.name = name || this.constructor.name;
+    }
+
     createBoundary() {
         return CartesianLines.box(
-            new CartesianPoint(10, 10),
-            new CartesianPoint(650, 650)
+            new CartesianPoint(this.marginX, this.marginY),
+            new CartesianPoint(this.width - this.marginX, this.height - this.marginY)
         );
     }
 
     create() {
         throw new Error("Abstract method `Room.create` must be overridden");
+    }
+
+    createLines(canvas) {
+        const lines = new CartesianLines(canvas, this.name);
+        lines.addLines(this.create());
+        lines.name = this.name;
+
+        return lines
     }
 }
 
