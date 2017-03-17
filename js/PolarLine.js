@@ -187,6 +187,24 @@ class PolarLine {
         return this.denormalisedEndAngle() - this.start.angle;
     }
 
+    strictlyIntersects(other) {
+        return (
+            this.start.angle === other.start.angle
+            || this.end.angle === other.end.angle
+            || this.strictlyContainsAngle(other.start.angle)
+            || this.strictlyContainsAngle(other.end.angle)
+            || other.strictlyContainsAngle(this.start.angle)
+            || other.strictlyContainsAngle(this.end.angle)
+        );
+    }
+
+    intersects(other) {
+        return (
+            this.containsAngle(other.start.angle)
+            || other.containsAngle(this.start.angle)
+        );
+    }
+
     toPath(center) {
         const path = new paper.Path();
 
