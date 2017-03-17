@@ -35,6 +35,16 @@ class PolarPoint {
         return compareTuples(this.sortKey(), other.sortKey()) === 0;
     }
 
+    clockwiseAngle(angle) {
+        angle = PolarPoint.normaliseAngle(angle);
+
+        if (angle >= this.angle) {
+            return angle - this.angle;
+        }
+
+        return 2 * Math.PI + angle - this.angle
+    }
+
     static fromCartesianPoints(center, point) {
         const delta = point.minus(center);
         return this.fromCartesianPoint(delta);
