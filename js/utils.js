@@ -154,3 +154,21 @@ function groupBy(array, keyFunc=x => x) {
 
     return byKey;
 }
+
+function randomPick(list) {
+    if (!list.length) {
+        return undefined;
+    }
+
+    const index = Math.floor(Math.random() * (list.length - 1));
+    return list[index];
+}
+
+function randomPop(list) {
+    if (!list.length) {
+        return undefined;
+    }
+
+    const index = Math.floor(Math.random() * (list.length - 1));
+    return list.splice(index, 1)[0];
+}
