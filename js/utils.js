@@ -1,6 +1,13 @@
 "use strict";
 
-function range(min, max, step=1) {
+function range(minOrMax, max, step=1) {
+    let min;
+    if (typeof max === "undefined") {
+        min = 0;
+        max = minOrMax;
+    } else {
+        min = minOrMax;
+    }
     const size = max - min;
     const stepsCount = Math.ceil(size / step);
     if (stepsCount <= 0) {
