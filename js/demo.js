@@ -1,7 +1,8 @@
 "use strict";
 
 class Demo {
-    constructor(canvas, roomsElement, xElement, yElement, fpsElement) {
+    constructor(canvas, roomsElement, xElement, yElement, fpsElement,
+                firstRoom=RandomMazeRoom) {
         this.canvas = canvas;
         this.roomsElement = roomsElement;
         this.xElement = xElement;
@@ -17,7 +18,7 @@ class Demo {
 
         this.frameTimestamps = [];
 
-        this.createRoom(MazeRoom);
+        this.createRoom(firstRoom);
         this.updateRays();
         this.centerTool = this.createCenterTool(this.center);
 

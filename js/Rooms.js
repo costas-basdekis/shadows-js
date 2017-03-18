@@ -53,6 +53,22 @@ class Room {
 Room.label = null;
 Room.isSlow = false;
 
+class RandomMazeRoom extends Room {
+    create() {
+        const maze = new Maze(20, 20);
+        // console.log(`${maze}`);
+        const mazeCoordinatesLists = maze.toCoordinatesLists(40, 20, 20);
+        const mazePointsLists = mazeCoordinatesLists
+            .map(list => CartesianLines.linear(...list));
+        return [].concat(
+            ...mazePointsLists
+        );
+    }
+}
+
+Rooms.register(RandomMazeRoom);
+RandomMazeRoom.label = "Random maze";
+
 class MazeRoom extends Room {
     create() {
         return [].concat(

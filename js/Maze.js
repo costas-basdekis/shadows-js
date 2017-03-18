@@ -110,11 +110,44 @@ class Maze {
         this.horizontalWalls[wall.y][wall.x] = false;
     }
 
-    verticalWallIsOpen(wall) {
-        return !this.verticalWalls[wall.y][wall.x];
+    verticalWallIsClosed(wall) {
+        return this.verticalWalls[wall.y][wall.x];
     }
 
-    horizontalWallIsOpen(wall) {
-        return !this.horizontalWalls[wall.y][wall.x];
+    horizontalWallIsClosed(wall) {
+        return this.horizontalWalls[wall.y][wall.x];
+    }
+
+    toCoordinatesLists(size, offsetX=0, offsetY=0) {
+        const borderList = [].concat(
+            // Top, going right: [0, 0] -> [width - 1, 0]
+            range(this.width)
+                .map(index => [index, 0]),
+            // Right, going down: [width, 0] - > [width, height - 1]
+            range(this.height)
+                .map(index => [this.width, index]),
+            // Bottom, going left: [width, height] -> [1, height]
+            range(this.width, 0, -1)
+                .map(index => [index, this.height]),
+            // Left, going up: [0, height] -> [0, 1]
+            range(this.height, 0, -1)
+                .map(index => [0, index])
+        );
+        borderList.push(borderList[0]);
+        const verticalWallsLists =
+            cartesian(range(this.width - 1), range(this.height))
+                .filter(([x, y]) => this.verticalWallIsClosed({x, y}))
+                .map(([x, y]) => [[x + 1, y], [x + 1, y + 1]]);
+        const horizontalWallsLists =
+            cartesian(range(this.width), range(this.height - 1))
+                .filter(([x, y]) => this.horizontalWallIsClosed({x, y}))
+                .map(([x, y]) => [[x, y + 1], [x + 1, y + 1]]);
+        const lists = [].concat(
+            [borderList], verticalWallsLists, horizontalWallsLists);
+        const coordinatesLists = lists
+            .map(list => list
+                .map(([x, y]) => [offsetX + x * size, offsetY + y * size]));
+
+        return coordinatesLists;
     }
 }
