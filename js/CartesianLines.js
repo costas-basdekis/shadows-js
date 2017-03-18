@@ -106,6 +106,9 @@ class CartesianLines {
             Math.cos(angle) * radius + center.x,
             Math.sin(angle) * radius + center.y
         ]);
+        // Make sure the first and last points are truly the same
+        points[points.length - 1] = points[0];
+
         return this.linear(...points);
     }
 
@@ -124,6 +127,9 @@ class CartesianLines {
                 Math.cos(angle) * radius + center.x,
                 Math.sin(angle) * radius + center.y
             ]);
+        // Make sure the first and last points are truly the same
+        points[points.length - 1] = points[0];
+
         return this.linear(...points);
     }
 
