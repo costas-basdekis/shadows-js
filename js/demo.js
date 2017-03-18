@@ -50,18 +50,39 @@ class Demo {
     }
 
     static onMouseDragCenterTool(toolEvent) {
-        const center = {
-            x: toolEvent.point.x,
-            y: toolEvent.point.y,
-        };
+        const center = this.demo.getPoint(toolEvent);
         this.centerPath.position = center;
-        this.demo.onMouseDrag(toolEvent);
+        this.demo.onMouseDrag(toolEvent, center);
     }
 
-    onMouseDrag(toolEvent) {
+    getPoint(toolEvent) {
+        if (toolEvent.event instanceof TouchEvent) {
+            return this.getTouchPoint(toolEvent);
+        } else {
+            return this.getMousePoint(toolEvent);
+        }
+    }
+
+    getTouchPoint(toolEvent) {
+        const boundingClientRect = this.canvas.getBoundingClientRect();
+        const scale = 3;
+        // Why 3? Nobody knows :(
+        const touch = toolEvent.event.changedTouches[0];
+        const center = {
+            x: (touch.pageX - boundingClientRect.left) / scale,
+            y: (touch.pageY - boundingClientRect.top) / scale,
+        };
+        return center;
+    }
+
+    getMousePoint(toolEvent) {
+        return toolEvent.point;
+    }
+
+    onMouseDrag(toolEvent, center) {
         this.center = {
-            x: toolEvent.event.layerX,
-            y: toolEvent.event.layerY,
+            x: center.x,
+            y: center.y,
         };
         this.updateRays();
         this.updateCoordsDisplay();
