@@ -27,18 +27,24 @@
         <a href="https://github.com/costas-basdekis/Shadows2.js">GitHub Repo</a>
     </div>
 
-    <div>
-        <label>
-            Room
-            <select id="rooms"></select>
-        </label>
-        <label>
-            X: <span id="x"></span>
-            Y: <span id="y"></span>
-        </label>
-        <label>
-            FPS: <span id="fps"></span>
-        </label>
+    <div id="settings">
+        <div>
+            <label>
+                Room
+                <select id="rooms"></select>
+            </label>
+            <label>Show walls <input type="checkbox" id="show-walls" checked="checked"></label>
+            <label>Show rays <input type="checkbox" id="show-rays"></label>
+        </div>
+        <div>
+            <label>
+                X: <span id="x"></span>
+                Y: <span id="y"></span>
+            </label>
+            <label>
+                FPS: <span id="fps"></span>
+            </label>
+        </div>
     </div>
 
     <canvas id="myCanvas" resize width="1024" height="1024"></canvas>
@@ -51,7 +57,9 @@
             document.getElementById("rooms"),
             document.getElementById("x"),
             document.getElementById("y"),
-            document.getElementById("fps"));
+            document.getElementById("fps"),
+            document.getElementById("show-walls"),
+            document.getElementById("show-rays"));
     </script>
 </body>
 </html>

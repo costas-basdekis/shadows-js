@@ -2,12 +2,14 @@
 
 class Demo {
     constructor(canvas, roomsElement, xElement, yElement, fpsElement,
-                firstRoom=RandomMazeRoom) {
+                showWallsElement, showRaysElement, firstRoom=RandomMazeRoom) {
         this.canvas = canvas;
         this.roomsElement = roomsElement;
         this.xElement = xElement;
         this.yElement = yElement;
         this.fpsElement = fpsElement;
+        this.showWallsElement = showWallsElement;
+        this.showRaysElement = showRaysElement;
 
         paper.setup(this.canvas);
 
@@ -24,6 +26,8 @@ class Demo {
 
         Rooms.populateComboBox(roomsElement);
         this.roomsElement.onchange = this.roomsOnChange.bind(this);
+        this.showWallsElement.onchange = this.showWallsOnChange.bind(this);
+        this.showRaysElement.onchange = this.showRaysOnChange.bind(this);
     }
 
     roomsOnChange(e) {
@@ -31,6 +35,38 @@ class Demo {
         const room = Rooms.roomsByName[selected.value];
         this.createRoom(room);
         this.updateRays();
+    }
+
+    showWallsOnChange(e) {
+        this.updateWallsShow();
+    }
+
+    showRaysOnChange(e) {
+        this.updateRaysShow();
+    }
+
+    updateWallsShow() {
+        if (this.showWalls) {
+            this.walls.updatePath();
+        } else {
+            this.walls.clearPath();
+        }
+    }
+
+    updateRaysShow() {
+        if (this.showRays) {
+            this.rays.path.strokeColor = 'yellow';
+        } else {
+            this.rays.path.strokeColor = null;
+        }
+    }
+
+    get showWalls() {
+        return this.showWallsElement.checked;
+    }
+
+    get showRays() {
+        return this.showRaysElement.checked;
     }
 
     createCenterTool(center) {
@@ -96,7 +132,7 @@ class Demo {
         this.rays.simplify();
 
         this.rays.updatePath(this.center);
-        this.rays.path.strokeColor = 'yellow';
+        this.updateRaysShow();
         this.rays.path.fillColor = 'green';
         const end = new Date().getTime();
         this.calculateFPS(end - start);
@@ -105,7 +141,7 @@ class Demo {
     createRoom(room) {
         this.walls.clear();
         this.walls.addLines(new room().create());
-        this.walls.updatePath();
+        this.updateWallsShow();
         this.walls.path.strokeColor = 'blue';
     }
 

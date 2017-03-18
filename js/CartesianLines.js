@@ -19,6 +19,13 @@ class CartesianLines {
         CartesianLines.toPath(this.lines, this.path);
     }
 
+    clearPath() {
+        if (!this.path) {
+            this.path = new paper.CompoundPath();
+        }
+        CartesianLines.toPath([], this.path);
+    }
+
     static toPath(lines, compoundPath=null) {
         if (!compoundPath) {
             compoundPath = new paper.CompoundPath();
