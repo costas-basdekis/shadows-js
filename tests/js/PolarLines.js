@@ -282,4 +282,82 @@ describe("PolarLines", function () {
             });
         });
     });
+
+    describe("#joinLines", function () {
+        it("Should be join 3 consecutive lines", function () {
+            const lines = [
+                new PolarLine(new PolarPoint(0, 10), new PolarPoint(1, 10)),
+                new PolarLine(new PolarPoint(1, 10), new PolarPoint(2, 10)),
+                new PolarLine(new PolarPoint(2, 10), new PolarPoint(3, 10)),
+            ];
+            for (const line of lines) {
+                line.sourceId = 1;
+            }
+            const joinedLines = PolarLines.joinLines(lines);
+            const expectedJoinedLine = new PolarLine(
+                new PolarPoint(0, 10), new PolarPoint(3, 10));
+            expect(joinedLines.map(line => `${line}`)).to.deep.equal([expectedJoinedLine].map(line => `${line}`));
+        });
+
+        it("Should be join 3 consecutive lines in reverse", function () {
+            const lines = [
+                new PolarLine(new PolarPoint(2, 10), new PolarPoint(3, 10)),
+                new PolarLine(new PolarPoint(1, 10), new PolarPoint(2, 10)),
+                new PolarLine(new PolarPoint(0, 10), new PolarPoint(1, 10)),
+            ];
+            for (const line of lines) {
+                line.sourceId = 1;
+            }
+            const joinedLines = PolarLines.joinLines(lines);
+            const expectedJoinedLine = new PolarLine(
+                new PolarPoint(0, 10), new PolarPoint(3, 10));
+            expect(joinedLines.map(line => `${line}`)).to.deep.equal([expectedJoinedLine].map(line => `${line}`));
+        });
+    });
+
+    describe("#removeObviouslyHiddenLines", function () {
+        function getLinesWithObviousHiddenLines(lines) {
+            const angles = PolarLines.linesAngles(lines);
+            const anglesInLines =
+                PolarLines.anglesInLines(lines, angles);
+            const splitLines = PolarLines.splitLines(lines, anglesInLines);
+            const visibleLines = PolarLines.removeHiddenLines(splitLines);
+            const joinedLines = PolarLines.joinLines(visibleLines);
+
+            return joinedLines;
+        }
+        function getLinesWithoutObviousHiddenLines(lines) {
+            const reachableLines = PolarLines.removeObviouslyHiddenLines(lines);
+            return getLinesWithObviousHiddenLines(reachableLines);
+        }
+
+        describe("Should be a subset of the lines", function () {
+            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room) {
+                const withoutObviousHiddenLines = getLinesWithoutObviousHiddenLines(room.lines);
+                const newLines = withoutObviousHiddenLines.filter(line => room.lines.indexOf(line) < 0);
+                expect(newLines).to.be.emtpy;
+            });
+        });
+
+        describe("Should get same result, with and without obviously hidden lines", function () {
+            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room) {
+                const withoutObviousHiddenLines = getLinesWithoutObviousHiddenLines(room.lines);
+                const withObviousHiddenLines = getLinesWithObviousHiddenLines(room.lines);
+
+                const textsWithout = withoutObviousHiddenLines
+                    .map(line => `${line}`)
+                    .sort(compare);
+                const textsWith = withObviousHiddenLines
+                    .map(line => `${line}`)
+                    .sort(compare);
+                try {
+                    expect(textsWithout).to.deep.equal(textsWith);
+                } catch (e) {
+                    console.log('Without:', zip(withoutObviousHiddenLines, textsWithout).map(([line, x]) => textsWith.indexOf(x) >= 0 ? null : `${x}/${line.atan2()}.${line.sourceId}.${line.source}.${line.source.atan2()}`).filter(x => x));
+                    console.log('With:', zip(withObviousHiddenLines, textsWith).map(([line, x]) => textsWithout.indexOf(x) >= 0 ? null : `${x}/${line.atan2()}.${line.sourceId}.${line.source}.${line.source.atan2()}`).filter(x => x));
+                    throw e;
+                }
+            });
+        });
+    });
 });

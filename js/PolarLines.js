@@ -21,13 +21,34 @@ class PolarLines {
     }
 
     simplify() {
-        const angles = PolarLines.linesAngles(this.lines);
-        const anglesInLines = PolarLines.anglesInLines(this.lines, angles);
-        const splitLines = PolarLines.splitLines(this.lines, anglesInLines);
+        const reachableLines = PolarLines.removeObviouslyHiddenLines(this.lines);
+        const angles = PolarLines.linesAngles(reachableLines);
+        const anglesInLines = PolarLines.anglesInLines(reachableLines, angles);
+        const splitLines = PolarLines.splitLines(reachableLines, anglesInLines);
         const visibleLines = PolarLines.removeHiddenLines(splitLines);
         const joinedLines = PolarLines.joinLines(visibleLines);
 
         this.lines = joinedLines;
+    }
+
+    static removeObviouslyHiddenLines(lines) {
+        const angles = PolarLines.linesAngles(lines);
+        const anglePairs =
+            zip(angles, angles.slice(1).concat(angles.slice(0, 1)));
+        const linesInAnglePairs = anglePairs.map(
+            ([start, end]) => lines.filter(
+                line => line.containsAngle(start) && line.containsAngle(end)));
+        const minMaxDistancePerAnglePair = linesInAnglePairs
+            .map(linesInAnglePair => linesInAnglePair.map(line => line.maxDistance))
+            .map(maxDistances => Math.min(...maxDistances));
+        const reachableLinesPerAnglePair = zip(linesInAnglePairs, minMaxDistancePerAnglePair)
+            .map(([linesInAnglePair, minMaxDistance]) => linesInAnglePair.filter(
+                line => line.minDistance <= minMaxDistance));
+        const reachableLines = unique(sortWithCompareFunc([].concat(...reachableLinesPerAnglePair)));
+
+        // console.log(`Hid ${lines.length - reachableLines.length} out of ${lines.length}, leaving ${reachableLines.length}`);
+
+        return reachableLines;
     }
 
     static linesAngles(lines) {
