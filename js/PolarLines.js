@@ -151,13 +151,13 @@ class PolarLines {
                 continue;
             }
 
-            if (previousLine.sourceId
-                    && previousLine.sourceId === line.sourceId
+            if (previousLine.isCoLinear(line)
                     && previousLine.end.equals(line.start)) {
                 previousLine.end = line.end;
-            } else {
-                joined.push(line)
+                continue;
             }
+
+            joined.push(line)
         }
 
         const firstLine = joined[0];

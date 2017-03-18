@@ -78,6 +78,26 @@ class PolarLine {
             this.end.toCartesianPoint());
     }
 
+    atan2() {
+        return this.toCartesianLine().atan2();
+    }
+
+    absAtan2() {
+        return this.toCartesianLine().absAtan2();
+    }
+
+    isCoLinear(other) {
+        if (this.sourceId && this.sourceId === other.sourceId) {
+            return true;
+        }
+
+        if (this.absAtan2() === other.absAtan2()) {
+            return true;
+        }
+
+        return false;
+    }
+
     denormalisedStartAngle() {
         if (this.goesOverPI) {
             return this.start.angle - 2 * Math.PI;

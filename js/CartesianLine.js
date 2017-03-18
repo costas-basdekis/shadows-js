@@ -17,6 +17,16 @@ class CartesianLine {
         );
     }
 
+    atan2() {
+        const segment = this.end.minus(this.start);
+        return Math.atan2(segment.y, segment.x);
+    }
+
+    absAtan2() {
+        const atan2 = this.atan2();
+        return atan2 >= 0 ? atan2 : Math.PI + atan2;
+    }
+
     closestPoint(point) {
         // The projectOn of point point onto a line is the point on the line
         // closest to point. (And a perpendicular to the line at the projectOn
