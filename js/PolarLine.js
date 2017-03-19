@@ -161,17 +161,17 @@ class PolarLine {
             throw new Error(`Angle out of range: ${angle} not in ${this}`);
         }
 
-        return PolarLine.polarInterpolation(
-            this.start.angle, this.end.angle,
-            this.start.length, this.end.length,
-            angle);
+        return this.interpolate(angle);
     }
 
-    static polarInterpolation(startAngle, endAngle, startLength, endLength, angle) {
-        const coefs = this.getCoefs(startAngle, endAngle, startLength, endLength);
-        const {x: coCos, y: coSin} = this.solve2x2(coefs);
+    static polarInterpolation(solved2x2, angle) {
+        const {x: coCos, y: coSin} = solved2x2;
 
         return 1 / (coCos * Math.cos(angle) + coSin * Math.sin(angle));
+    }
+
+    interpolate(angle) {
+        return PolarLine.polarInterpolation(this.solved2x2, angle);
     }
 
     static getCoefs(startAngle, endAngle, startLength, endLength) {
@@ -189,6 +189,16 @@ class PolarLine {
         ];
     }
 
+    get coefs() {
+        if (!this._coefs) {
+            this._coefs = PolarLine.getCoefs(
+                this.start.angle, this.end.angle,
+                this.start.length, this.end.length);
+        }
+
+        return this._coefs;
+    }
+
     static solve2x2(coefs) {
         const d = this.discriminate(coefs, 0, 0, 1, 1);
         const dx = this.discriminate(coefs, 0, 2, 1, 1);
@@ -198,6 +208,14 @@ class PolarLine {
             x: dx / d,
             y: dy / d,
         };
+    }
+
+    get solved2x2() {
+        if (!this._solved2x2) {
+            this._solved2x2 = PolarLine.solve2x2(this.coefs);
+        }
+
+        return this._solved2x2;
     }
 
     static discriminate(coefs, x1, y1, x2, y2) {
