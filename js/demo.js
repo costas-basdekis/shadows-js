@@ -1,15 +1,17 @@
 "use strict";
 
 class Demo {
-    constructor(canvas, roomsElement, xElement, yElement, fpsElement,
+    constructor(canvas, roomsElement, xElement, yElement, calculateFpsElement,
                 showWallsElement, showRaysElement, firstRoom=RandomMazeRoom) {
         this.canvas = canvas;
         this.roomsElement = roomsElement;
         this.xElement = xElement;
         this.yElement = yElement;
-        this.fpsElement = fpsElement;
+        this.calculateFpsElement = calculateFpsElement;
         this.showWallsElement = showWallsElement;
         this.showRaysElement = showRaysElement;
+
+        this.calculateFPS = new FPS(this.calculateFpsElement);
 
         paper.setup(this.canvas);
 
@@ -17,8 +19,6 @@ class Demo {
         this.walls = new CartesianLines();
 
         this.center = {x: 50, y: 50};
-
-        this.frameTimestamps = [];
 
         this.createRoom(firstRoom);
         this.updateRays();
@@ -126,16 +126,16 @@ class Demo {
     }
 
     updateRays() {
-        const start = new Date().getTime();
-        this.calculateFPS();
-        this.rays.fromCartesianLines(this.center, this.walls);
-        this.rays.simplify();
+        this.calculateFPS.frameStart();
+        {
+            this.rays.fromCartesianLines(this.center, this.walls);
+            this.rays.simplify();
 
-        this.rays.updatePath(this.center);
-        this.updateRaysShow();
-        this.rays.path.fillColor = 'green';
-        const end = new Date().getTime();
-        this.calculateFPS(end - start);
+            this.rays.updatePath(this.center);
+            this.updateRaysShow();
+            this.rays.path.fillColor = 'green';
+        }
+        this.calculateFPS.frameEnd();
     }
 
     createRoom(room) {
@@ -148,28 +148,5 @@ class Demo {
     updateCoordsDisplay() {
         this.xElement.textContent = this.center.x;
         this.yElement.textContent = this.center.y;
-    }
-
-    calculateFPS(newTime) {
-        if (!newTime) {
-            return;
-        }
-
-        this.frameTimestamps.push(newTime);
-        while (this.frameTimestamps.length > 150) {
-            this.frameTimestamps.shift();
-        }
-
-        const totalMilliseconds = this.frameTimestamps.reduce(
-            (total, current) => total + current, 0);
-        const newFramerate =
-            this.frameTimestamps.length / (totalMilliseconds / 1000);
-        if (this.frameRate) {
-            this.frameRate = (this.frameRate * 9 + newFramerate) / 10;
-        } else {
-            this.frameRate = newFramerate;
-        }
-        this.frameRate = Math.round(this.frameRate);
-        this.fpsElement.textContent = this.frameRate;
     }
 }
