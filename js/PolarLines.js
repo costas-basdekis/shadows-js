@@ -220,6 +220,26 @@ class PolarLines {
     }
 
     static toPathsWithoutRays(lines, center) {
+        const polygon = this.toPolygon(lines, center);
+        const path = new paper.Path();
+
+        if (!polygon.length) {
+            return path;
+        }
+
+        const start = polygon[0];
+        const rest = polygon.slice(1);
+
+        path.moveTo(start);
+
+        for (const point of rest) {
+            path.lineTo(point);
+        }
+
+        return [path];
+    }
+
+    static toPolygon(lines, center) {
         const points = [].concat(...lines.map(line => [
             [
                 line.start,
@@ -232,10 +252,9 @@ class PolarLines {
                 false,
             ],
         ]));
-        const path = new paper.Path();
 
         if (!points.length) {
-            return path;
+            return [];
         }
 
         const previousPoints = points.slice(-1).concat(points.slice(0, -1));
@@ -244,26 +263,28 @@ class PolarLines {
         const [polarEnd, end, endIsStart] = previousPoints[0];
         // console.log(pointsAndPreviousPoints);
 
-        path.moveTo(end);
+        const polygon = [];
+
+        polygon.push(end);
         // console.log(`Start on ${end}`);
 
         for (const [[polarPoint, point, pointIsStart],
-                [previousPolarPoint, previousPoint, previousPointIsStart]]
-                of pointsAndPreviousPoints) {
+            [previousPolarPoint, previousPoint, previousPointIsStart]]
+            of pointsAndPreviousPoints) {
             // console.log(`Is start? ${pointIsStart}, ${polarPoint.angle} ?== ${previousPolarPoint.angle}: ${polarPoint.angle === previousPolarPoint.angle}`)
             if (pointIsStart && polarPoint.angle !== previousPolarPoint.angle) {
-                path.lineTo(center);
+                polygon.push(center);
                 // console.log("Move to center");
             }
             if (!point.equals(previousPoint)) {
-                path.lineTo(point);
+                polygon.push(point);
                 // console.log(`Move to ${point}`);
             } else {
                 // console.log(`Points are equal ${point} === ${previousPoint}`);
             }
         }
 
-        return [path];
+        return polygon;
     }
 
     updatePath(center, showRays=true) {
