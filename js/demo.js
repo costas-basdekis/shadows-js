@@ -2,16 +2,21 @@
 
 class Demo {
     constructor(canvas, roomsElement, xElement, yElement, calculateFpsElement,
-                showWallsElement, showRaysElement, firstRoom=RandomMazeRoom) {
+                drawFpsElement, totalFpsElement, showWallsElement,
+                showRaysElement, firstRoom=RandomMazeRoom) {
         this.canvas = canvas;
         this.roomsElement = roomsElement;
         this.xElement = xElement;
         this.yElement = yElement;
         this.calculateFpsElement = calculateFpsElement;
+        this.drawFpsElement = drawFpsElement;
+        this.totalFpsElement = totalFpsElement;
         this.showWallsElement = showWallsElement;
         this.showRaysElement = showRaysElement;
 
         this.calculateFPS = new FPS(this.calculateFpsElement);
+        this.drawFPS = new FPS(this.drawFpsElement);
+        this.totalFPS = new FPS(this.totalFpsElement);
 
         paper.setup(this.canvas);
 
@@ -126,16 +131,24 @@ class Demo {
     }
 
     updateRays() {
-        this.calculateFPS.frameStart();
+        this.totalFPS.frameStart();
         {
-            this.rays.fromCartesianLines(this.center, this.walls);
-            this.rays.simplify();
+            this.calculateFPS.frameStart();
+            {
+                this.rays.fromCartesianLines(this.center, this.walls);
+                this.rays.simplify();
+            }
+            this.calculateFPS.frameEnd();
 
-            this.rays.updatePath(this.center);
-            this.updateRaysShow();
-            this.rays.path.fillColor = 'green';
+            this.drawFPS.frameStart();
+            {
+                this.rays.updatePath(this.center);
+                this.updateRaysShow();
+                this.rays.path.fillColor = 'green';
+            }
+            this.drawFPS.frameEnd();
         }
-        this.calculateFPS.frameEnd();
+        this.totalFPS.frameEnd();
     }
 
     createRoom(room) {
