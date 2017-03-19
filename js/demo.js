@@ -176,7 +176,7 @@ class Demo {
 
             this.drawFPS.frameStart();
             {
-                this.rays.updatePath(this.center);
+                this.rays.updatePath(this.center, this.showRays);
                 this.updateRaysShow();
                 this.rays.path.fillColor = 'green';
             }

@@ -195,7 +195,7 @@ class PolarLines {
         return joined;
     }
 
-    static toPath(lines, center, compoundPath=null) {
+    static toPath(lines, center, compoundPath=null, showRays=true) {
         if (!compoundPath) {
             compoundPath = new paper.CompoundPath();
         } else {
@@ -204,16 +204,72 @@ class PolarLines {
             }
             compoundPath.children = [];
         }
-        const paths = lines.map(line => line.toPath(center));
+        let paths;
+        if (showRays) {
+            paths = PolarLines.toPathWithRays(lines, center);
+        } else {
+            paths = PolarLines.toPathsWithoutRays(lines, center);
+        }
         compoundPath.children.push(...paths);
 
         return compoundPath;
     }
 
-    updatePath(center) {
+    static toPathWithRays(lines, center) {
+        return lines.map(line => line.toPath(center));
+    }
+
+    static toPathsWithoutRays(lines, center) {
+        const points = [].concat(...lines.map(line => [
+            [
+                line.start,
+                line.start.toCartesianPoint().plus(center),
+                true,
+            ],
+            [
+                line.end,
+                line.end.toCartesianPoint().plus(center),
+                false,
+            ],
+        ]));
+        const path = new paper.Path();
+
+        if (!points.length) {
+            return path;
+        }
+
+        const previousPoints = points.slice(-1).concat(points.slice(0, -1));
+        const pointsAndPreviousPoints = zip(points, previousPoints);
+
+        const [polarEnd, end, endIsStart] = previousPoints[0];
+        // console.log(pointsAndPreviousPoints);
+
+        path.moveTo(end);
+        // console.log(`Start on ${end}`);
+
+        for (const [[polarPoint, point, pointIsStart],
+                [previousPolarPoint, previousPoint, previousPointIsStart]]
+                of pointsAndPreviousPoints) {
+            // console.log(`Is start? ${pointIsStart}, ${polarPoint.angle} ?== ${previousPolarPoint.angle}: ${polarPoint.angle === previousPolarPoint.angle}`)
+            if (pointIsStart && polarPoint.angle !== previousPolarPoint.angle) {
+                path.lineTo(center);
+                // console.log("Move to center");
+            }
+            if (!point.equals(previousPoint)) {
+                path.lineTo(point);
+                // console.log(`Move to ${point}`);
+            } else {
+                // console.log(`Points are equal ${point} === ${previousPoint}`);
+            }
+        }
+
+        return [path];
+    }
+
+    updatePath(center, showRays=true) {
         if (!this.path) {
             this.path = new paper.CompoundPath();
         }
-        PolarLines.toPath(this.lines, center, this.path);
+        PolarLines.toPath(this.lines, center, this.path, showRays);
     }
 }
