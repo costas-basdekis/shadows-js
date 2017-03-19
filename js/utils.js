@@ -100,13 +100,13 @@ function cartesian(...arrays) {
     return result;
 }
 
-function compare(lhs, rhs) {
-    if (lhs < rhs) {
+function compare(lhs, rhs, compareFunc=equals) {
+    if (compareFunc(lhs, rhs)) {
+        return 0
+    } else if (lhs < rhs) {
         return -1;
-    } else if (lhs > rhs) {
-        return 1;
     } else {
-        return 0;
+        return 1;
     }
 }
 
@@ -124,9 +124,9 @@ function sortWithCompare(array) {
     return array.sort(compare);
 }
 
-function compareTuples(lhs, rhs) {
+function compareTuples(lhs, rhs, compareFunc=equals) {
     const compared = zip(lhs, rhs)
-        .map(([lItem, rItem]) => compare(lItem, rItem))
+        .map(([lItem, rItem]) => compare(lItem, rItem, compareFunc))
         .filter(c => c !== 0);
     if (compared.length) {
         return compared[0];
@@ -178,4 +178,13 @@ function randomPop(list) {
 
     const index = Math.floor(Math.random() * (list.length - 1));
     return list.splice(index, 1)[0];
+}
+
+function equals(lhs, rhs) {
+    return lhs === rhs;
+}
+
+function almostEquals(lhs, rhs, precision=0.000001) {
+    const diff = Math.abs(rhs - lhs);
+    return diff <= precision;
 }

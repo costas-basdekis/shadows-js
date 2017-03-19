@@ -173,7 +173,7 @@ class PolarLines {
             }
 
             if (previousLine.isCoLinear(line)
-                    && previousLine.end.equals(line.start)) {
+                    && previousLine.end.almostEquals(line.start)) {
                 previousLine.end = line.end;
                 continue;
             }

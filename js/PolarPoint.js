@@ -35,6 +35,10 @@ class PolarPoint {
         return compareTuples(this.sortKey(), other.sortKey()) === 0;
     }
 
+    almostEquals(other) {
+        return compareTuples(this.sortKey(), other.sortKey(), almostEquals) === 0;
+    }
+
     clockwiseAngle(angle) {
         angle = PolarPoint.normaliseAngle(angle);
 

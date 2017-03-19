@@ -91,7 +91,8 @@ class PolarLine {
             return true;
         }
 
-        if (this.absAtan2() === other.absAtan2()) {
+        // TODO: We still don't catch everything
+        if (almostEquals(this.absAtan2(), other.absAtan2())) {
             return true;
         }
 
