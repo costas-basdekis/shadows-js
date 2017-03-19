@@ -1,22 +1,15 @@
 "use strict";
 
 class Demo {
-    constructor(canvas, roomsElement, xElement, yElement, calculateFpsElement,
-                drawFpsElement, totalFpsElement, showWallsElement,
-                showRaysElement, firstRoom=RandomMazeRoom) {
+    constructor(canvas, settingsElement, firstRoom=RandomMazeRoom) {
         this.canvas = canvas;
-        this.roomsElement = roomsElement;
-        this.xElement = xElement;
-        this.yElement = yElement;
-        this.calculateFpsElement = calculateFpsElement;
-        this.drawFpsElement = drawFpsElement;
-        this.totalFpsElement = totalFpsElement;
-        this.showWallsElement = showWallsElement;
-        this.showRaysElement = showRaysElement;
+        this.settingsElement = settingsElement;
+        this.createElements();
+        this.getElements();
 
-        this.calculateFPS = new FPS(this.calculateFpsElement);
-        this.drawFPS = new FPS(this.drawFpsElement);
-        this.totalFPS = new FPS(this.totalFpsElement);
+        this.calculateFPS = new FPS(this.elements.calculateFps);
+        this.drawFPS = new FPS(this.elements.drawFps);
+        this.totalFPS = new FPS(this.elements.totalFps);
 
         paper.setup(this.canvas);
 
@@ -29,10 +22,51 @@ class Demo {
         this.updateRays();
         this.centerTool = this.createCenterTool(this.center);
 
-        Rooms.populateComboBox(roomsElement);
-        this.roomsElement.onchange = this.roomsOnChange.bind(this);
-        this.showWallsElement.onchange = this.showWallsOnChange.bind(this);
-        this.showRaysElement.onchange = this.showRaysOnChange.bind(this);
+        Rooms.populateComboBox(this.elements.rooms);
+        this.elements.rooms.onchange = this.roomsOnChange.bind(this);
+        this.elements.showWalls.onchange = this.showWallsOnChange.bind(this);
+        this.elements.showRays.onchange = this.showRaysOnChange.bind(this);
+    }
+
+    createElements() {
+        this.settingsElement.innerHTML = `
+            <div>
+                <label>
+                    Room
+                    <select id="rooms"></select>
+                </label>
+                <label>Show walls <input type="checkbox" id="show-walls" checked="checked"></label>
+                <label>Show rays <input type="checkbox" id="show-rays"></label>
+            </div>
+            <div>
+                <label>
+                    X: <span id="x"></span>
+                    Y: <span id="y"></span>
+                </label>
+                <label>
+                    Calculate FPS: <span id="calculate-fps"></span>
+                </label>
+                <label>
+                    Draw FPS: <span id="draw-fps"></span>
+                </label>
+                <label>
+                    Total FPS: <span id="total-fps"></span>
+                </label>
+            </div>
+        `;
+    }
+
+    getElements() {
+        this.elements = {
+            rooms: this.settingsElement.querySelector("#rooms"),
+            x: this.settingsElement.querySelector("#x"),
+            y: this.settingsElement.querySelector("#y"),
+            calculateFps: this.settingsElement.querySelector("#calculate-fps"),
+            drawFps: this.settingsElement.querySelector("#draw-fps"),
+            totalFps: this.settingsElement.querySelector("#total-fps"),
+            showWalls: this.settingsElement.querySelector("#show-walls"),
+            showRays: this.settingsElement.querySelector("#show-rays"),
+        };
     }
 
     roomsOnChange(e) {
@@ -67,11 +101,11 @@ class Demo {
     }
 
     get showWalls() {
-        return this.showWallsElement.checked;
+        return this.elements.showWalls.checked;
     }
 
     get showRays() {
-        return this.showRaysElement.checked;
+        return this.elements.showRays.checked;
     }
 
     createCenterTool(center) {
@@ -159,7 +193,7 @@ class Demo {
     }
 
     updateCoordsDisplay() {
-        this.xElement.textContent = this.center.x;
-        this.yElement.textContent = this.center.y;
+        this.elements.x.textContent = this.center.x;
+        this.elements.y.textContent = this.center.y;
     }
 }

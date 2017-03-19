@@ -30,29 +30,6 @@
     </div>
 
     <div id="settings">
-        <div>
-            <label>
-                Room
-                <select id="rooms"></select>
-            </label>
-            <label>Show walls <input type="checkbox" id="show-walls" checked="checked"></label>
-            <label>Show rays <input type="checkbox" id="show-rays"></label>
-        </div>
-        <div>
-            <label>
-                X: <span id="x"></span>
-                Y: <span id="y"></span>
-            </label>
-            <label>
-                Calculate FPS: <span id="calculate-fps"></span>
-            </label>
-            <label>
-                Draw FPS: <span id="draw-fps"></span>
-            </label>
-            <label>
-                Total FPS: <span id="total-fps"></span>
-            </label>
-        </div>
     </div>
 
     <canvas id="myCanvas" resize width="1024" height="1024"></canvas>
@@ -62,14 +39,7 @@
 
         const demo = new Demo(
             document.getElementById("myCanvas"),
-            document.getElementById("rooms"),
-            document.getElementById("x"),
-            document.getElementById("y"),
-            document.getElementById("calculate-fps"),
-            document.getElementById("draw-fps"),
-            document.getElementById("total-fps"),
-            document.getElementById("show-walls"),
-            document.getElementById("show-rays"));
+            document.getElementById("settings"));
     </script>
 </body>
 </html>
