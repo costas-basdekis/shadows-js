@@ -1,0 +1,29 @@
+{
+  "name": "shadows.js",
+  "version": "1.0.0",
+  "description": "Calculate 2D visibility",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "mocha tests/js --require js/utils.js --reporter min"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/costas-basdekis/Shadows2.js.git"
+  },
+  "author": "Costas Basdekis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/costas-basdekis/Shadows2.js/issues"
+  },
+  "homepage": "https://github.com/costas-basdekis/Shadows2.js#readme",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "chai-shallow-deep-almost-equal": "^1.3.0",
+    "mocha": "^8.1.3"
+  }
+}
