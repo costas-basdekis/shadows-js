@@ -369,4 +369,12 @@ describe("PolarLines", function () {
             });
         });
     });
+
+    describe("#absAtan2", () => {
+        it("Parallel lines should have same absAtan2", () => {
+            const line1 = new PolarLine(new PolarPoint(2.819842099193151, 221.35943621178654), new PolarPoint(2.9018495447193366, 294.7950681938305));
+            const line2 = new PolarLine(new PolarPoint(2.9018495447193366, 294.7950681938305), new PolarPoint(2.904743892642873, 298.328677803526));
+            expect(line1.absAtan2()).to.angleAlmostEquals(line2.absAtan2());
+        });
+    });
 });

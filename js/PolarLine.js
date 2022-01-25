@@ -1,5 +1,5 @@
 const paper = require("./lib/paper-full-v0.10.3");
-const { almostEquals, compareTuples, hashCode } = require("./utils");
+const { angleAlmostEquals, compareTuples, hashCode } = require("./utils");
 const { PolarPoint } = require("./PolarPoint");
 const { CartesianLine } = require("./CartesianLine");
 
@@ -95,7 +95,7 @@ class PolarLine {
         }
 
         // TODO: We still don't catch everything
-        if (almostEquals(this.absAtan2(), other.absAtan2())) {
+        if (angleAlmostEquals(this.absAtan2(), other.absAtan2())) {
             return true;
         }
 

@@ -187,6 +187,16 @@ function almostEquals(lhs, rhs, precision=0.000001) {
     return diff <= precision;
 }
 
+function angleAlmostEquals(lhs, rhs, precision=0.000001) {
+    let diff = Math.abs(rhs - lhs);
+    while (diff >= Math.PI - precision) {
+        diff -= Math.PI;
+    }
+    return diff <= precision;
+}
+angleAlmostEquals.defaultPrecision = 0.000001;
+
+exports.angleAlmostEquals = angleAlmostEquals;
 exports.almostEquals = almostEquals;
 exports.cartesian = cartesian;
 exports.compare = compare;

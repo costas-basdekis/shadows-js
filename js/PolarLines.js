@@ -188,10 +188,9 @@ class PolarLines {
         const firstLine = joined[0];
         const lastLine = joined.slice(-1)[0];
         if (firstLine
-                && firstLine !== lastLine
-                && firstLine.sourceId
-                && firstLine.sourceId === lastLine.sourceId
-                && lastLine.end.equals(firstLine.start)) {
+                && lastLine !== firstLine
+                && lastLine.isCoLinear(firstLine)
+                && lastLine.end.almostEquals(firstLine.start)) {
             firstLine.start = lastLine.start;
             joined.pop();
         }
