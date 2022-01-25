@@ -1,5 +1,3 @@
-"use strict";
-
 class FPS {
     constructor(element, maxCount=150, oldFrameRateWeight=0.9) {
         this.timestamps = [];
@@ -70,3 +68,5 @@ class FPS {
         this.element.textContent = this.framerate;
     }
 }
+
+exports.FPS = FPS;

@@ -1,4 +1,4 @@
-"use strict";
+const { cartesian, randomPop, range } = require("./utils");
 
 class Maze {
     constructor(width, height) {
@@ -151,3 +151,5 @@ class Maze {
         return coordinatesLists;
     }
 }
+
+exports.Maze = Maze;

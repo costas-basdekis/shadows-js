@@ -1,4 +1,4 @@
-"use strict";
+const paper = require("./lib/paper-full-v0.10.3");
 
 class CartesianPoint {
     constructor(x, y) {
@@ -48,3 +48,5 @@ class CartesianPoint {
         return new paper.Point(this.x, this.y);
     }
 }
+
+exports.CartesianPoint = CartesianPoint;

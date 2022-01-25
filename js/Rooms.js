@@ -1,4 +1,7 @@
-"use strict";
+const { CartesianLines } = require("./CartesianLines");
+const { CartesianPoint } = require("./CartesianPoint");
+const { Maze } = require("./Maze");
+const { cartesian, range } = require("./utils");
 
 class Rooms {
     static populateComboBox(element) {
@@ -191,3 +194,6 @@ class Shapes3Room extends Room {
 Rooms.register(Shapes3Room);
 Shapes3Room.label = "Even More Polygons and Stars";
 Shapes3Room.isSlow = true;
+
+exports.Rooms = Rooms;
+exports.RandomMazeRoom = RandomMazeRoom;

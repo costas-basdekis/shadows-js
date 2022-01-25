@@ -1,5 +1,3 @@
-"use strict";
-
 class CartesianLine {
     constructor(start, end) {
         this.start = start;
@@ -66,3 +64,5 @@ class CartesianLine {
         return Math.max(this.start.minus(point).length(), this.end.minus(point).length());
     }
 }
+
+exports.CartesianLine = CartesianLine;

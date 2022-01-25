@@ -1,4 +1,5 @@
-"use strict";
+const { CartesianPoint } = require("./CartesianPoint");
+const { almostEquals, compareTuples } = require("./utils");
 
 class PolarPoint {
     constructor(angle, length) {
@@ -68,3 +69,5 @@ class PolarPoint {
         return this.toCartesianPoint().plus(center).toPaper();
     }
 }
+
+exports.PolarPoint = PolarPoint;

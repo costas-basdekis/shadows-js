@@ -1,5 +1,3 @@
-"use strict";
-
 function range(minOrMax, max, step=1) {
     let min;
     if (typeof max === "undefined") {
@@ -188,3 +186,17 @@ function almostEquals(lhs, rhs, precision=0.000001) {
     const diff = Math.abs(rhs - lhs);
     return diff <= precision;
 }
+
+exports.almostEquals = almostEquals;
+exports.cartesian = cartesian;
+exports.compare = compare;
+exports.compareTuples = compareTuples;
+exports.groupBy = groupBy;
+exports.hashCode = hashCode;
+exports.unique = unique;
+exports.unzip = unzip;
+exports.randomPop = randomPop;
+exports.range = range;
+exports.sortWithCompare = sortWithCompare;
+exports.sortWithCompareFunc = sortWithCompareFunc;
+exports.zip = zip;

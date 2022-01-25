@@ -1,4 +1,8 @@
-"use strict";
+const paper = require("./lib/paper-full-v0.10.3");
+const { PolarLine } = require("./PolarLine");
+const {
+    compare, groupBy, sortWithCompare, sortWithCompareFunc, unique, zip,
+} = require("./utils");
 
 class PolarLines {
     constructor(name=null) {
@@ -294,3 +298,5 @@ class PolarLines {
         PolarLines.toPath(this.lines, center, this.path, showRays);
     }
 }
+
+exports.PolarLines = PolarLines;

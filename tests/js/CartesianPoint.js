@@ -1,3 +1,7 @@
+const { expect } = require('./lib/chai-v3.5.0');
+const { range } = require("../../js/utils");
+const { CartesianPoint } = require("../../js/CartesianPoint");
+
 describe("CartesianPoint", function() {
     describe("constructor", function() {
         it("Should have x and y", function() {

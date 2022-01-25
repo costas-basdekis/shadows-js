@@ -1,4 +1,7 @@
-"use strict";
+const paper = require("./lib/paper-full-v0.10.3");
+const { range, zip } = require("./utils");
+const { CartesianLine } = require("./CartesianLine");
+const { CartesianPoint } = require("./CartesianPoint");
 
 class CartesianLines {
     constructor(canvas, name=null) {
@@ -145,3 +148,5 @@ class CartesianLines {
         return this.addLines(...lines);
     }
 }
+
+exports.CartesianLines = CartesianLines;

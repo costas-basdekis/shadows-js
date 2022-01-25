@@ -1,4 +1,7 @@
-"use strict";
+const paper = require("./lib/paper-full-v0.10.3");
+const { almostEquals, compareTuples, hashCode } = require("./utils");
+const { PolarPoint } = require("./PolarPoint");
+const { CartesianLine } = require("./CartesianLine");
 
 class PolarLine {
     // static maxId = 1;
@@ -264,3 +267,5 @@ class PolarLine {
 }
 
 PolarLine.maxId = 1;
+
+exports.PolarLine = PolarLine;

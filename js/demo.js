@@ -1,4 +1,8 @@
-"use strict";
+const paper = require("./lib/paper-full-v0.10.3");
+const { RandomMazeRoom, Rooms } = require("./Rooms");
+const { FPS } = require("./FPS");
+const { PolarLines } = require("./PolarLines");
+const { CartesianLines } = require("./CartesianLines");
 
 class Demo {
     constructor(canvas, settingsElement, firstRoom=RandomMazeRoom) {
@@ -197,3 +201,5 @@ class Demo {
         this.elements.y.textContent = this.center.y;
     }
 }
+
+exports.Demo = Demo;

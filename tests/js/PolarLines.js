@@ -1,20 +1,21 @@
-"use strict";
+const { expect } = require('./lib/chai-v3.5.0');
+const {
+    cartesian, compare, range, sortWithCompare, unique, zip, almostEquals,
+} = require("../../js/utils");
+const { CartesianLines } = require("../../js/CartesianLines");
+const { CartesianPoint } = require("../../js/CartesianPoint");
+const { PolarLines } = require("../../js/PolarLines");
+const { PolarLine } = require("../../js/PolarLine");
+const { PolarPoint } = require("../../js/PolarPoint");
+const { Rooms } = require("../../js/Rooms");
 
 describe("PolarLines", function () {
-    describe("constructor", function () {
-        it("Should have lines", function () {
-            expect(new PolarLines().lines).to.deep.equal([]);
-        });
-    });
-
-    const centers = cartesian(range(-50, 650, 200), range(-50, 650, 200))
-        .map(([x ,y]) => (new CartesianPoint(x, y)));
-    it("Should have 16 different centers", function () {
-        expect(centers.length).to.equal(16);
-    });
     const cartesianRoomsLines = Rooms.rooms
         .filter(room => !room.isSlow)
         .map(room => new room().createLines());
+
+    const centers = cartesian(range(-50, 650, 200), range(-50, 650, 200))
+        .map(([x ,y]) => (new CartesianPoint(x, y)));
     const centersAndRooms = cartesian(centers, cartesianRoomsLines).concat([
         // Because the two lines intersect on a point, on some angles, the
         // longer triangle is slightly smaller on the common point:
@@ -60,6 +61,16 @@ describe("PolarLines", function () {
             });
         }
     }
+
+    describe("constructor", function () {
+        it("Should have lines", function () {
+            expect(new PolarLines().lines).to.deep.equal([]);
+        });
+
+        it("Should have 16 different centers", function () {
+            expect(centers.length).to.equal(16);
+        });
+    });
 
     describe("#fromCartesianLines", function () {
         describe("Should be able to crate maze room", function () {
@@ -353,8 +364,6 @@ describe("PolarLines", function () {
                 try {
                     expect(textsWithout).to.deep.equal(textsWith);
                 } catch (e) {
-                    console.log('Without:', zip(withoutObviousHiddenLines, textsWithout).map(([line, x]) => textsWith.indexOf(x) >= 0 ? null : `${x}/${line.atan2()}.${line.sourceId}.${line.source}.${line.source.atan2()}`).filter(x => x));
-                    console.log('With:', zip(withObviousHiddenLines, textsWith).map(([line, x]) => textsWithout.indexOf(x) >= 0 ? null : `${x}/${line.atan2()}.${line.sourceId}.${line.source}.${line.source.atan2()}`).filter(x => x));
                     throw e;
                 }
             });

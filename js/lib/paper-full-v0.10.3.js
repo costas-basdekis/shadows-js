@@ -32,7 +32,7 @@
 
 var paper = function(self, undefined) {
 
-self = self || require('./node/window.js');
+// self = self || require('./node/window.js');
 
 var window = self.window,
 	document = self.document;
@@ -15015,8 +15015,8 @@ paper = new (PaperScope.inject(Base.exports, {
 	PlacedSymbol: SymbolItem
 }))();
 
-if (paper.agent.node)
-	require('./node/extend.js')(paper);
+// if (paper.agent.node)
+// 	require('./node/extend.js')(paper);
 
 if (typeof define === 'function' && define.amd) {
 	define('paper', paper);
