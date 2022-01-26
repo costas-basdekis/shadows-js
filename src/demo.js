@@ -15,7 +15,11 @@ class Demo {
         this.drawFPS = new FPS(this.elements.drawFps);
         this.totalFPS = new FPS(this.elements.totalFps);
 
-        paper.setup(this.canvas);
+        try {
+            paper.setup(this.canvas);
+        } catch (e) {
+            console.error(e);
+        }
 
         this.rays = new PolarLines();
         this.walls = new CartesianLines();
