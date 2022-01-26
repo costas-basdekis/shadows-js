@@ -1,4 +1,4 @@
-const paper = require("./lib/paper-full-v0.10.3");
+const paper = typeof window === typeof undefined ? null : require("./lib/paper-full-v0.10.3");
 const { PolarLine } = require("./PolarLine");
 const {
     compare, groupBy, sortWithCompare, sortWithCompareFunc, unique, zip,

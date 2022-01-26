@@ -21,7 +21,7 @@
         chai.use(plugin);
     }
 }(function (chai, utils) {
-    const { angleAlmostEquals } = require("../../../js/utils");
+    const { angleAlmostEquals } = require("../../src/utils");
 
     function angleAlmostEqual(expect, actual, precision=angleAlmostEquals.defaultPrecision) {
         if (angleAlmostEquals(expect, actual, precision)) {

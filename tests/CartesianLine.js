@@ -1,6 +1,6 @@
 const { expect } = require('./lib/chai-v3.5.0');
-const { CartesianPoint } = require("../../js/CartesianPoint");
-const { CartesianLine } = require("../../js/CartesianLine");
+const { CartesianPoint } = require("../src/CartesianPoint");
+const { CartesianLine } = require("../src/CartesianLine");
 
 describe("CartesianLine", function () {
     describe("constructor", function () {

@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "mocha tests/js --require js/utils.js --reporter min"
+    "test": "mocha tests --require src/utils.js --reporter min"
   },
   "repository": {
     "type": "git",

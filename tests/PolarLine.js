@@ -1,7 +1,7 @@
 const { expect } = require('./lib/chai-v3.5.0');
-const { range, zip } = require("../../js/utils");
-const { PolarLine } = require("../../js/PolarLine");
-const { PolarPoint } = require("../../js/PolarPoint");
+const { range, zip } = require("../src/utils");
+const { PolarLine } = require("../src/PolarLine");
+const { PolarPoint } = require("../src/PolarPoint");
 
 function makeAnglesAndLines(startAngles, width, startLength, endLength=null) {
     if (endLength === null) {

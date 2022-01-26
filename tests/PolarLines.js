@@ -1,13 +1,13 @@
 const { expect } = require('./lib/chai-v3.5.0');
 const {
     cartesian, compare, range, sortWithCompare, unique, zip, almostEquals,
-} = require("../../js/utils");
-const { CartesianLines } = require("../../js/CartesianLines");
-const { CartesianPoint } = require("../../js/CartesianPoint");
-const { PolarLines } = require("../../js/PolarLines");
-const { PolarLine } = require("../../js/PolarLine");
-const { PolarPoint } = require("../../js/PolarPoint");
-const { Rooms } = require("../../js/Rooms");
+} = require("../src/utils");
+const { CartesianLines } = require("../src/CartesianLines");
+const { CartesianPoint } = require("../src/CartesianPoint");
+const { PolarLines } = require("../src/PolarLines");
+const { PolarLine } = require("../src/PolarLine");
+const { PolarPoint } = require("../src/PolarPoint");
+const { Rooms } = require("../src/Rooms");
 
 describe("PolarLines", function () {
     const cartesianRoomsLines = Rooms.rooms

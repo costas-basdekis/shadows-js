@@ -2,7 +2,7 @@ const { expect } = require('./lib/chai-v3.5.0');
 const {
     cartesian, compare, compareTuples, groupBy, range, sortWithCompare, unique,
     unzip, zip,
-} = require("../../js/utils");
+} = require("../src/utils");
 
 describe("utils", () => {
     describe("range", function () {
