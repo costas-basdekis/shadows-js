@@ -1,11 +1,14 @@
-name: Build and Deploy
+name: Demo app
 
 on:
-  push:
-    branches: [ master ]
-
+  workflow_run:
+    workflows: ["Package"]
+    branches: [master]
+    types:
+      - completed
 jobs:
   demo-test:
+    name: "Test the demo app"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -21,9 +24,10 @@ jobs:
       - run: npm run build --if-present --prefix demo
       - run: npm test --prefix demo
   demo-deploy:
+    name: "Deploy the demo app"
     needs:
-      - package-test
       - demo-test
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
     runs-on: ubuntu-latest
     steps:
