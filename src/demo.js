@@ -1,4 +1,4 @@
-const paper = require("./lib/paper-full-v0.10.3");
+const paper = require("paper");
 const { RandomMazeRoom, Rooms } = require("./Rooms");
 const { FPS } = require("./FPS");
 const { PolarLines } = require("./PolarLines");

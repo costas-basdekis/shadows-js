@@ -1,4 +1,4 @@
-const paper = typeof window === typeof undefined ? null : require("./lib/paper-full-v0.10.3");
+const paper = typeof window === typeof undefined ? null : require("paper");
 const { range, zip } = require("./utils");
 const { CartesianLine } = require("./CartesianLine");
 const { CartesianPoint } = require("./CartesianPoint");

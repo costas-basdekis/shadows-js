@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/costas-basdekis/Shadows2.js#readme",
   "dependencies": {
+    "paper": "^0.12.15"
   },
   "devDependencies": {
     "chai": "^4.3.4",
