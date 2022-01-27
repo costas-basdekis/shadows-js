@@ -9,6 +9,9 @@
     "shadows.js": "file:..",
     "web-vitals": "^2.1.4"
   },
+  "peerDependencies": {
+    "paper": "^0.12.15"
+  },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
