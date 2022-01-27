@@ -346,7 +346,7 @@ describe("PolarLines", function () {
             createCasesForCentersAndRooms(function (center, cartesianRoomLines, room) {
                 const withoutObviousHiddenLines = getLinesWithoutObviousHiddenLines(room.lines);
                 const newLines = withoutObviousHiddenLines.filter(line => room.lines.indexOf(line) < 0);
-                expect(newLines).to.be.emtpy;
+                expect(newLines).to.be.empty;
             });
         });
 
