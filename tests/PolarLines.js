@@ -1,4 +1,4 @@
-const { expect } = require('./lib/chai-v3.5.0');
+const { expect } = require('chai');
 const {
     cartesian, compare, range, sortWithCompare, unique, zip, almostEquals,
 } = require("../src/utils");

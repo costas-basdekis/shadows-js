@@ -1,4 +1,4 @@
-const { expect } = require("./lib/chai-v3.5.0");
+const { expect } = require("chai");
 const { range } = require("../src/utils");
 const { CartesianPoint } = require("../src/CartesianPoint");
 const { PolarPoint } = require("../src/PolarPoint");
