@@ -344,9 +344,11 @@ describe("PolarLines", function () {
 
         describe("Should be a subset of the lines", function () {
             createCasesForCentersAndRooms(function (center, cartesianRoomLines, room) {
+                const roomLineIds = room.lines.map(line => line.id);
                 const withoutObviousHiddenLines = getLinesWithoutObviousHiddenLines(room.lines);
-                const newLines = withoutObviousHiddenLines.filter(line => room.lines.indexOf(line) < 0);
-                expect(newLines).to.be.empty;
+                const withoutObviousHiddenLinesSourceIds = withoutObviousHiddenLines.map(line => line.sourceId);
+                const newLinesIds = withoutObviousHiddenLinesSourceIds.filter(line => roomLineIds.indexOf(line) < 0);
+                expect(newLinesIds).to.be.empty;
             });
         });
 
