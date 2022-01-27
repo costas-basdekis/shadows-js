@@ -1,8 +1,8 @@
 const paper = require("paper");
-const { RandomMazeRoom, Rooms } = require("./Rooms");
+const { RandomMazeRoom, Rooms } = require("shadows.js/src/Rooms");
 const { FPS } = require("./FPS");
-const { PolarLines } = require("./PolarLines");
-const { CartesianLines } = require("./CartesianLines");
+const { PolarLines } = require("shadows.js/src/PolarLines");
+const { CartesianLines } = require("shadows.js/src/CartesianLines");
 
 class Demo {
     constructor(canvas, settingsElement, firstRoom=RandomMazeRoom) {

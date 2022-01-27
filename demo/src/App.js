@@ -1,5 +1,5 @@
 import './App.css';
-import { Demo } from "./shadows/demo";
+import { Demo } from "./demo";
 import {Component} from "react";
 
 export default class App extends Component {
