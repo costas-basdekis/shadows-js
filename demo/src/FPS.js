@@ -1,4 +1,4 @@
-class FPS {
+export class FPS {
     constructor(element, maxCount=150, oldFrameRateWeight=0.9) {
         this.timestamps = [];
         this.element = element;
@@ -68,5 +68,3 @@ class FPS {
         this.element.textContent = this.framerate;
     }
 }
-
-exports.FPS = FPS;

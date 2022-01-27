@@ -6,10 +6,12 @@ export default class App extends Component {
   demo = null;
 
   componentDidMount() {
-    this.demo = new Demo(
-      document.getElementById("myCanvas"),
-      document.getElementById("settings"),
-    );
+      if (document.getElementById("myCanvas").getContext("2d")) {
+          this.demo = new Demo(
+              document.getElementById("myCanvas"),
+              document.getElementById("settings"),
+          );
+      }
   }
 
   render() {

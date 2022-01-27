@@ -1,10 +1,10 @@
-const paper = require("paper");
-const { RandomMazeRoom, Rooms } = require("shadows.js/src/Rooms");
-const { FPS } = require("./FPS");
-const { PolarLines } = require("shadows.js/src/PolarLines");
-const { CartesianLines } = require("shadows.js/src/CartesianLines");
+import paper from "shadows.js/node_modules/paper";
+import { RandomMazeRoom, Rooms } from "shadows.js/src/Rooms";
+import { FPS } from "./FPS";
+import { PolarLines } from "shadows.js/src/PolarLines";
+import { CartesianLines } from "shadows.js/src/CartesianLines";
 
-class Demo {
+export class Demo {
     constructor(canvas, settingsElement, firstRoom=RandomMazeRoom) {
         this.canvas = canvas;
         this.settingsElement = settingsElement;
@@ -15,11 +15,7 @@ class Demo {
         this.drawFPS = new FPS(this.elements.drawFps);
         this.totalFPS = new FPS(this.elements.totalFps);
 
-        try {
-            paper.setup(this.canvas);
-        } catch (e) {
-            console.error(e);
-        }
+        paper.setup(this.canvas);
 
         this.rays = new PolarLines();
         this.walls = new CartesianLines();
@@ -93,6 +89,10 @@ class Demo {
     }
 
     updateWallsShow() {
+        // For tests
+        if (!paper.project) {
+            return;
+        }
         if (this.showWalls) {
             this.walls.updatePath();
         } else {
@@ -205,5 +205,3 @@ class Demo {
         this.elements.y.textContent = this.center.y;
     }
 }
-
-exports.Demo = Demo;
