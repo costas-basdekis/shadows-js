@@ -1,4 +1,4 @@
-import paper from "shadows.js/node_modules/paper";
+import paper from "shadows.js/src/paper";
 import { RandomMazeRoom, Rooms } from "shadows.js/src/Rooms";
 import { FPS } from "./FPS";
 import { PolarLines } from "shadows.js/src/PolarLines";

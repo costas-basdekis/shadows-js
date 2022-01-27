@@ -6,11 +6,8 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.0",
-    "shadows.js": "file:..",
+    "shadows.js": "file:../lib",
     "web-vitals": "^2.1.4"
-  },
-  "peerDependencies": {
-    "paper": "^0.12.15"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.1",
