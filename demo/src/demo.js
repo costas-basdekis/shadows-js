@@ -174,8 +174,10 @@ export class Demo {
 
     updateRays() {
         this.totalFPS.frameStart();
+        // eslint-disable-next-line
         {
             this.calculateFPS.frameStart();
+            // eslint-disable-next-line
             {
                 this.rays.fromCartesianLines(this.center, this.walls);
                 this.rays.simplify();
@@ -183,6 +185,7 @@ export class Demo {
             this.calculateFPS.frameEnd();
 
             this.drawFPS.frameStart();
+            // eslint-disable-next-line
             {
                 this.rays.updatePath(this.center, this.showRays);
                 this.updateRaysShow();
