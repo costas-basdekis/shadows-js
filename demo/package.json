@@ -3,10 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/jest": "^27.4.0",
+    "@types/node": "^17.0.13",
+    "@types/react": "^17.0.38",
+    "@types/react-dom": "^17.0.11",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.0",
+    "react-scripts-ts": "^3.1.0",
     "shadows.js": "file:../lib",
+    "typescript": "^3.9.10",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {

@@ -1,11 +1,27 @@
+// @ts-ignore
 import paper from "shadows.js/src/paper";
-import { RandomMazeRoom, Rooms } from "shadows.js/src/Rooms";
+// @ts-ignore
+import { Room, RandomMazeRoom, Rooms } from "shadows.js/src/Rooms";
 import { FPS } from "./FPS";
+// @ts-ignore
 import { PolarLines } from "shadows.js/src/PolarLines";
+// @ts-ignore
 import { CartesianLines } from "shadows.js/src/CartesianLines";
 
 export class Demo {
-    constructor(canvas, settingsElement, firstRoom=RandomMazeRoom) {
+    private readonly canvas: HTMLCanvasElement;
+    private settingsElement: HTMLElement;
+    private calculateFPS: FPS;
+    private drawFPS: FPS;
+    private totalFPS: FPS;
+    private elements: any;
+    private rays: PolarLines;
+    private readonly walls: CartesianLines;
+    private center: { x: number; y: number };
+    private centerTool: paper.Tool;
+    private static centerPath: paper.Path.Circle;
+
+    constructor(canvas: HTMLCanvasElement, settingsElement: HTMLElement, firstRoom: typeof Room=RandomMazeRoom) {
         this.canvas = canvas;
         this.settingsElement = settingsElement;
         this.createElements();
@@ -73,18 +89,18 @@ export class Demo {
         };
     }
 
-    roomsOnChange(e) {
-        const selected = e.target;
+    roomsOnChange(e: Event) {
+        const selected: HTMLSelectElement = e.target! as HTMLSelectElement;
         const room = Rooms.roomsByName[selected.value];
         this.createRoom(room);
         this.updateRays();
     }
 
-    showWallsOnChange(e) {
+    showWallsOnChange() {
         this.updateWallsShow();
     }
 
-    showRaysOnChange(e) {
+    showRaysOnChange() {
         this.updateRaysShow();
     }
 
@@ -116,7 +132,7 @@ export class Demo {
         return this.elements.showRays.checked;
     }
 
-    createCenterTool(center) {
+    createCenterTool(center: { x: number; y: number }) {
         const tool = new paper.Tool();
 
         tool.init = Demo.initCenterTool;
@@ -127,19 +143,20 @@ export class Demo {
         return tool;
     }
 
-    static initCenterTool(center) {
+    static initCenterTool(center: { x: number; y: number }) {
         this.centerPath = new paper.Path.Circle(center, 15);
         this.centerPath.strokeColor = 'red';
         this.centerPath.fillColor = 'yellow';
     }
 
-    static onMouseDragCenterTool(toolEvent) {
-        const center = this.demo.getPoint(toolEvent);
+    static onMouseDragCenterTool(toolEvent: paper.ToolEvent) {
+        const tool = this as paper.Tool;
+        const center = tool.demo.getPoint(toolEvent);
         this.centerPath.position = center;
-        this.demo.onMouseDrag(toolEvent, center);
+        tool.demo.onMouseDrag(toolEvent, center);
     }
 
-    getPoint(toolEvent) {
+    getPoint(toolEvent: paper.ToolEvent) {
         if (toolEvent.event instanceof TouchEvent) {
             return this.getTouchPoint(toolEvent);
         } else {
@@ -147,7 +164,7 @@ export class Demo {
         }
     }
 
-    getTouchPoint(toolEvent) {
+    getTouchPoint(toolEvent: paper.ToolEvent) {
         const boundingClientRect = this.canvas.getBoundingClientRect();
         const scale = 3;
         // Why 3? Nobody knows :(
@@ -159,11 +176,11 @@ export class Demo {
         return center;
     }
 
-    getMousePoint(toolEvent) {
+    getMousePoint(toolEvent: paper.ToolEvent) {
         return toolEvent.point;
     }
 
-    onMouseDrag(toolEvent, center) {
+    onMouseDrag(toolEvent: paper.ToolEvent, center: { x: number; y: number }) {
         this.center = {
             x: center.x,
             y: center.y,
@@ -196,7 +213,7 @@ export class Demo {
         this.totalFPS.frameEnd();
     }
 
-    createRoom(room) {
+    createRoom(room: typeof Room) {
         this.walls.clear();
         this.walls.addLines(new room().create());
         this.updateWallsShow();

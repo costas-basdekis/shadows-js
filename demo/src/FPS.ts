@@ -1,5 +1,13 @@
 export class FPS {
-    constructor(element, maxCount=150, oldFrameRateWeight=0.9) {
+    private timestamps: number[];
+    private element: HTMLElement;
+    private readonly maxCount: number;
+    private readonly oldFrameRateWeight: number;
+    private readonly newFrameRateWeight: number;
+    private framerate: number | null;
+    private frameStartTimestamp: number | null;
+
+    constructor(element: HTMLElement, maxCount: number=150, oldFrameRateWeight: number=0.9) {
         this.timestamps = [];
         this.element = element;
         this.maxCount = maxCount;
@@ -30,7 +38,7 @@ export class FPS {
         this.frameStartTimestamp = null;
     }
 
-    frame(timestamp) {
+    frame(timestamp: number | null) {
         if (!timestamp) {
             return;
         }
@@ -40,7 +48,7 @@ export class FPS {
         this.display();
     }
 
-    add(timestamp) {
+    add(timestamp: number) {
         this.timestamps.push(timestamp);
         while (this.timestamps.length > this.maxCount) {
             this.timestamps.shift();
@@ -65,6 +73,6 @@ export class FPS {
     }
 
     display() {
-        this.element.textContent = this.framerate;
+        this.element.textContent = `${this.framerate}`;
     }
 }
