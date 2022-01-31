@@ -160,45 +160,18 @@ export class Demo {
         const center = tool.demo.getPoint(toolEvent);
         this.centerPath.position = center;
         // @ts-ignore
-        tool.demo.onMouseDrag(toolEvent, center);
+        (tool.demo as Demo).onMouseDrag(toolEvent, center);
     }
 
     getPoint(toolEvent: paper.ToolEvent): CartesianPoint {
-        // @ts-ignore
-        if (toolEvent.event instanceof TouchEvent) {
-            return this.getTouchPoint(toolEvent);
-        } else {
-            return this.getMousePoint(toolEvent);
-        }
-    }
-
-    getTouchPoint(toolEvent: paper.ToolEvent): CartesianPoint {
-        const boundingClientRect = this.canvas.getBoundingClientRect();
-        const scale = 3;
-        // Why 3? Nobody knows :(
-        // @ts-ignore
-        const touch = toolEvent.event.changedTouches[0];
-        const center = new CartesianPoint(
-            (touch.pageX - boundingClientRect.left) / scale,
-            (touch.pageY - boundingClientRect.top) / scale,
-        );
-        return center;
-    }
-
-    getMousePoint(toolEvent: paper.ToolEvent):CartesianPoint {
         return new CartesianPoint(
-            // @ts-ignore
             toolEvent.point.x,
-            // @ts-ignore
             toolEvent.point.y,
         );
     }
 
-    onMouseDrag(toolEvent: paper.ToolEvent, center: { x: number; y: number }) {
-        this.center = new CartesianPoint(
-            center.x,
-            center.y,
-        );
+    onMouseDrag(toolEvent: paper.ToolEvent, center: CartesianPoint) {
+        this.center = center;
         this.updateRays();
         this.updateCoordsDisplay();
     }
