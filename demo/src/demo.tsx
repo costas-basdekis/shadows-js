@@ -18,7 +18,6 @@ export class Demo {
     private readonly walls: CartesianLines;
     private center: CartesianPoint;
     private centerTool: paper.Tool;
-    private static centerPath: paper.Path.Circle;
 
     constructor(canvas: HTMLCanvasElement, settingsElement: HTMLElement, firstRoom: typeof Room=RandomMazeRoom) {
         this.canvas = canvas;
@@ -148,19 +147,24 @@ export class Demo {
         return tool;
     }
 
-    static initCenterTool(center: CartesianPoint) {
-        this.centerPath = new paper.Path.Circle(center.toPaper(), 15);
-        this.centerPath.strokeColor = new paper.Color('red');
-        this.centerPath.fillColor = new paper.Color('yellow');
+    static initCenterTool(this: paper.Tool, center: CartesianPoint) {
+        const centerPath = new paper.Path.Circle(center.toPaper(), 15);
+        centerPath.strokeColor = new paper.Color('red');
+        centerPath.fillColor = new paper.Color('yellow');
+
+        // @ts-ignore
+        // noinspection JSUnusedGlobalSymbols
+        this.centerPath = centerPath;
     }
 
-    static onMouseDragCenterTool(toolEvent: paper.ToolEvent) {
+    static onMouseDragCenterTool(this: paper.Tool, toolEvent: paper.ToolEvent) {
         const tool = this as any as paper.Tool;
         // @ts-ignore
-        const center = tool.demo.getPoint(toolEvent);
-        this.centerPath.position = center;
+        const demo = tool.demo as Demo;
+        const center = demo.getPoint(toolEvent);
         // @ts-ignore
-        (tool.demo as Demo).onMouseDrag(toolEvent, center);
+        tool.centerPath.position = center;
+        demo.onMouseDrag(toolEvent, center);
     }
 
     getPoint(toolEvent: paper.ToolEvent): CartesianPoint {
