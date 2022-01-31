@@ -1,6 +1,5 @@
-const { expect } = require('chai');
-const { range } = require("../src/utils");
-const { CartesianPoint } = require("../src/CartesianPoint");
+import { expect } from 'chai';
+import { range, CartesianPoint } from "../src";
 
 describe("CartesianPoint", function() {
     describe("constructor", function() {
@@ -35,6 +34,7 @@ describe("CartesianPoint", function() {
     });
 
     describe("#angle", function () {
+        // noinspection DuplicatedCode
         const step = Math.PI / 6;
         const length = 5;
 
@@ -51,12 +51,14 @@ describe("CartesianPoint", function() {
                 const point = new CartesianPoint(
                     Math.cos(angle) * length, Math.sin(angle) * length);
                 const pointAngle = point.angle();
+                // @ts-ignore
                 expect(pointAngle).to.shallowDeepAlmostEqual(angle);
             }
         });
     });
 
     describe("#length", function () {
+        // noinspection DuplicatedCode
         const step = Math.PI / 6;
         const length = 5;
 
@@ -73,6 +75,7 @@ describe("CartesianPoint", function() {
                 const point = new CartesianPoint(
                     Math.cos(angle) * length, Math.sin(angle) * length);
                 const pointLength = point.length();
+                // @ts-ignore
                 expect(pointLength).to.shallowDeepAlmostEqual(length);
             }
         });

@@ -11,7 +11,7 @@
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.0",
     "react-scripts-ts": "^3.1.0",
-    "shadows.js": "file:../lib",
+    "shadows-js": "file:../lib",
     "typescript": "^3.9.10",
     "web-vitals": "^2.1.4"
   },

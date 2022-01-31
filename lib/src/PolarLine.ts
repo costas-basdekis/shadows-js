@@ -1,19 +1,35 @@
-const paper = typeof window === typeof undefined ? null : require("paper");
-const { angleAlmostEquals, compareTuples, hashCode } = require("./utils");
-const { PolarPoint } = require("./PolarPoint");
-const { CartesianLine } = require("./CartesianLine");
+import paper from "paper";
+import { angleAlmostEquals, compareTuples, hashCode } from "./utils";
+import { PolarPoint } from "./PolarPoint";
+import { CartesianLine } from "./CartesianLine";
+import {CartesianPoint} from "./CartesianPoint";
 
-class PolarLine {
-    // static maxId = 1;
+type Coefs = [[number, number, number], [number, number, number]];
+type Solved2x2 = { x: number, y: number };
 
-    static nextId() {
+export class PolarLine {
+    static maxId = 1;
+    public readonly id: number;
+    public sourceId: number | undefined;
+    public readonly colour: string | null;
+    public readonly goesOverPI: boolean;
+    public start: PolarPoint;
+    public end: PolarPoint;
+    public closestPoint: CartesianPoint;
+    public minDistanceAngle: number;
+    public minDistance: number;
+    public maxDistance: number;
+    private _coefs: Coefs | undefined;
+    private _solved2x2: Solved2x2 | undefined;
+
+    static nextId(): number {
         const nextId = this.maxId;
         this.maxId += 1;
 
         return nextId;
     }
 
-    constructor(point1, point2, colour=null) {
+    constructor(point1: PolarPoint, point2: PolarPoint, colour: string | null=null) {
         this.id = PolarLine.nextId();
 
         this.colour = colour;
@@ -37,24 +53,32 @@ class PolarLine {
                 this.end = point2;
             }
         }
+        const closestPoint = new CartesianLine(
+            this.start.toCartesianPoint(),
+            this.end.toCartesianPoint(),
+        ).closestPoint(new CartesianPoint(0, 0));
+        this.closestPoint = closestPoint;
+        this.minDistanceAngle = closestPoint.angle();
+        this.minDistance = closestPoint.length();
+        this.maxDistance = Math.max(this.start.length, this.end.length);
     }
 
-    toString() {
+    toString(): string {
         return `[${this.start} - ${this.end}]`;
     }
 
-    sortKey() {
+    sortKey(): [number, number, number, number] {
         return [
             this.start.angle, this.end.angle,
             this.start.length, this.end.length
         ];
     }
 
-    sortCompare(rhs) {
+    sortCompare(rhs: this): number {
         return compareTuples(this.sortKey(), rhs.sortKey());
     }
 
-    static fromCartesianLine(center, cartesianLine) {
+    static fromCartesianLine(center: CartesianPoint, cartesianLine: CartesianLine): PolarLine {
         const hash = hashCode(`
             ${cartesianLine.start.x},${cartesianLine.start.y},
             ${cartesianLine.end.x},${cartesianLine.end.y}
@@ -75,21 +99,21 @@ class PolarLine {
         return polarLine;
     }
 
-    toCartesianLine() {
+    toCartesianLine(): CartesianLine {
         return new CartesianLine(
             this.start.toCartesianPoint(),
             this.end.toCartesianPoint());
     }
 
-    atan2() {
+    atan2(): number {
         return this.toCartesianLine().atan2();
     }
 
-    absAtan2() {
+    absAtan2(): number {
         return this.toCartesianLine().absAtan2();
     }
 
-    isCoLinear(other) {
+    isCoLinear(other: this): boolean {
         if (this.sourceId && this.sourceId === other.sourceId) {
             return true;
         }
@@ -102,7 +126,7 @@ class PolarLine {
         return false;
     }
 
-    denormalisedStartAngle() {
+    denormalisedStartAngle(): number {
         if (this.goesOverPI) {
             return this.start.angle - 2 * Math.PI;
         } else {
@@ -110,7 +134,7 @@ class PolarLine {
         }
     }
 
-    denormalisedEndAngle() {
+    denormalisedEndAngle(): number {
         if (this.goesOverPI) {
             return this.end.angle + 2 * Math.PI;
         } else {
@@ -118,7 +142,7 @@ class PolarLine {
         }
     }
 
-    containsAngle(angle) {
+    containsAngle(angle: number): boolean {
         angle = PolarPoint.normaliseAngle(angle);
         if (this.goesOverPI) {
             return this.start.angle <= angle !== angle <= this.end.angle;
@@ -127,7 +151,7 @@ class PolarLine {
         }
     }
 
-    strictlyContainsAngle(angle) {
+    strictlyContainsAngle(angle: number): boolean {
         angle = PolarPoint.normaliseAngle(angle);
         if (this.goesOverPI) {
             return this.start.angle < angle !== angle < this.end.angle;
@@ -136,8 +160,8 @@ class PolarLine {
         }
     }
 
-    atAngles(startAngle, endAngle) {
-        const line = new PolarLine(
+    atAngles(startAngle: number, endAngle: number): this {
+        const line = new (this.constructor as any)(
             new PolarPoint(startAngle, this.lengthAtAngle(startAngle)),
             new PolarPoint(endAngle, this.lengthAtAngle(endAngle))
         );
@@ -146,7 +170,7 @@ class PolarLine {
         return line;
     }
 
-    lengthAtAngle(angle) {
+    lengthAtAngle(angle: number): number {
         angle = PolarPoint.normaliseAngle(angle);
 
         if (this.start.angle === this.end.angle) {
@@ -167,17 +191,17 @@ class PolarLine {
         return this.interpolate(angle);
     }
 
-    static polarInterpolation(solved2x2, angle) {
+    static polarInterpolation(solved2x2: Solved2x2, angle: number): number {
         const {x: coCos, y: coSin} = solved2x2;
 
         return 1 / (coCos * Math.cos(angle) + coSin * Math.sin(angle));
     }
 
-    interpolate(angle) {
+    interpolate(angle: number): number {
         return PolarLine.polarInterpolation(this.solved2x2, angle);
     }
 
-    static getCoefs(startAngle, endAngle, startLength, endLength) {
+    static getCoefs(startAngle: number, endAngle: number, startLength: number, endLength: number): Coefs {
         return [
             [
                 Math.cos(startAngle),
@@ -192,7 +216,7 @@ class PolarLine {
         ];
     }
 
-    get coefs() {
+    get coefs(): Coefs {
         if (!this._coefs) {
             this._coefs = PolarLine.getCoefs(
                 this.start.angle, this.end.angle,
@@ -202,7 +226,7 @@ class PolarLine {
         return this._coefs;
     }
 
-    static solve2x2(coefs) {
+    static solve2x2(coefs: Coefs): Solved2x2 {
         const d = this.discriminate(coefs, 0, 0, 1, 1);
         const dx = this.discriminate(coefs, 0, 2, 1, 1);
         const dy = this.discriminate(coefs, 0, 0, 1, 2);
@@ -213,7 +237,7 @@ class PolarLine {
         };
     }
 
-    get solved2x2() {
+    get solved2x2(): Solved2x2 {
         if (!this._solved2x2) {
             this._solved2x2 = PolarLine.solve2x2(this.coefs);
         }
@@ -221,15 +245,15 @@ class PolarLine {
         return this._solved2x2;
     }
 
-    static discriminate(coefs, x1, y1, x2, y2) {
+    static discriminate(coefs: Coefs, x1: number, y1: number, x2: number, y2: number): number {
         return coefs[x1][y1] * coefs[x2][y2] - coefs[x1][y2] * coefs[x2][y1];
     }
 
-    deltaAngle() {
+    deltaAngle(): number {
         return this.denormalisedEndAngle() - this.start.angle;
     }
 
-    strictlyIntersects(other) {
+    strictlyIntersects(other: this): boolean {
         return (
             this.start.angle === other.start.angle
             || this.end.angle === other.end.angle
@@ -240,32 +264,28 @@ class PolarLine {
         );
     }
 
-    intersects(other) {
+    intersects(other: this): boolean {
         return (
             this.containsAngle(other.start.angle)
             || other.containsAngle(this.start.angle)
         );
     }
 
-    toPath(center) {
+    toPath(center: CartesianPoint): paper.Path {
         const path = new paper.Path();
 
         const start = this.start.toPath(center);
         const end = this.end.toPath(center);
 
-        path.moveTo(center);
+        path.moveTo(center.toPaper());
         path.lineTo(start);
         path.lineTo(end);
-        path.lineTo(center);
+        path.lineTo(center.toPaper());
 
         if (this.colour) {
-            path.fillColor = `#${this.colour}`;
+            path.fillColor = new paper.Color(`#${this.colour}`);
         }
 
         return path;
     }
 }
-
-PolarLine.maxId = 1;
-
-exports.PolarLine = PolarLine;

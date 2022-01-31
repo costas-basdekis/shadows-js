@@ -1,21 +1,28 @@
-const paper = typeof window === typeof undefined ? null : require("paper");
-const { PolarLine } = require("./PolarLine");
-const {
+import paper from "paper";
+import { PolarLine } from "./PolarLine";
+import {
     compare, groupBy, sortWithCompare, sortWithCompareFunc, unique, zip,
-} = require("./utils");
+} from "./utils";
+import {CartesianPoint} from "./CartesianPoint";
+import {CartesianLines} from "./CartesianLines";
+import {PolarPoint} from "./PolarPoint";
 
-class PolarLines {
-    constructor(name=null) {
+export class PolarLines {
+    public lines: PolarLine[];
+    public path: paper.CompoundPath | null;
+    public name: string | null;
+
+    constructor(name: string | null=null) {
         this.lines = [];
         this.path = null;
         this.name = name;
     }
 
-    clear() {
+    clear(): void {
         this.lines = [];
     }
 
-    fromCartesianLines(center, cartesianLines) {
+    fromCartesianLines(center: CartesianPoint, cartesianLines: CartesianLines): this {
         this.lines = cartesianLines.lines
             .map(line => PolarLine.fromCartesianLine(center, line))
             .filter(line => line.start.length > 0 && line.end.length > 0);
@@ -24,42 +31,42 @@ class PolarLines {
         return this;
     }
 
-    simplify() {
-        const reachableLines = PolarLines.removeObviouslyHiddenLines(this.lines);
-        const angles = PolarLines.linesAngles(reachableLines);
-        const anglesInLines = PolarLines.anglesInLines(reachableLines, angles);
-        const splitLines = PolarLines.splitLines(reachableLines, anglesInLines);
-        const visibleLines = PolarLines.removeHiddenLines(splitLines);
-        const joinedLines = PolarLines.joinLines(visibleLines);
+    simplify(): void {
+        const reachableLines: PolarLine[] = PolarLines.removeObviouslyHiddenLines(this.lines);
+        const angles: number[] = PolarLines.linesAngles(reachableLines);
+        const anglesInLines: number[][] = PolarLines.anglesInLines(reachableLines, angles);
+        const splitLines: PolarLine[] = PolarLines.splitLines(reachableLines, anglesInLines);
+        const visibleLines: PolarLine[] = PolarLines.removeHiddenLines(splitLines);
+        const joinedLines: PolarLine[] = PolarLines.joinLines(visibleLines);
 
         this.lines = joinedLines;
     }
 
-    static removeObviouslyHiddenLines(lines) {
-        const angles = PolarLines.linesAngles(lines);
-        const anglePairs =
+    static removeObviouslyHiddenLines(lines: PolarLine[]): PolarLine[] {
+        const angles: number[] = PolarLines.linesAngles(lines);
+        const anglePairs: [number, number][] =
             zip(angles, angles.slice(1).concat(angles.slice(0, 1)));
-        const linesInAnglePairs = anglePairs.map(
+        const linesInAnglePairs: PolarLine[][] = anglePairs.map(
             ([start, end]) => lines.filter(
                 line => line.containsAngle(start) && line.containsAngle(end)));
-        const minMaxDistancePerAnglePair = linesInAnglePairs
+        const minMaxDistancePerAnglePair: number[] = linesInAnglePairs
             .map(linesInAnglePair => linesInAnglePair.map(line => line.maxDistance))
-            .map(maxDistances => Math.min(...maxDistances));
+            .map((maxDistances: number[]) => Math.min(...maxDistances));
         const reachableLinesPerAnglePair = zip(linesInAnglePairs, minMaxDistancePerAnglePair)
             .map(([linesInAnglePair, minMaxDistance]) => linesInAnglePair.filter(
                 line => line.minDistance <= minMaxDistance));
-        const reachableLines = unique(sortWithCompareFunc([].concat(...reachableLinesPerAnglePair)));
+        const reachableLines = unique(sortWithCompareFunc(reachableLinesPerAnglePair.flat()));
 
         // console.log(`Hid ${lines.length - reachableLines.length} out of ${lines.length}, leaving ${reachableLines.length}`);
 
         return reachableLines;
     }
 
-    static linesAngles(lines) {
-        const unsortedAngles = [].concat(
-            lines.map(line => line.start.angle),
-            lines.map(line => line.end.angle)
-        );
+    static linesAngles(lines: PolarLine[]): number[] {
+        const unsortedAngles = [
+            ...lines.map(line => line.start.angle),
+            ...lines.map(line => line.end.angle),
+        ];
         const sortedAngles = sortWithCompare(unsortedAngles);
         const angles = unique(sortedAngles);
         // console.log("Angles:", angles);
@@ -67,7 +74,7 @@ class PolarLines {
         return angles;
     }
 
-    static anglesInLines(lines, angles) {
+    static anglesInLines(lines: PolarLine[], angles: number[]): number[][] {
         const anglesInLines = lines
             .map(line => this.anglesInLine(line, angles));
         // for (const anglesInLine of anglesInLines) {
@@ -77,7 +84,7 @@ class PolarLines {
         return anglesInLines;
     }
 
-    static anglesInLine(line, angles) {
+    static anglesInLine(line: PolarLine, angles: number[]): number[] {
         const unsortedAnglesInLines = angles
             .filter(angle => line.strictlyContainsAngle(angle));
         let anglesInLine;
@@ -93,16 +100,17 @@ class PolarLines {
         return anglesInLine;
     }
 
-    static splitLines(lines, anglesInLines) {
-        const splitLines = [].concat(...zip(lines, anglesInLines)
-            .map(([line, anglesInLine]) => this.splitLine(line, anglesInLine)))
+    static splitLines(lines: PolarLine[], anglesInLines: number[][]): PolarLine[] {
+        const splitLines = zip(lines, anglesInLines)
+            .map(([line, anglesInLine]) => this.splitLine(line, anglesInLine))
+            .flat()
             .filter(line => line.start.angle !== line.end.angle);
         // console.log("Split lines:", sortedSplitLines.map(line => `${line.sortKey()[0]},${line.sortKey()[1]}`));
 
         return splitLines;
     }
 
-    static splitLine(line, anglesInLine) {
+    static splitLine(line: PolarLine, anglesInLine: number[]): PolarLine[] {
         if (line.start.angle === line.end.angle) {
             return [line];
         }
@@ -117,7 +125,7 @@ class PolarLines {
         return splitLines;
     }
 
-    static removeHiddenLines(lines) {
+    static removeHiddenLines(lines: PolarLine[]): PolarLine[] {
         const byKey = groupBy(lines,
             line => `${line.start.angle},${line.end.angle}`);
         const groups = Object.keys(byKey).map(key => byKey[key]);
@@ -135,7 +143,7 @@ class PolarLines {
         return nonOverlapping;
     }
 
-    static sortLinesByLeastDeviation(lines) {
+    static sortLinesByLeastDeviation(lines: PolarLine[]): PolarLine[] {
         // Sort the lines by least deviation from the shortest lengths. This
         // means we can avoid the issue were a line's end intersects another
         // line, and the first line has a slightly smaller length than the the
@@ -150,12 +158,12 @@ class PolarLines {
             .sort(compare)
             [0];
 
-        function deviationSortKey(line) {
+        function deviationSortKey(line: PolarLine) {
             return Math.abs(line.start.length - shortestStartLength)
                 + Math.abs(line.end.length - shortestEndLength);
         }
 
-        function deviationCompareFunc(lhs, rhs) {
+        function deviationCompareFunc(lhs: PolarLine, rhs: PolarLine) {
             return compare(deviationSortKey(lhs), deviationSortKey((rhs)));
         }
 
@@ -165,12 +173,12 @@ class PolarLines {
         return sortedLines;
     }
 
-    static joinLines(lines) {
+    static joinLines(lines: PolarLine[]): PolarLine[] {
         const sorted = sortWithCompareFunc(lines);
         const joined = [];
 
         for (const line of sorted) {
-            const previousLine = joined.slice(-1)[0];
+            const previousLine: PolarLine = joined.slice(-1)[0];
             if (!previousLine) {
                 joined.push(line);
                 continue;
@@ -198,9 +206,9 @@ class PolarLines {
         return joined;
     }
 
-    static toPath(lines, center, compoundPath=null, showRays=true) {
+    static toPath(lines: PolarLine[], center: CartesianPoint, compoundPath: paper.CompoundPath | null=null, showRays: boolean=true): paper.CompoundPath {
         if (!compoundPath) {
-            compoundPath = new paper.CompoundPath();
+            compoundPath = new paper.CompoundPath("");
         } else {
             for (const child of compoundPath.children) {
                 child.remove();
@@ -218,32 +226,32 @@ class PolarLines {
         return compoundPath;
     }
 
-    static toPathWithRays(lines, center) {
+    static toPathWithRays(lines: PolarLine[], center: CartesianPoint): paper.Path[] {
         return lines.map(line => line.toPath(center));
     }
 
-    static toPathsWithoutRays(lines, center) {
+    static toPathsWithoutRays(lines: PolarLine[], center: CartesianPoint): paper.Path[] {
         const polygon = this.toPolygon(lines, center);
         const path = new paper.Path();
 
         if (!polygon.length) {
-            return path;
+            return [];
         }
 
         const start = polygon[0];
         const rest = polygon.slice(1);
 
-        path.moveTo(start);
+        path.moveTo(start.toPaper());
 
         for (const point of rest) {
-            path.lineTo(point);
+            path.lineTo(point.toPaper());
         }
 
         return [path];
     }
 
-    static toPolygon(lines, center) {
-        const points = [].concat(...lines.map(line => [
+    static toPolygon(lines: PolarLine[], center: CartesianPoint) {
+        const pointLists: [PolarPoint, CartesianPoint, boolean][][] = lines.map(line => [
             [
                 line.start,
                 line.start.toCartesianPoint().plus(center),
@@ -254,7 +262,8 @@ class PolarLines {
                 line.end.toCartesianPoint().plus(center),
                 false,
             ],
-        ]));
+        ])
+        const points: [PolarPoint, CartesianPoint, boolean][] = pointLists.flat();
 
         if (!points.length) {
             return [];
@@ -263,7 +272,7 @@ class PolarLines {
         const previousPoints = points.slice(-1).concat(points.slice(0, -1));
         const pointsAndPreviousPoints = zip(points, previousPoints);
 
-        const [polarEnd, end, endIsStart] = previousPoints[0];
+        const [, end] = previousPoints[0];
         // console.log(pointsAndPreviousPoints);
 
         const polygon = [];
@@ -272,7 +281,7 @@ class PolarLines {
         // console.log(`Start on ${end}`);
 
         for (const [[polarPoint, point, pointIsStart],
-            [previousPolarPoint, previousPoint, previousPointIsStart]]
+            [previousPolarPoint, previousPoint]]
             of pointsAndPreviousPoints) {
             // console.log(`Is start? ${pointIsStart}, ${polarPoint.angle} ?== ${previousPolarPoint.angle}: ${polarPoint.angle === previousPolarPoint.angle}`)
             if (pointIsStart && polarPoint.angle !== previousPolarPoint.angle) {
@@ -290,12 +299,10 @@ class PolarLines {
         return polygon;
     }
 
-    updatePath(center, showRays=true) {
+    updatePath(center: CartesianPoint, showRays: boolean=true): void {
         if (!this.path) {
-            this.path = new paper.CompoundPath();
+            this.path = new paper.CompoundPath("");
         }
         PolarLines.toPath(this.lines, center, this.path, showRays);
     }
 }
-
-exports.PolarLines = PolarLines;

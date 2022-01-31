@@ -1,7 +1,5 @@
-const { expect } = require("chai");
-const { range } = require("../src/utils");
-const { CartesianPoint } = require("../src/CartesianPoint");
-const { PolarPoint } = require("../src/PolarPoint");
+import { expect } from "chai";
+import { range, CartesianPoint, PolarPoint } from "../src";
 
 
 describe("PolarPoint", function () {
@@ -31,6 +29,7 @@ describe("PolarPoint", function () {
                 const cartesianPoint = new CartesianPoint(
                     Math.cos(angle) * length, Math.sin(angle) * length);
                 const polarPoint = PolarPoint.fromCartesianPoint(cartesianPoint);
+                // @ts-ignore
                 expect(polarPoint.angle).to.shallowDeepAlmostEqual(
                     PolarPoint.normaliseAngle(angle));
             }
@@ -54,6 +53,7 @@ describe("PolarPoint", function () {
                 const diff = normalised - angle;
                 const diffPIs = diff / (2 * Math.PI);
                 const roundedDiffPis = Math.round(diffPIs);
+                // @ts-ignore
                 expect(roundedDiffPis).to.shallowDeepAlmostEqual(diffPIs);
             }
         });
@@ -76,6 +76,7 @@ describe("PolarPoint", function () {
                 const cartesianPoint = new CartesianPoint(
                     Math.cos(angle) * length, Math.sin(angle) * length);
                 const polarPoint = PolarPoint.fromCartesianPoint(cartesianPoint);
+                // @ts-ignore
                 expect(polarPoint.length).to.shallowDeepAlmostEqual(length);
             }
         });

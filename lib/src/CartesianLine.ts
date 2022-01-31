@@ -1,31 +1,36 @@
-class CartesianLine {
-    constructor(start, end) {
+import {CartesianPoint} from "./CartesianPoint";
+
+export class CartesianLine {
+    public start: CartesianPoint;
+    public end: CartesianPoint;
+
+    constructor(start: CartesianPoint, end: CartesianPoint) {
         this.start = start;
         this.end = end;
     }
 
-    toString() {
+    toString(): string {
         return `[${this.start} - ${this.end}]`;
     }
 
-    plus(point, multiplier=1) {
-        return new CartesianLine(
+    plus(point: CartesianPoint, multiplier: number=1): this {
+        return new (this.constructor as any)(
             this.start.plus(point, multiplier),
             this.end.plus(point, multiplier)
         );
     }
 
-    atan2() {
+    atan2(): number {
         const segment = this.end.minus(this.start);
         return Math.atan2(segment.y, segment.x);
     }
 
-    absAtan2() {
+    absAtan2(): number {
         const atan2 = this.atan2();
         return atan2 >= 0 ? atan2 : Math.PI + atan2;
     }
 
-    closestPoint(point) {
+    closestPoint(point: CartesianPoint): CartesianPoint {
         // The projectOn of point point onto a line is the point on the line
         // closest to point. (And a perpendicular to the line at the projectOn
         // will pass through point.)
@@ -38,14 +43,14 @@ class CartesianLine {
         // If t is less than 0 or greater than 1 it falls on the line past one
         // end or the other of the segment. In that case the distance to the
         // segment will be the distance to the nearer end.
-        const start = this.start.minus(point);
-        const end = this.end.minus(point);
-        const segment = end.minus(start);
+        const start: CartesianPoint = this.start.minus(point);
+        const end: CartesianPoint = this.end.minus(point);
+        const segment: CartesianPoint = end.minus(start);
         if (!segment.length()) {
             return start;
         }
 
-        const t = -start.projectOn(segment);
+        const t: number = -start.projectOn(segment);
 
         if (t <= 0) {
             return start;
@@ -56,13 +61,11 @@ class CartesianLine {
         return start.plus(segment, t);
     }
 
-    minDistance(point) {
+    minDistance(point: CartesianPoint): number {
         return this.closestPoint(point).length();
     }
 
-    maxDistance(point) {
+    maxDistance(point: CartesianPoint): number {
         return Math.max(this.start.minus(point).length(), this.end.minus(point).length());
     }
 }
-
-exports.CartesianLine = CartesianLine;

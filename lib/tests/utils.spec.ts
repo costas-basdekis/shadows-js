@@ -1,8 +1,8 @@
-const { expect } = require('chai');
-const {
+import { expect } from 'chai';
+import {
     cartesian, compare, compareTuples, groupBy, range, sortWithCompare, unique,
     unzip, zip,
-} = require("../src/utils");
+} from "../src";
 
 describe("utils", () => {
     describe("range", function () {

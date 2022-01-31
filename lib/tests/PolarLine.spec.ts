@@ -1,19 +1,14 @@
-const { expect } = require('chai');
-const { range, zip } = require("../src/utils");
-const { PolarLine } = require("../src/PolarLine");
-const { PolarPoint } = require("../src/PolarPoint");
+import { expect } from 'chai';
+import { range, zip, PolarLine, PolarPoint, CartesianPoint } from "../dist";
 
-function makeAnglesAndLines(startAngles, width, startLength, endLength=null) {
-    if (endLength === null) {
-        endLength = startLength;
-    }
+function makeAnglesAndLines(startAngles: number[], width: number, startLength: number, endLength: number=startLength) {
     const endAngles = startAngles.map(startAngle => startAngle + width);
     const middleAngles = zip(startAngles, endAngles).map(
         ([startAngle, endAngle]) => (startAngle + endAngle) / 2);
     const startEndMiddleAngles = zip(startAngles, endAngles, middleAngles);
 
     const lines = startEndMiddleAngles.map(
-        ([startAngle, endAngle, middleAngle]) => new PolarLine(
+        ([startAngle, endAngle]) => new PolarLine(
             new PolarPoint(startAngle, startLength),
             new PolarPoint(endAngle, endLength)));
 
@@ -49,7 +44,7 @@ describe("PolarLine", function () {
             const startAngles = range(-Math.PI / 2, -Math.PI, -Math.PI / 12);
             const anglesAndLines = makeAnglesAndLines(startAngles, width, length);
 
-            for (const [angles, line] of anglesAndLines) {
+            for (const [, line] of anglesAndLines) {
                 expect(line.goesOverPI).be.true;
             }
         });
@@ -60,7 +55,7 @@ describe("PolarLine", function () {
             const startAngles = range(Math.PI, -Math.PI / 2, -Math.PI / 12);
             const anglesAndLines = makeAnglesAndLines(startAngles, width, startLength, endLength);
 
-            for (const [angles, line] of anglesAndLines) {
+            for (const [, line] of anglesAndLines) {
                 expect(line.goesOverPI).be.false;
             }
         });
@@ -74,15 +69,16 @@ describe("PolarLine", function () {
 
         describe("#denormalisedStartAngle", function () {
             it("Should normalise to angle", function () {
-                for (const [angles, line] of anglesAndLines) {
+                for (const [, line] of anglesAndLines) {
                     const backAndForth =
                         PolarPoint.normaliseAngle(line.denormalisedStartAngle());
+                    // @ts-ignore
                     expect(backAndForth).to.shallowDeepAlmostEqual(line.start.angle);
                 }
             });
 
             it("Should be less than end angle", function () {
-                for (const [angles, line] of anglesAndLines) {
+                for (const [, line] of anglesAndLines) {
                     const denormalised = line.denormalisedStartAngle();
                     expect(denormalised).to.be.at.most(line.end.angle);
                 }
@@ -91,15 +87,16 @@ describe("PolarLine", function () {
 
         describe("#denormalisedEndAngle", function () {
             it("Should normalise to angle", function () {
-                for (const [angles, line] of anglesAndLines) {
+                for (const [, line] of anglesAndLines) {
                     const backAndForth =
                         PolarPoint.normaliseAngle(line.denormalisedEndAngle());
+                    // @ts-ignore
                     expect(backAndForth).to.shallowDeepAlmostEqual(line.end.angle);
                 }
             });
 
             it("Should be more than start angle", function () {
-                for (const [angles, line] of anglesAndLines) {
+                for (const [, line] of anglesAndLines) {
                     const denormalised = line.denormalisedEndAngle();
                     expect(denormalised).to.be.at.least(line.start.angle);
                 }
@@ -108,7 +105,7 @@ describe("PolarLine", function () {
 
         describe("#denormalisedStartAngle/#denormalisedEndAngle", function () {
             it("Should be less than", function () {
-                for (const [angles, line] of anglesAndLines) {
+                for (const [, line] of anglesAndLines) {
                     const startAngle = line.denormalisedStartAngle();
                     const endAngle = line.denormalisedEndAngle();
                     expect(startAngle).to.be.at.most(endAngle);
@@ -118,13 +115,13 @@ describe("PolarLine", function () {
 
         describe("#deltaAngle", function () {
             it("Should be positive", function () {
-                for (const [angles, line] of anglesAndLines) {
+                for (const [, line] of anglesAndLines) {
                     expect(line.deltaAngle()).to.be.at.least(0);
                 }
             });
 
             it("Should be the same as the difference", function () {
-                for (const [angles, line] of anglesAndLines) {
+                for (const [, line] of anglesAndLines) {
                     if (line.goesOverPI) {
                         const expected = (Math.PI - line.start.angle) + (line.end.angle - (-Math.PI));
                         expect(line.deltaAngle()).to.equal(expected);
@@ -136,7 +133,7 @@ describe("PolarLine", function () {
             });
 
             it("Should move start angle to end angle", function () {
-                for (const [angles, line] of anglesAndLines) {
+                for (const [, line] of anglesAndLines) {
                     if (line.goesOverPI) {
                         expect(line.start.angle + line.deltaAngle()).to.equal(line.denormalisedEndAngle());
                     } else {
@@ -146,7 +143,7 @@ describe("PolarLine", function () {
             });
 
             it("Should move end angle to start angle", function () {
-                for (const [angles, line] of anglesAndLines) {
+                for (const [, line] of anglesAndLines) {
                     if (line.goesOverPI) {
                         expect(line.end.angle - line.deltaAngle()).to.equal(line.denormalisedStartAngle());
                     } else {
@@ -165,19 +162,19 @@ describe("PolarLine", function () {
 
         describe("#containsAngle", function () {
             it("Should contain start angle", function () {
-                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
+                for (const [[startAngle], line] of anglesAndLines) {
                     expect(line.containsAngle(startAngle)).to.be.true;
                 }
             });
 
             it("Should contain angle in the middle of the range", function () {
-                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
+                for (const [[, , middleAngle], line] of anglesAndLines) {
                     expect(line.containsAngle(middleAngle)).to.be.true;
                 }
             });
 
             it("Should contain end angle", function () {
-                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
+                for (const [[, endAngle], line] of anglesAndLines) {
                     expect(line.containsAngle(endAngle)).to.be.true;
                 }
             });
@@ -185,19 +182,19 @@ describe("PolarLine", function () {
 
         describe("#strictlyContainsAngle", function () {
             it("Should not contain start angle", function () {
-                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
+                for (const [[startAngle], line] of anglesAndLines) {
                     expect(line.strictlyContainsAngle(startAngle)).to.be.false;
                 }
             });
 
             it("Should contain angle in the middle of the range", function () {
-                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
+                for (const [[, , middleAngle], line] of anglesAndLines) {
                     expect(line.strictlyContainsAngle(middleAngle)).to.be.true;
                 }
             });
 
             it("Should not contain end angle", function () {
-                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
+                for (const [[, endAngle, ], line] of anglesAndLines) {
                     expect(line.strictlyContainsAngle(endAngle)).to.be.false;
                 }
             });
@@ -205,26 +202,27 @@ describe("PolarLine", function () {
 
         describe("#lengthAtAngle", function () {
             it("Should return start length for start angle", function () {
-                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
+                for (const [[startAngle], line] of anglesAndLines) {
                     expect(line.lengthAtAngle(startAngle)).to.equal(line.start.length);
                 }
             });
 
             it("Should return end length for end angle", function () {
-                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
+                for (const [[, endAngle], line] of anglesAndLines) {
                     expect(line.lengthAtAngle(endAngle)).to.equal(line.end.length);
                 }
             });
 
             it("Should return end length for middle angle", function () {
                 const middleLength = 5.2686863252131;
-                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
+                for (const [[, , middleAngle], line] of anglesAndLines) {
+                    // @ts-ignore
                     expect(line.lengthAtAngle(middleAngle)).to.shallowDeepAlmostEqual(middleLength);
                 }
             });
 
             it("Point for middle angle should be co-linear", function () {
-                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
+                for (const [[, , middleAngle], line] of anglesAndLines) {
                     const middleLength = line.lengthAtAngle(middleAngle);
                     const startPoint = line.start.toCartesianPoint();
                     const endPoint = line.end.toCartesianPoint();
@@ -241,7 +239,9 @@ describe("PolarLine", function () {
                         middlePoint.y - endPoint.y,
                         middlePoint.x - endPoint.x);
 
+                    // @ts-ignore
                     expect(lineAtan2).to.shallowDeepAlmostEqual(startToMiddleAtan2);
+                    // @ts-ignore
                     expect(lineAtan2).to.shallowDeepAlmostEqual(middleToEndAtan2);
                 }
             });
@@ -266,8 +266,8 @@ describe("PolarLine", function () {
 
         describe("#maxDistance", function () {
             it("Should be the max of the lines distances", function () {
-                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
-                    const backAndForth = PolarLine.fromCartesianLine({x: 0, y: 0}, line.toCartesianLine());
+                for (const [, line] of anglesAndLines) {
+                    const backAndForth = PolarLine.fromCartesianLine(new CartesianPoint(0, 0), line.toCartesianLine());
                     expect(backAndForth.maxDistance).to.equal(Math.max(backAndForth.start.length, backAndForth.end.length));
                 }
             });
@@ -275,8 +275,8 @@ describe("PolarLine", function () {
 
         describe("#minDistance < #maxDistance", function () {
             it("minDistance should be less than maxDistance", function () {
-                for (const [[startAngle, endAngle, middleAngle], line] of anglesAndLines) {
-                    const backAndForth = PolarLine.fromCartesianLine({x: 0, y: 0}, line.toCartesianLine());
+                for (const [, line] of anglesAndLines) {
+                    const backAndForth = PolarLine.fromCartesianLine(new CartesianPoint(0, 0), line.toCartesianLine());
                     expect(backAndForth.minDistance).be.lessThan(backAndForth.maxDistance);
                 }
             });

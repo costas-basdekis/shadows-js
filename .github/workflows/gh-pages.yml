@@ -22,9 +22,10 @@ jobs:
           cache: 'npm'
           cache-dependency-path: demo/package-lock.json
       - run: npm ci --prefix lib
+      - run: npm run build --prefix lib
       - run: npm ci --prefix demo
       - run: cd lib && npm link && cd ..
-      - run: cd demo && npm link shadows.js && cd ..
+      - run: cd demo && npm link shadows-js && cd ..
       - run: npm run build --if-present --prefix demo
       - run: npm test --prefix demo
   demo-deploy:
@@ -39,9 +40,10 @@ jobs:
         uses: actions/checkout@v2
 
       - run: npm ci --prefix lib
+      - run: npm run build --prefix lib
       - run: npm ci --prefix demo
       - run: cd lib && npm link && cd ..
-      - run: cd demo && npm link shadows.js && cd ..
+      - run: cd demo && npm link shadows-js && cd ..
       - run: npm run build --prefix demo
 
       - name: Deploy

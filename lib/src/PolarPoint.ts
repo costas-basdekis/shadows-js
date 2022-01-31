@@ -1,13 +1,16 @@
-const { CartesianPoint } = require("./CartesianPoint");
-const { almostEquals, compareTuples } = require("./utils");
+import { CartesianPoint } from "./CartesianPoint";
+import { almostEquals, compareTuples } from "./utils";
 
-class PolarPoint {
-    constructor(angle, length) {
+export class PolarPoint {
+    public readonly angle: number;
+    public readonly length: number;
+
+    constructor(angle: number, length: number) {
         this.angle = PolarPoint.normaliseAngle(angle);
         this.length = length;
     }
 
-    static normaliseAngle(angle) {
+    static normaliseAngle(angle: number): number {
         while (angle > Math.PI) {
             angle -= 2 * Math.PI;
         }
@@ -18,29 +21,29 @@ class PolarPoint {
         return angle
     }
 
-    toString() {
+    toString(): string {
         return `{P:${this.angle}@${this.length}}`;
     }
 
-    sortKey() {
+    sortKey(): [number, number] {
         return [
             this.angle, this.length
         ];
     }
 
-    sortCompare(rhs) {
+    sortCompare(rhs: this): number {
         return compareTuples(this.sortKey(), rhs.sortKey());
     }
 
-    equals(other) {
+    equals(other: this): boolean {
         return compareTuples(this.sortKey(), other.sortKey()) === 0;
     }
 
-    almostEquals(other) {
+    almostEquals(other: this): boolean {
         return compareTuples(this.sortKey(), other.sortKey(), almostEquals) === 0;
     }
 
-    clockwiseAngle(angle) {
+    clockwiseAngle(angle: number): number {
         angle = PolarPoint.normaliseAngle(angle);
 
         if (angle >= this.angle) {
@@ -50,24 +53,22 @@ class PolarPoint {
         return 2 * Math.PI + angle - this.angle
     }
 
-    static fromCartesianPoints(center, point) {
+    static fromCartesianPoints(center: CartesianPoint, point: CartesianPoint): PolarPoint {
         const delta = point.minus(center);
         return this.fromCartesianPoint(delta);
     }
 
-    static fromCartesianPoint(point) {
+    static fromCartesianPoint(point: CartesianPoint): PolarPoint {
         return new this(point.angle(), point.length());
     }
 
-    toCartesianPoint() {
+    toCartesianPoint(): CartesianPoint {
         return new CartesianPoint(
             Math.cos(this.angle) * this.length,
             Math.sin(this.angle) * this.length);
     }
 
-    toPath(center) {
+    toPath(center: CartesianPoint): paper.Point {
         return this.toCartesianPoint().plus(center).toPaper();
     }
 }
-
-exports.PolarPoint = PolarPoint;

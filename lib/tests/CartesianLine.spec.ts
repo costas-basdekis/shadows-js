@@ -1,6 +1,5 @@
-const { expect } = require('chai');
-const { CartesianPoint } = require("../src/CartesianPoint");
-const { CartesianLine } = require("../src/CartesianLine");
+import { expect } from 'chai';
+import { CartesianPoint, CartesianLine } from "../src";
 
 describe("CartesianLine", function () {
     describe("constructor", function () {

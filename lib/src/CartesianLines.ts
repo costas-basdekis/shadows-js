@@ -1,63 +1,68 @@
-const paper = typeof window === typeof undefined ? null : require("paper");
-const { range, zip } = require("./utils");
-const { CartesianLine } = require("./CartesianLine");
-const { CartesianPoint } = require("./CartesianPoint");
+import paper from "paper";
+import { range, zip } from "./utils";
+import { CartesianLine } from "./CartesianLine";
+import { CartesianPoint } from "./CartesianPoint";
 
-class CartesianLines {
-    constructor(canvas, name=null) {
+export class CartesianLines {
+    private readonly canvas: HTMLCanvasElement | null;
+    public lines: CartesianLine[];
+    public path: paper.CompoundPath | null;
+    public readonly name: string | null;
+
+    constructor(canvas: HTMLCanvasElement | null=null, name: string | null=null) {
         this.canvas = canvas;
         this.lines = [];
         this.path = null;
         this.name = name;
     }
 
-    clear() {
+    clear(): void {
         this.lines = [];
     }
 
-    updatePath() {
+    updatePath(): void {
         if (!this.path) {
-            this.path = new paper.CompoundPath();
+            this.path = new paper.CompoundPath("");
         }
         CartesianLines.toPath(this.lines, this.path);
     }
 
-    clearPath() {
+    clearPath(): void {
         if (!this.path) {
-            this.path = new paper.CompoundPath();
+            this.path = new paper.CompoundPath("");
         }
         CartesianLines.toPath([], this.path);
     }
 
-    static toPath(lines, compoundPath=null) {
+    static toPath(lines: CartesianLine[], compoundPath: paper.CompoundPath | null=null) {
         if (!compoundPath) {
-            compoundPath = new paper.CompoundPath();
+            compoundPath = new paper.CompoundPath("");
         } else {
             compoundPath.children = [];
         }
 
-        const paths = [];
+        const paths: CartesianLine[][] = [];
 
         for (const line of lines) {
-            const previousPath = paths.length ? paths[paths.length - 1] : null;
-            const previousLine = previousPath ? previousPath[previousPath.length - 1] : null;
-            const previousPoint = previousLine ? previousLine.end : null;
-            const path = line.start.equals(previousPoint) ? previousPath : [];
+            const previousPath: CartesianLine[] | null = paths.length ? paths[paths.length - 1] : null;
+            const previousLine: CartesianLine | null = previousPath ? previousPath[previousPath.length - 1] : null;
+            const previousPoint: CartesianPoint | null = previousLine ? previousLine.end : null;
+            const path: CartesianLine[] = line.start.equals(previousPoint) ? previousPath! : [];
             if (path !== previousPath) {
                 paths.push(path);
             }
             path.push(line);
         }
 
-        const paperPaths = [];
+        const paperPaths: paper.Path[] = [];
 
         for (const path of paths) {
             const paperPath = new paper.Path();
             paperPaths.push(paperPath);
 
-            paperPath.moveTo(path[0].start);
+            paperPath.moveTo(path[0].start.toPaper());
             for (const line of path) {
-                paperPath.lineTo(line.end);
+                paperPath.lineTo(line.end.toPaper());
             }
         }
 
@@ -66,17 +71,17 @@ class CartesianLines {
         return compoundPath;
     }
 
-    addLine(line) {
+    addLine(line: CartesianLine): this {
         return this.addLines([line]);
     }
 
-    addLines(lines) {
+    addLines(lines: CartesianLine[]): this {
         this.lines.push(...lines);
 
         return this;
     }
 
-    static box(first, third) {
+    static box(first: CartesianPoint, third: CartesianPoint): CartesianLine[] {
         const second = new CartesianPoint(third.x, first.y);
         const fourth = new CartesianPoint(first.x, third.y);
         return [
@@ -87,16 +92,16 @@ class CartesianLines {
         ];
     }
 
-    addBox(first, third) {
+    addBox(first: CartesianPoint, third: CartesianPoint): this {
         const lines = CartesianLines.box(first, third);
         return this.addLines(lines);
     }
 
-    static linear(...pairs) {
+    static linear(...pairs: [number, number][]): CartesianLine[] {
         const starts = pairs.slice(0, -1);
         const ends = pairs.slice(1);
-        const lines = zip(starts, ends).map(
-            ([[startX, startY], [endX, endY]]) => new CartesianLine(
+        const lines: CartesianLine[] = zip(starts, ends).map(
+            ([[startX, startY], [endX, endY]]: [[number, number], [number, number]]) => new CartesianLine(
                 new CartesianPoint(startX, startY),
                 new CartesianPoint(endX, endY)
             ));
@@ -104,15 +109,15 @@ class CartesianLines {
         return lines
     }
 
-    addLinear(...pairs) {
+    addLinear(...pairs: [number, number][]): this {
         const lines = CartesianLines.linear(...pairs);
         return this.addLines(lines);
     }
 
-    static regularPolygon(center, radius, count) {
+    static regularPolygon(center: CartesianPoint, radius: number, count: number): CartesianLine[] {
         const angles = range(0, count + 1)
             .map(i => i * Math.PI * 2 / count);
-        const points = angles.map(angle => [
+        const points: [number, number][] = angles.map(angle => [
             Math.cos(angle) * radius + center.x,
             Math.sin(angle) * radius + center.y
         ]);
@@ -122,18 +127,18 @@ class CartesianLines {
         return this.linear(...points);
     }
 
-    addRegularPolygon(center, radius, count) {
+    addRegularPolygon(center: CartesianPoint, radius: number, count: number): this {
         const lines = CartesianLines.regularPolygon(center, radius, count);
         return this.addLines(lines);
     }
 
-    static star(center, smallRadius, bigRadius, count) {
+    static star(center: CartesianPoint, smallRadius: number, bigRadius: number, count: number): CartesianLine[] {
         const angles = range(0, (count + 1) * 2)
             .map(i => i * Math.PI * 2 / (count * 2));
         const radiuses = range(0, (count + 1) * 2)
             .map(i => (i % 2) ? smallRadius : bigRadius);
-        const points = zip(angles, radiuses)
-            .map(([angle, radius]) => [
+        const points: [number, number][] = zip(angles, radiuses)
+            .map(([angle, radius]: [number, number]) => [
                 Math.cos(angle) * radius + center.x,
                 Math.sin(angle) * radius + center.y
             ]);
@@ -143,10 +148,8 @@ class CartesianLines {
         return this.linear(...points);
     }
 
-    addStar(center, smallRadius, bigRadius, count) {
-        const lines = CartesianLines.star(center, smallRadius, bigRadius, count);
-        return this.addLines(...lines);
+    addStar(center: CartesianPoint, smallRadius: number, bigRadius: number, count: number): this {
+        const lines: CartesianLine[] = CartesianLines.star(center, smallRadius, bigRadius, count);
+        return this.addLines(lines);
     }
 }
-
-exports.CartesianLines = CartesianLines;

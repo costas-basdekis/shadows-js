@@ -1,13 +1,10 @@
-const { expect } = require('chai');
-const {
-    cartesian, compare, range, sortWithCompare, unique, zip, almostEquals,
-} = require("../src/utils");
-const { CartesianLines } = require("../src/CartesianLines");
-const { CartesianPoint } = require("../src/CartesianPoint");
-const { PolarLines } = require("../src/PolarLines");
-const { PolarLine } = require("../src/PolarLine");
-const { PolarPoint } = require("../src/PolarPoint");
-const { Rooms } = require("../src/Rooms");
+import { expect } from 'chai';
+import {
+    cartesian, compare, range, sortWithCompare, unique, zip,
+    CartesianLines, CartesianPoint,
+    PolarLines, PolarLine, PolarPoint,
+    Rooms,
+} from "../src";
 
 describe("PolarLines", function () {
     const cartesianRoomsLines = Rooms.rooms
@@ -16,7 +13,7 @@ describe("PolarLines", function () {
 
     const centers = cartesian(range(-50, 650, 200), range(-50, 650, 200))
         .map(([x ,y]) => (new CartesianPoint(x, y)));
-    const centersAndRooms = cartesian(centers, cartesianRoomsLines).concat([
+    const centersAndRooms: [CartesianPoint, CartesianLines][] = cartesian(centers, cartesianRoomsLines).concat([
         // Because the two lines intersect on a point, on some angles, the
         // longer triangle is slightly smaller on the common point:
         // [
@@ -52,7 +49,7 @@ describe("PolarLines", function () {
         ))]
     ]);
 
-    function createCasesForCentersAndRooms(func) {
+    function createCasesForCentersAndRooms(func: (c: CartesianPoint, ls: CartesianLines, r: PolarLines) => void) {
         for (const [center, cartesianRoomLines] of centersAndRooms) {
             it(`For room ${cartesianRoomLines.name}, center ${center}`, function () {
                 const room = new PolarLines()
@@ -74,7 +71,7 @@ describe("PolarLines", function () {
 
     describe("#fromCartesianLines", function () {
         describe("Should be able to crate maze room", function () {
-            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
+            createCasesForCentersAndRooms(function (){
             });
         });
     });
@@ -92,7 +89,9 @@ describe("PolarLines", function () {
             createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
                 const angles = PolarLines.linesAngles(room.lines);
                 for (const line of room.lines) {
+                    // noinspection TypeScriptValidateJSTypes
                     expect(angles).to.contain(line.start.angle);
+                    // noinspection TypeScriptValidateJSTypes
                     expect(angles).to.contain(line.end.angle);
                 }
             });
@@ -109,7 +108,7 @@ describe("PolarLines", function () {
 
     describe("#anglesInLines", function () {
         describe("Should contain the correct subsets", function () {
-            createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
+            createCasesForCentersAndRooms(function (center: CartesianPoint, cartesianRoomLines, room){
                 const angles =
                     PolarLines.linesAngles(room.lines);
                 const anglesInLines =
@@ -132,7 +131,7 @@ describe("PolarLines", function () {
                     PolarLines.linesAngles(room.lines);
                 const anglesInLines =
                     PolarLines.anglesInLines(room.lines, angles);
-                for (const [line, anglesInLine] of zip(room.lines, anglesInLines)) {
+                for (const [, anglesInLine] of zip(room.lines, anglesInLines)) {
                     expect(unique(anglesInLine)).to.deep.equal(anglesInLine);
                 }
             });
@@ -189,7 +188,9 @@ describe("PolarLines", function () {
                     for (const index of range(1, splitLines.length)) {
                         const previousPoint = splitLines[index - 1].end;
                         const nextPoint = splitLines[index].start;
+                        // @ts-ignore
                         expect(previousPoint.angle).to.shallowDeepAlmostEqual(nextPoint.angle);
+                        // @ts-ignore
                         expect(previousPoint.length).to.shallowDeepAlmostEqual(nextPoint.length);
                     }
                 }
@@ -204,6 +205,7 @@ describe("PolarLines", function () {
                 for (const [line, anglesInLine] of zip(room.lines, anglesInLines)) {
                     const splitLines = PolarLines.splitLine(line, anglesInLine);
                     const deltaAngles = splitLines.map(line => line.deltaAngle());
+                    // noinspection BadExpressionStatementJS
                     expect(deltaAngles.filter(angle => angle < 0)).to.be.empty;
                 }
             });
@@ -218,6 +220,7 @@ describe("PolarLines", function () {
                     const splitLines = PolarLines.splitLine(line, anglesInLine);
                     const deltaAngles = splitLines.map(line => line.deltaAngle());
                     const anglesSum = deltaAngles.reduce((total, angle) => total + angle, 0);
+                    // @ts-ignore
                     expect(anglesSum).to.shallowDeepAlmostEqual(line.deltaAngle());
                 }
             });
@@ -227,6 +230,7 @@ describe("PolarLines", function () {
     describe("removeHiddenLines", function () {
         describe("Hidden lines should be a subset of all lines", function () {
             createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
+                // noinspection DuplicatedCode
                 const angles = PolarLines.linesAngles(room.lines);
                 const anglesInLines =
                     PolarLines.anglesInLines(room.lines, angles);
@@ -244,6 +248,7 @@ describe("PolarLines", function () {
 
         describe("Hidden lines should have a line with higher start/end length", function () {
             createCasesForCentersAndRooms(function (center, cartesianRoomLines, room){
+                // noinspection DuplicatedCode
                 const angles = PolarLines.linesAngles(room.lines);
                 const anglesInLines =
                     PolarLines.anglesInLines(room.lines, angles);
@@ -259,11 +264,13 @@ describe("PolarLines", function () {
                             continue;
                         }
                         if (hiddenLine.start.length < visibleLine.start.length) {
+                            // @ts-ignore
                             expect(hiddenLine.start.length).to.shallowDeepAlmostEqual(visibleLine.start.length);
                         } else {
                             expect(hiddenLine.start.length).to.be.at.least(visibleLine.start.length);
                         }
                         if (hiddenLine.end.length < visibleLine.end.length) {
+                            // @ts-ignore
                             expect(hiddenLine.end.length).to.shallowDeepAlmostEqual(visibleLine.end.length);
                         } else {
                             expect(hiddenLine.end.length).to.be.at.least(visibleLine.end.length);
@@ -301,6 +308,7 @@ describe("PolarLines", function () {
                 new PolarLine(new PolarPoint(1, 10), new PolarPoint(2, 10)),
                 new PolarLine(new PolarPoint(2, 10), new PolarPoint(3, 10)),
             ];
+            // noinspection DuplicatedCode
             for (const line of lines) {
                 line.sourceId = 1;
             }
@@ -316,6 +324,7 @@ describe("PolarLines", function () {
                 new PolarLine(new PolarPoint(1, 10), new PolarPoint(2, 10)),
                 new PolarLine(new PolarPoint(0, 10), new PolarPoint(1, 10)),
             ];
+            // noinspection DuplicatedCode
             for (const line of lines) {
                 line.sourceId = 1;
             }
@@ -348,6 +357,7 @@ describe("PolarLines", function () {
                 const withoutObviousHiddenLines = getLinesWithoutObviousHiddenLines(room.lines);
                 const withoutObviousHiddenLinesSourceIds = withoutObviousHiddenLines.map(line => line.sourceId);
                 const newLinesIds = withoutObviousHiddenLinesSourceIds.filter(line => roomLineIds.indexOf(line) < 0);
+                // noinspection BadExpressionStatementJS
                 expect(newLinesIds).to.be.empty;
             });
         });
@@ -376,6 +386,7 @@ describe("PolarLines", function () {
         it("Parallel lines should have same absAtan2", () => {
             const line1 = new PolarLine(new PolarPoint(2.819842099193151, 221.35943621178654), new PolarPoint(2.9018495447193366, 294.7950681938305));
             const line2 = new PolarLine(new PolarPoint(2.9018495447193366, 294.7950681938305), new PolarPoint(2.904743892642873, 298.328677803526));
+            // @ts-ignore
             expect(line1.absAtan2()).to.angleAlmostEquals(line2.absAtan2());
         });
     });

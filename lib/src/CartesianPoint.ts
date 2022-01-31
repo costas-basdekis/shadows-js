@@ -1,16 +1,19 @@
-const paper = typeof window === typeof undefined ? null : require("paper");
+import paper from "paper";
 
-class CartesianPoint {
-    constructor(x, y) {
+export class CartesianPoint {
+    public readonly x: number;
+    public readonly y: number;
+
+    public constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
     }
 
-    toString() {
+    toString(): string {
         return `{C:${this.x},${this.y}}`;
     }
 
-    equals(other) {
+    equals(other: this | null): boolean {
         if (!other) {
             return false;
         }
@@ -18,35 +21,33 @@ class CartesianPoint {
         return (other.x === this.x) && (other.y === this.y);
     }
 
-    plus(other, multiplier=1) {
-        return new CartesianPoint(
+    plus(other: this, multiplier: number=1): this {
+        return new (this.constructor as any)(
             this.x + other.x * multiplier,
             this.y + other.y * multiplier);
     }
 
-    minus(other, multiplier=1) {
+    minus(other: this, multiplier: number=1): this {
         return this.plus(other, -multiplier);
     }
 
-    dot(other) {
+    dot(other: this): number {
         return this.x * other.x + this.y * other.y;
     }
 
-    projectOn(other) {
+    projectOn(other: this): number {
         return other.dot(this) / other.length();
     }
 
-    length() {
+    length(): number {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
-    angle() {
+    angle(): number {
         return Math.atan2(this.y, this.x);
     }
 
-    toPaper() {
+    toPaper(): paper.Point {
         return new paper.Point(this.x, this.y);
     }
 }
-
-exports.CartesianPoint = CartesianPoint;

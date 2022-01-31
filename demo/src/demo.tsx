@@ -1,12 +1,9 @@
 // @ts-ignore
-import paper from "shadows.js/src/paper";
+import paper from "shadows-js/src/paper";
 // @ts-ignore
-import { Room, RandomMazeRoom, Rooms } from "shadows.js/src/Rooms";
+import { Room, RandomMazeRoom, Rooms, CartesianLines, PolarLines } from "shadows-js/dist";
 import { FPS } from "./FPS";
-// @ts-ignore
-import { PolarLines } from "shadows.js/src/PolarLines";
-// @ts-ignore
-import { CartesianLines } from "shadows.js/src/CartesianLines";
+import {CartesianPoint} from "shadows-js";
 
 export class Demo {
     private readonly canvas: HTMLCanvasElement;
@@ -15,9 +12,11 @@ export class Demo {
     private drawFPS: FPS;
     private totalFPS: FPS;
     private elements: any;
+    // @ts-ignore
     private rays: PolarLines;
+    // @ts-ignore
     private readonly walls: CartesianLines;
-    private center: { x: number; y: number };
+    private center: CartesianPoint;
     private centerTool: paper.Tool;
     private static centerPath: paper.Path.Circle;
 
@@ -36,7 +35,7 @@ export class Demo {
         this.rays = new PolarLines();
         this.walls = new CartesianLines();
 
-        this.center = {x: 50, y: 50};
+        this.center = new CartesianPoint(50, 50);
 
         this.createRoom(firstRoom);
         this.updateRays();
@@ -91,6 +90,7 @@ export class Demo {
 
     roomsOnChange(e: Event) {
         const selected: HTMLSelectElement = e.target! as HTMLSelectElement;
+        // @ts-ignore
         const room = Rooms.roomsByName[selected.value];
         this.createRoom(room);
         this.updateRays();
@@ -117,10 +117,12 @@ export class Demo {
     }
 
     updateRaysShow() {
-        if (this.showRays) {
-            this.rays.path.strokeColor = 'yellow';
-        } else {
-            this.rays.path.strokeColor = null;
+        if (this.rays.path) {
+            if (this.showRays) {
+                this.rays.path.strokeColor = new paper.Color('yellow');
+            } else {
+                this.rays.path.strokeColor = null;
+            }
         }
     }
 
@@ -132,31 +134,37 @@ export class Demo {
         return this.elements.showRays.checked;
     }
 
-    createCenterTool(center: { x: number; y: number }) {
+    createCenterTool(center: CartesianPoint) {
         const tool = new paper.Tool();
 
+        // @ts-ignore
         tool.init = Demo.initCenterTool;
         tool.onMouseDown = tool.onMouseDrag = Demo.onMouseDragCenterTool;
+        // @ts-ignore
         tool.demo = this;
+        // @ts-ignore
         tool.init(center);
 
         return tool;
     }
 
-    static initCenterTool(center: { x: number; y: number }) {
-        this.centerPath = new paper.Path.Circle(center, 15);
-        this.centerPath.strokeColor = 'red';
-        this.centerPath.fillColor = 'yellow';
+    static initCenterTool(center: CartesianPoint) {
+        this.centerPath = new paper.Path.Circle(center.toPaper(), 15);
+        this.centerPath.strokeColor = new paper.Color('red');
+        this.centerPath.fillColor = new paper.Color('yellow');
     }
 
     static onMouseDragCenterTool(toolEvent: paper.ToolEvent) {
-        const tool = this as paper.Tool;
+        const tool = this as any as paper.Tool;
+        // @ts-ignore
         const center = tool.demo.getPoint(toolEvent);
         this.centerPath.position = center;
+        // @ts-ignore
         tool.demo.onMouseDrag(toolEvent, center);
     }
 
-    getPoint(toolEvent: paper.ToolEvent) {
+    getPoint(toolEvent: paper.ToolEvent): CartesianPoint {
+        // @ts-ignore
         if (toolEvent.event instanceof TouchEvent) {
             return this.getTouchPoint(toolEvent);
         } else {
@@ -164,27 +172,33 @@ export class Demo {
         }
     }
 
-    getTouchPoint(toolEvent: paper.ToolEvent) {
+    getTouchPoint(toolEvent: paper.ToolEvent): CartesianPoint {
         const boundingClientRect = this.canvas.getBoundingClientRect();
         const scale = 3;
         // Why 3? Nobody knows :(
+        // @ts-ignore
         const touch = toolEvent.event.changedTouches[0];
-        const center = {
-            x: (touch.pageX - boundingClientRect.left) / scale,
-            y: (touch.pageY - boundingClientRect.top) / scale,
-        };
+        const center = new CartesianPoint(
+            (touch.pageX - boundingClientRect.left) / scale,
+            (touch.pageY - boundingClientRect.top) / scale,
+        );
         return center;
     }
 
-    getMousePoint(toolEvent: paper.ToolEvent) {
-        return toolEvent.point;
+    getMousePoint(toolEvent: paper.ToolEvent):CartesianPoint {
+        return new CartesianPoint(
+            // @ts-ignore
+            toolEvent.point.x,
+            // @ts-ignore
+            toolEvent.point.y,
+        );
     }
 
     onMouseDrag(toolEvent: paper.ToolEvent, center: { x: number; y: number }) {
-        this.center = {
-            x: center.x,
-            y: center.y,
-        };
+        this.center = new CartesianPoint(
+            center.x,
+            center.y,
+        );
         this.updateRays();
         this.updateCoordsDisplay();
     }
@@ -206,7 +220,9 @@ export class Demo {
             {
                 this.rays.updatePath(this.center, this.showRays);
                 this.updateRaysShow();
-                this.rays.path.fillColor = 'green';
+                if (this.rays.path) {
+                    this.rays.path.fillColor = new paper.Color('green');
+                }
             }
             this.drawFPS.frameEnd();
         }
@@ -217,7 +233,9 @@ export class Demo {
         this.walls.clear();
         this.walls.addLines(new room().create());
         this.updateWallsShow();
-        this.walls.path.strokeColor = 'blue';
+        if (this.walls.path) {
+            this.walls.path.strokeColor = new paper.Color('blue');
+        }
     }
 
     updateCoordsDisplay() {
