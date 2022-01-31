@@ -1,6 +1,6 @@
 {
   "name": "shadows-js",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Calculate 2D visibility",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,11 +17,12 @@
     "url": "git+https://github.com/costas-basdekis/Shadows2.js.git"
   },
   "author": "Costas Basdekis",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/costas-basdekis/Shadows2.js/issues"
   },
   "homepage": "https://github.com/costas-basdekis/Shadows2.js#readme",
+  "keywords": ["raycasting", "2d"],
   "dependencies": {
     "typescript": "^4.5.5"
   },
