@@ -1,27 +1,20 @@
-Shadows2.js
+shadows-js
 ==
 
 See the [demo page]
 
-2D shadows, drawn using [paper.js], and ES6
-Inspired by the soldiers' view field in Commandos, I wanted to implement it for the general case. 
+<img height="300" width="300" src="docs/shadows-without-walls.png"/>
+<img height="300" width="300" src="docs/shadows-with-walls.png"/>
 
-This is the 4th attempt at attacking this problem (previous slow/buggy implementation at [Shadows.js])
+This library calculates the visible area in a closed room from a central point.
+The calculations are exact, to the extent that floating point arithmetic allows.
 
-See the [demo page]  
-Run the [tests]  
+The inspiration comes from the soldiers' view field in the Commandos game series. 
 
+Limitations
 ==
 
-It's in a fully functional state, and demo allows the user to move the light source, in several rooms.
+* You need to cover the center with walls all-around to get 360 degrees of shadows
+* The wall segments cannot overlap, or touch each other in the middle, only end-to-end overlaps are allowed
 
-Todo:
---
-1. Fix touch controls
-2. Allow user to add shapes/lines in the demo app
-3. Create some mini games with this mechanic
-
-[paper.js]:http://paperjs.org/
 [demo page]:http://costas-basdekis.github.io/Shadows2.js/
-[tests]:http://costas-basdekis.github.io/Shadows2.js/tests/tests.html
-[Shadows.js]:http://costas-basdekis.github.io/Shadows.js/
