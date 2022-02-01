@@ -25,6 +25,13 @@ export default class App extends Component {
           <div>
             <a href={"https://github.com/costas-basdekis/shadows-js"}>GitHub Repo</a>
           </div>
+          <p>
+              This library calculates the visible area in a closed room from a central point.
+              The calculations are exact, to the extent that floating point arithmetic allows.
+          </p>
+          <p>
+              The inspiration comes from the soldiers' view field in the Commandos game series.
+          </p>
 
           <div id={"settings"}>
           </div>
