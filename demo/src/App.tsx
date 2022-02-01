@@ -24,6 +24,8 @@ export default class App extends Component {
         <>
           <div>
             <a href={"https://github.com/costas-basdekis/shadows-js"}>GitHub Repo</a>
+            {" "}
+            <a href={"https://www.npmjs.com/package/shadows-js"}>NPM Package</a>
           </div>
           <p>
               This library calculates the visible area in a closed room from a central point.
