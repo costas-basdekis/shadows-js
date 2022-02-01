@@ -17,4 +17,4 @@ Limitations
 * You need to cover the center with walls all-around to get 360 degrees of shadows
 * The wall segments cannot overlap, or touch each other in the middle, only end-to-end overlaps are allowed
 
-[demo page]:http://costas-basdekis.github.io/shadows-js
+[demo page]:https://costas-basdekis.github.io/shadows-js
