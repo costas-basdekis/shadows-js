@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/costas-basdekis/Shadows2.js.git"
+    "url": "git+https://github.com/costas-basdekis/shadows-js.git"
   },
   "author": "Costas Basdekis",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/costas-basdekis/Shadows2.js/issues"
+    "url": "https://github.com/costas-basdekis/shadows-js/issues"
   },
-  "homepage": "https://github.com/costas-basdekis/Shadows2.js#readme",
+  "homepage": "https://github.com/costas-basdekis/shadows-js#readme",
   "keywords": [
     "raycasting",
     "2d"

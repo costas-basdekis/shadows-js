@@ -23,7 +23,7 @@ export default class App extends Component {
     return (
         <>
           <div>
-            <a href={"https://github.com/costas-basdekis/Shadows2.js"}>GitHub Repo</a>
+            <a href={"https://github.com/costas-basdekis/shadows-js"}>GitHub Repo</a>
           </div>
 
           <div id={"settings"}>
