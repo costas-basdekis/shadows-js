@@ -8,8 +8,8 @@
     "test": "tests"
   },
   "scripts": {
-    "build": "rm -r dist && tsc",
-    "watch": "rm -r dist && tsc --watch",
+    "build": "rm -rf dist && tsc",
+    "watch": "rm -rf dist && tsc --watch",
     "test": "TS_NODE_PROJECT=\"tsconfig.testing.json\" mocha tests --require ts-node/register --reporter min src tests/**/*.spec.ts"
   },
   "repository": {
